@@ -121,15 +121,15 @@ export function GlobeDemo() {
 
 	const globeConfig = {
 		pointSize: 4,
-		globeColor: "#062056",
-		showAtmosphere: true,
-		atmosphereColor: "#FFFFFF",
-		atmosphereAltitude: 0.1,
-		emissive: "#062056",
-		emissiveIntensity: 0.1,
+		globeColor: "#1a1a2e", // Deep navy blue
+		showAtmosphere: false,
+		atmosphereColor: "#38bdf8", // Bright cyan glow
+		atmosphereAltitude: 0.15,
+		emissive: "#0f172a", // Dark blue emissive
+		emissiveIntensity: 0.2,
 		shininess: 0.9,
-		polygonColor: "rgba(255,255,255,0.7)",
-		ambientLight: "#38bdf8",
+		polygonColor: "rgba(79, 209, 197, 0.8)", // Teal countries
+		ambientLight: "#38bdf8", // Cyan ambient
 		directionalLeftLight: "#ffffff",
 		directionalTopLight: "#ffffff",
 		pointLight: "#ffffff",
@@ -141,7 +141,8 @@ export function GlobeDemo() {
 		autoRotate: true,
 		autoRotateSpeed: 0.5,
 	};
-	const colors = ["#06b6d4", "#3b82f6", "#6366f1"];
+	// Vibrant arc colors - cyan, blue, purple, pink
+	const colors = ["#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"];
 	const sampleArcs = [
 		{
 			order: 1,

@@ -13,8 +13,8 @@ function App() {
 				<p className="text-center text-base md:text-lg font-normal text-neutral-700 dark:text-neutral-200 max-w-md mt-2 mx-auto">
 					Find your next destination and start planning your trip.
 				</p>
-				<div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
-				<div className="absolute w-full -bottom-20 h-72 md:h-full z-10">
+				<div className="absolute w-full bottom-0 inset-x-0 h-10 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
+				<div className="absolute -bottom-20 h-[500px] w-[500px] md:h-[600px] md:w-[600px] left-1/2 -translate-x-1/2 z-10">
 					<GlobeDemo />
 				</div>
 			</div>

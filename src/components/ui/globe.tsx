@@ -2,7 +2,7 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas, extend, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { Color, Fog, type Group } from "three";
+import { Color, type Group } from "three";
 import countries from "@/data/globe.json";
 
 // #region agent log
@@ -37,7 +37,7 @@ declare module "@react-three/fiber" {
 }
 
 const RING_PROPAGATION_SPEED = 3;
-const aspect = 1.2;
+const aspect = 0.9;
 const cameraZ = 300;
 
 type Position = {
@@ -379,9 +379,6 @@ export function World(props: WorldProps) {
 				near: 180,
 				far: 1800,
 				position: [0, 0, cameraZ],
-			}}
-			onCreated={({ scene }) => {
-				scene.fog = new Fog(0xffffff, 400, 2000);
 			}}
 		>
 			<WebGLRendererConfig />
