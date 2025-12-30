@@ -2,7 +2,7 @@
 import { OrbitControls } from "@react-three/drei";
 import { Canvas, extend, useThree } from "@react-three/fiber";
 import { useEffect, useRef, useState } from "react";
-import { Color, Fog, Group } from "three";
+import { Color, Fog, type Group } from "three";
 import countries from "@/data/globe.json";
 
 // #region agent log

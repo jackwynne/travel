@@ -49,7 +49,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
 			<body>
 				<WorkOSProvider>
 					<ConvexProvider>
-						<Header />
+						{/* <Header /> */}
 						{children}
 						<ClientDevtools />
 					</ConvexProvider>
