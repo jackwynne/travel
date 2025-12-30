@@ -1,13 +1,8 @@
 {
     "$schema": "node_modules/wrangler/config-schema.json",
-    "name": "travel",
+    "name": "tanstack-start-app",
     "compatibility_date": "2025-09-02",
     "compatibility_flags": ["nodejs_compat"],
-    "main": "@tanstack/react-start/server-entry",
-    "build": {
-        "command": "pnpm convex deploy --cmd 'pnpm run build'",
-    },
-    "placement": {
-        "mode": "smart",
-    }
+    "main": "@tanstack/react-start/server-entry"
   }
+  

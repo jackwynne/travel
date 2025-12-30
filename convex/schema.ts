@@ -9,6 +9,7 @@ export default defineSchema({
   }),
   todos: defineTable({
     text: v.string(),
+    notes: v.optional(v.string()),
     completed: v.boolean(),
   }),
 })

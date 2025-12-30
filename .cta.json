@@ -1,5 +1,5 @@
 {
-  "projectName": "travel",
+  "projectName": "cf",
   "mode": "file-router",
   "typescript": true,
   "tailwind": true,
@@ -10,13 +10,14 @@
   "framework": "react-cra",
   "chosenAddOns": [
     "biome",
-    "nitro",
+    "cloudflare",
     "start",
     "convex",
     "compiler",
     "form",
-    "table",
+    "shadcn",
     "tanstack-query",
-    "shadcn"
+    "workos",
+    "table"
   ]
 }

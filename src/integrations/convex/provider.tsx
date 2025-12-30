@@ -1,20 +1,27 @@
-import { ConvexProvider } from 'convex/react'
-import { ConvexQueryClient } from '@convex-dev/react-query'
+import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { useMemo } from "react";
 
-const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL
-if (!CONVEX_URL) {
-  console.error('missing envar CONVEX_URL')
-}
-const convexQueryClient = new ConvexQueryClient(CONVEX_URL)
+const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL as
+	| string
+	| undefined;
 
 export default function AppConvexProvider({
-  children,
+	children,
 }: {
-  children: React.ReactNode
+	children: React.ReactNode;
 }) {
-  return (
-    <ConvexProvider client={convexQueryClient.convexClient}>
-      {children}
-    </ConvexProvider>
-  )
+	const convexClient = useMemo(() => {
+		if (!CONVEX_URL) return null;
+		return new ConvexReactClient(CONVEX_URL);
+	}, []);
+
+	if (!CONVEX_URL || !convexClient) {
+		// Avoid crashing SSR/dev if Convex isn't configured yet.
+		console.warn(
+			"[convex] Missing env var VITE_CONVEX_URL. Set it in .env.local to enable Convex.",
+		);
+		return children;
+	}
+
+	return <ConvexProvider client={convexClient}>{children}</ConvexProvider>;
 }
