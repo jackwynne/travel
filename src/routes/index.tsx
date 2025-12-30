@@ -1,11 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { GlobeDemo } from "@/components/globe-demo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/")({ component: App });
 
 function App() {
 	return (
 		<div className="flex flex-row items-center justify-center py-20 h-screen md:h-auto dark:bg-black bg-white relative w-full">
+			<div className="absolute top-4 right-4 z-50">
+				<ThemeToggle />
+			</div>
 			<div className="max-w-7xl mx-auto w-full relative overflow-hidden h-full md:h-[40rem] px-4">
 				<h2 className="text-center text-xl md:text-4xl font-bold text-black dark:text-white">
 					Travel around the world
