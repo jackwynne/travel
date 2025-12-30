@@ -1,24 +1,12 @@
 import { useEffect, useState } from "react";
+import { useTheme } from "@/hooks/theme-provider";
 
 export function GlobeDemo() {
-	// #region agent log
-	fetch("http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({
-			location: "src/components/globe-demo.tsx:6",
-			message: "GlobeDemo render entry",
-			data: {
-				hasWindow: typeof window !== "undefined",
-				ssr: import.meta.env.SSR,
-			},
-			timestamp: Date.now(),
-			sessionId: "debug-session",
-			runId: "pre-fix",
-			hypothesisId: "A",
-		}),
-	}).catch(() => {});
-	// #endregion
+	const { theme } = useTheme();
+	console.log("[GlobeDemo] render entry", {
+		hasWindow: typeof window !== "undefined",
+		ssr: import.meta.env.SSR,
+	});
 
 	const [World, setWorld] = useState<null | ((props: any) => any)>(null);
 
@@ -26,89 +14,28 @@ export function GlobeDemo() {
 		if (typeof window === "undefined") return;
 
 		const onWindowError = (event: ErrorEvent) => {
-			// #region agent log
-			fetch(
-				"http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990",
-				{
-					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({
-						location: "src/components/globe-demo.tsx:onerror",
-						message: "window.error captured",
-						data: {
-							message: event.message,
-							filename: event.filename,
-							lineno: event.lineno,
-							colno: event.colno,
-						},
-						timestamp: Date.now(),
-						sessionId: "debug-session",
-						runId: "run-tsd-1",
-						hypothesisId: "B",
-					}),
-				},
-			).catch(() => {});
-			// #endregion
+			console.error("[GlobeDemo] window.error captured", {
+				message: event.message,
+				filename: event.filename,
+				lineno: event.lineno,
+				colno: event.colno,
+			});
 		};
 		window.addEventListener("error", onWindowError);
 
-		// #region agent log
-		fetch("http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				location: "src/components/globe-demo.tsx:31",
-				message: "GlobeDemo useEffect start (about to import World)",
-				data: { ssr: import.meta.env.SSR },
-				timestamp: Date.now(),
-				sessionId: "debug-session",
-				runId: "pre-fix",
-				hypothesisId: "A",
-			}),
-		}).catch(() => {});
-		// #endregion
+		console.log("[GlobeDemo] useEffect start (about to import World)", {
+			ssr: import.meta.env.SSR,
+		});
 
 		import("./ui/globe")
 			.then((mod) => {
 				setWorld(() => (mod as any).World);
-				// #region agent log
-				fetch(
-					"http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990",
-					{
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							location: "src/components/globe-demo.tsx:53",
-							message: "GlobeDemo imported World successfully",
-							data: { keys: Object.keys(mod as any) },
-							timestamp: Date.now(),
-							sessionId: "debug-session",
-							runId: "pre-fix",
-							hypothesisId: "A",
-						}),
-					},
-				).catch(() => {});
-				// #endregion
+				console.log("[GlobeDemo] imported World successfully", {
+					keys: Object.keys(mod as any),
+				});
 			})
 			.catch((err) => {
-				// #region agent log
-				fetch(
-					"http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990",
-					{
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							location: "src/components/globe-demo.tsx:72",
-							message: "GlobeDemo failed importing World",
-							data: { err: String(err) },
-							timestamp: Date.now(),
-							sessionId: "debug-session",
-							runId: "pre-fix",
-							hypothesisId: "A",
-						}),
-					},
-				).catch(() => {});
-				// #endregion
+				console.error("[GlobeDemo] failed importing World", err);
 			});
 
 		return () => {
@@ -119,39 +46,70 @@ export function GlobeDemo() {
 	if (typeof window === "undefined") return null;
 	if (!World) return null;
 
-	const globeConfig = {
-		pointSize: 4,
-		globeColor: "#1a1a2e", // Deep navy blue
-		showAtmosphere: false,
-		atmosphereColor: "#38bdf8", // Bright cyan glow
-		atmosphereAltitude: 0.15,
-		emissive: "#0f172a", // Dark blue emissive
-		emissiveIntensity: 0.2,
-		shininess: 0.9,
-		polygonColor: "rgba(79, 209, 197, 0.8)", // Teal countries
-		ambientLight: "#38bdf8", // Cyan ambient
-		directionalLeftLight: "#ffffff",
-		directionalTopLight: "#ffffff",
-		pointLight: "#ffffff",
-		arcTime: 1000,
-		arcLength: 0.9,
-		rings: 1,
-		maxRings: 3,
-		initialPosition: { lat: 22.3193, lng: 114.1694 },
-		autoRotate: true,
-		autoRotateSpeed: 0.5,
-	};
-	// Vibrant arc colors - cyan, blue, purple, pink
-	const colors = ["#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"];
+	// Theme-aware globe configuration
+	const isDark = theme === "dark";
+
+	const globeConfig = isDark
+		? {
+				// Dark mode: brighter, high-contrast colors with better shadow visibility
+				pointSize: 4,
+				globeColor: "#1a1a2e", // Brighter cyan-blue for better shadow visibility
+				showAtmosphere: true,
+				atmosphereColor: "#67e8f9", // Bright cyan glow
+				atmosphereAltitude: 0.25,
+				emissive: "#22d3ee", // Bright cyan emissive for self-illumination
+				emissiveIntensity: 0.6, // Higher intensity to light the dark side
+				shininess: 0.7,
+				polygonColor: "#0085c8", // Bright green countries, full opacity
+				ambientLight: "#ffffff", // White ambient for even lighting
+				directionalLeftLight: "#e0f2fe",
+				directionalTopLight: "#cffafe",
+				pointLight: "#67e8f9",
+				arcTime: 1000,
+				arcLength: 0.9,
+				rings: 1,
+				maxRings: 3,
+				initialPosition: { lat: 22.3193, lng: 114.1694 },
+				autoRotate: true,
+				autoRotateSpeed: 0.5,
+			}
+		: {
+				// Light mode: original darker colors
+				pointSize: 4,
+				globeColor: "#1a1a2e",
+				showAtmosphere: false,
+				atmosphereColor: "#38bdf8",
+				atmosphereAltitude: 0.25,
+				emissive: "#0f172a",
+				emissiveIntensity: 1,
+				shininess: 0.9,
+				polygonColor: "#0085c8",
+				ambientLight: "#38bdf8",
+				directionalLeftLight: "#ffffff",
+				directionalTopLight: "#ffffff",
+				pointLight: "#ffffff",
+				arcTime: 1000,
+				arcLength: 0.9,
+				rings: 1,
+				maxRings: 3,
+				initialPosition: { lat: 22.3193, lng: 114.1694 },
+				autoRotate: true,
+				autoRotateSpeed: 0.5,
+			};
+
+	// Vibrant arc colors - brighter in dark mode
+	const colors = isDark
+		? ["#22d3ee", "#60a5fa", "#a78bfa", "#f472b6"] // Brighter: cyan, blue, purple, pink
+		: ["#06b6d4", "#3b82f6", "#8b5cf6", "#ec4899"];
 	const sampleArcs = [
 		{
 			order: 1,
-			startLat: -19.885592,
-			startLng: -43.951191,
-			endLat: -22.9068,
-			endLng: -43.1729,
+			startLat: -41.2924,
+			startLng: 174.7787,
+			endLat: -41.2924,
+			endLng: 174.7787,
 			arcAlt: 0.1,
-			color: colors[Math.floor(Math.random() * (colors.length - 1))],
+			color: "#ff0000",
 		},
 		{
 			order: 1,

@@ -5,24 +5,10 @@ import { useEffect, useRef, useState } from "react";
 import { Color, type Group } from "three";
 import countries from "@/data/globe.json";
 
-// #region agent log
-fetch("http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990", {
-	method: "POST",
-	headers: { "Content-Type": "application/json" },
-	body: JSON.stringify({
-		location: "src/components/ui/globe.tsx:10",
-		message: "globe module evaluated",
-		data: {
-			hasWindow: typeof window !== "undefined",
-			ssr: import.meta.env.SSR,
-		},
-		timestamp: Date.now(),
-		sessionId: "debug-session",
-		runId: "pre-fix",
-		hypothesisId: "A",
-	}),
-}).catch(() => {});
-// #endregion
+console.log("[globe] module evaluated", {
+	hasWindow: typeof window !== "undefined",
+	ssr: import.meta.env.SSR,
+});
 
 type ThreeGlobe = any;
 let ThreeGlobeCtor: any | null = null;
@@ -107,24 +93,10 @@ export function Globe({ globeConfig, data }: WorldProps) {
 
 	// Initialize globe only once
 	useEffect(() => {
-		// #region agent log
-		fetch("http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				location: "src/components/ui/globe.tsx:104",
-				message: "Globe useEffect init start",
-				data: {
-					hasWindow: typeof window !== "undefined",
-					ssr: import.meta.env.SSR,
-				},
-				timestamp: Date.now(),
-				sessionId: "debug-session",
-				runId: "pre-fix",
-				hypothesisId: "A",
-			}),
-		}).catch(() => {});
-		// #endregion
+		console.log("[Globe] useEffect init start", {
+			hasWindow: typeof window !== "undefined",
+			ssr: import.meta.env.SSR,
+		});
 
 		if (typeof window === "undefined") return;
 
@@ -140,24 +112,9 @@ export function Globe({ globeConfig, data }: WorldProps) {
 					didExtendThreeGlobe = true;
 				}
 
-				// #region agent log
-				fetch(
-					"http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990",
-					{
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							location: "src/components/ui/globe.tsx:150",
-							message: "three-globe dynamic import success",
-							data: { didExtendThreeGlobe },
-							timestamp: Date.now(),
-							sessionId: "debug-session",
-							runId: "pre-fix",
-							hypothesisId: "A",
-						}),
-					},
-				).catch(() => {});
-				// #endregion
+				console.log("[Globe] three-globe dynamic import success", {
+					didExtendThreeGlobe,
+				});
 
 				if (cancelled) return;
 				if (!globeRef.current && groupRef.current && ThreeGlobeCtor) {
@@ -166,24 +123,7 @@ export function Globe({ globeConfig, data }: WorldProps) {
 					setIsInitialized(true);
 				}
 			} catch (err) {
-				// #region agent log
-				fetch(
-					"http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990",
-					{
-						method: "POST",
-						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({
-							location: "src/components/ui/globe.tsx:177",
-							message: "three-globe dynamic import failed",
-							data: { err: String(err) },
-							timestamp: Date.now(),
-							sessionId: "debug-session",
-							runId: "pre-fix",
-							hypothesisId: "A",
-						}),
-					},
-				).catch(() => {});
-				// #endregion
+				console.error("[Globe] three-globe dynamic import failed", err);
 			}
 		})();
 
@@ -347,28 +287,12 @@ export function WebGLRendererConfig() {
 }
 
 export function World(props: WorldProps) {
-	// #region agent log
-	fetch("http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify({
-			location: "src/components/ui/globe.tsx:World",
-			message: "World render entry",
-			data: {
-				hasWindow: typeof window !== "undefined",
-				ssr: import.meta.env.SSR,
-				dataLen: Array.isArray(props.data) ? props.data.length : null,
-				globeConfigKeys: props.globeConfig
-					? Object.keys(props.globeConfig)
-					: null,
-			},
-			timestamp: Date.now(),
-			sessionId: "debug-session",
-			runId: "run-tsd-1",
-			hypothesisId: "B",
-		}),
-	}).catch(() => {});
-	// #endregion
+	console.log("[World] render entry", {
+		hasWindow: typeof window !== "undefined",
+		ssr: import.meta.env.SSR,
+		dataLen: Array.isArray(props.data) ? props.data.length : null,
+		globeConfigKeys: props.globeConfig ? Object.keys(props.globeConfig) : null,
+	});
 
 	const { globeConfig } = props;
 	return (
