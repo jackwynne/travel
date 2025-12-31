@@ -37,8 +37,11 @@ export default function ClientDevtools() {
 	if (!import.meta.env.DEV) return null;
 	if (!mods) return null;
 
-	const { TanStackDevtools, TanStackRouterDevtoolsPanel, ReactQueryDevtoolsPanel } =
-		mods;
+	const {
+		TanStackDevtools,
+		TanStackRouterDevtoolsPanel,
+		ReactQueryDevtoolsPanel,
+	} = mods;
 
 	return (
 		<TanStackDevtools
@@ -58,5 +61,3 @@ export default function ClientDevtools() {
 		/>
 	);
 }
-
-
