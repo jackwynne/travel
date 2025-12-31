@@ -1,4 +1,6 @@
-import { ConvexProvider, ConvexReactClient } from "convex/react";
+import { ConvexProviderWithAuthKit as ConvexProvider } from "@convex-dev/workos";
+import { useAuth } from "@workos-inc/authkit-react";
+import { ConvexReactClient } from "convex/react";
 import { useMemo } from "react";
 
 const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL as
@@ -23,5 +25,9 @@ export default function AppConvexProvider({
 		return children;
 	}
 
-	return <ConvexProvider client={convexClient}>{children}</ConvexProvider>;
+	return (
+		<ConvexProvider client={convexClient} useAuth={useAuth}>
+			{children}
+		</ConvexProvider>
+	);
 }
