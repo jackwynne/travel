@@ -28,7 +28,7 @@ export default defineSchema({
 place: defineTable({
   cityId: v.id("city"),
   name: v.string(),
-  type: v.union(v.literal("gallery"), 
+  category: v.union(v.literal("gallery"), 
                 v.literal("library"), 
                 v.literal("museum"), 
                 v.literal("park"), 
@@ -44,7 +44,7 @@ place: defineTable({
     iconImage: v.string(),
     lat: v.number(),
     lng: v.number(),
-  }).index("byCity", ["cityId"]),
+  }).index("byCity_byCategory", ["cityId", "category"]).index("byCity", ["cityId"]).index("byCategory", ["category"]),
   image: defineTable(v.union(
     v.object({
     placeId: v.id("place"),
