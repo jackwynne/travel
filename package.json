@@ -6,17 +6,19 @@
     "dev": "concurrently -r pnpm:dev:convex pnpm:dev:vite",
     "dev:convex": "convex dev",
     "dev:vite": "vite dev --port 3000",
-    "build": "vite build",
+    "build": "pnpm convex deploy --cmd 'vite build'",
     "preview": "vite preview",
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "pnpm run build && wrangler deploy",
+    "cf-typegen": "wrangler types"
   },
   "dependencies": {
     "@base-ui/react": "^1.0.0",
     "@cloudflare/vite-plugin": "^1.17.1",
+    "@convex-dev/r2": "^0.8.1",
     "@convex-dev/react-query": "0.1.0",
     "@convex-dev/workos": "^0.0.1",
     "@faker-js/faker": "^10.1.0",
