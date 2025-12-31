@@ -8,6 +8,8 @@
  * @module
  */
 
+import type * as functions_city from "../functions/city.js";
+import type * as functions_country from "../functions/country.js";
 import type * as todos from "../todos.js";
 
 import type {
@@ -17,6 +19,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "functions/city": typeof functions_city;
+  "functions/country": typeof functions_country;
   todos: typeof todos;
 }>;
 
