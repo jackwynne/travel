@@ -6,13 +6,13 @@
     "dev": "concurrently -r pnpm:dev:convex pnpm:dev:vite",
     "dev:convex": "convex dev",
     "dev:vite": "vite dev --port 3000",
-    "build": "pnpm convex deploy --cmd 'vite build'",
+    "build": "pnpm vite build",
     "preview": "vite preview",
     "test": "vitest run",
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
-    "deploy": "pnpm run build && wrangler deploy",
+    "deploy": "pnpm run build && convex deploy && wrangler deploy",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
