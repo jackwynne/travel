@@ -12,7 +12,7 @@
     "format": "biome format",
     "lint": "biome lint",
     "check": "biome check",
-    "deploy": "pnpm run build && convex deploy && wrangler deploy",
+    "deploy": "pnpm run build && convex deploy && pnpm wrangler deploy",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
