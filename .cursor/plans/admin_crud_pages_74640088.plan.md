@@ -94,19 +94,19 @@ flowchart LR
 
 ### Routes (File-Based with Dynamic Path Params)
 
-Using [TanStack Router's dynamic path params](https://tanstack.com/router/latest/docs/framework/react/guide/path-params), the hierarchy is expressed in the URL path itself:
+Using [TanStack Router's dynamic path params](https://tanstack.com/router/latest/docs/framework/react/guide/path-params), the hierarchy is expressed in the URL path with descriptive segments:
 
 ```
 src/routes/
-├── admin.tsx                           # Layout with breadcrumb
+├── admin.tsx                                         # Layout with breadcrumb
 ├── admin/
-│   ├── index.tsx                       # /admin - Countries list
-│   ├── $countryId.tsx                  # Layout for country context
-│   ├── $countryId/
-│   │   ├── index.tsx                   # /admin/$countryId - Cities list
-│   │   ├── $cityId.tsx                 # Layout for city context  
-│   │   └── $cityId/
-│   │       └── index.tsx               # /admin/$countryId/$cityId - Places list
+│   ├── index.tsx                                     # /admin - Countries list
+│   ├── country.$countryId.tsx                        # Layout for country context
+│   ├── country.$countryId/
+│   │   ├── index.tsx                                 # /admin/country/$countryId - Cities list
+│   │   ├── city.$cityId.tsx                          # Layout for city context  
+│   │   └── city.$cityId/
+│   │       └── index.tsx                             # /admin/country/$countryId/city/$cityId - Places list
 ```
 
 ## URL-Based State with Path Params
@@ -114,13 +114,13 @@ src/routes/
 **URL Examples:**
 
 - `/admin` - Shows countries list
-- `/admin/k57abc123` - Shows cities for country with ID `k57abc123`
-- `/admin/k57abc123/k57def456` - Shows places for city with ID `k57def456`
+- `/admin/country/k57abc123` - Shows cities for country with ID `k57abc123`
+- `/admin/country/k57abc123/city/k57def456` - Shows places for city with ID `k57def456`
 ```typescript
-// src/routes/admin/$countryId/index.tsx - Cities view
+// src/routes/admin/country.$countryId/index.tsx - Cities view
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/admin/$countryId/')({
+export const Route = createFileRoute('/admin/country/$countryId/')({
   component: CitiesPage,
 })
 
@@ -133,10 +133,10 @@ function CitiesPage() {
 }
 ```
 ```typescript
-// src/routes/admin/$countryId/$cityId/index.tsx - Places view
+// src/routes/admin/country.$countryId/city.$cityId/index.tsx - Places view
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/admin/$countryId/$cityId/')({
+export const Route = createFileRoute('/admin/country/$countryId/city/$cityId/')({
   component: PlacesPage,
 })
 
@@ -149,11 +149,14 @@ function PlacesPage() {
 ```
 ```typescript
 // Navigation examples using Link component
-<Link to="/admin/$countryId" params={{ countryId: country._id }}>
+<Link to="/admin/country/$countryId" params={{ countryId: country._id }}>
   {country.name}
 </Link>
 
-<Link to="/admin/$countryId/$cityId" params={{ countryId, cityId: city._id }}>
+<Link 
+  to="/admin/country/$countryId/city/$cityId" 
+  params={{ countryId, cityId: city._id }}
+>
   {city.name}
 </Link>
 ```
@@ -161,7 +164,7 @@ function PlacesPage() {
 
 **Benefits:**
 
-- Clean, RESTful URLs that reflect the data hierarchy
+- Self-documenting URLs: `/admin/country/abc/city/def` clearly shows the hierarchy
 - Browser back/forward navigation works naturally
 - Type-safe path params with `Route.useParams()`
 - Shareable/bookmarkable URLs
