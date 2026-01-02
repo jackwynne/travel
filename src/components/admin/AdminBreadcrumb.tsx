@@ -40,4 +40,3 @@ export function AdminBreadcrumb({ items }: AdminBreadcrumbProps) {
 		</nav>
 	);
 }
-

@@ -1,11 +1,16 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useQuery, useMutation } from "convex/react";
-import { Edit, Trash2, ChevronRight, Plus } from "lucide-react";
-
-import { api } from "../../../convex/_generated/api";
-import type { Doc, Id } from "../../../convex/_generated/dataModel";
+import { useMutation, useQuery } from "convex/react";
+import { ChevronRight, Edit, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import {
 	Table,
 	TableBody,
@@ -14,14 +19,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogDescription,
-	DialogFooter,
-} from "@/components/ui/dialog";
+import { api } from "../../../convex/_generated/api";
+import type { Doc, Id } from "../../../convex/_generated/dataModel";
 import { CityForm } from "./CityForm";
 
 interface CityTableProps {
@@ -167,12 +166,15 @@ export function CityTable({ countryId }: CityTableProps) {
 					<DialogHeader>
 						<DialogTitle>Delete City</DialogTitle>
 						<DialogDescription>
-							Are you sure you want to delete "{deletingCity?.name}"? This action
-							cannot be undone.
+							Are you sure you want to delete "{deletingCity?.name}"? This
+							action cannot be undone.
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
-						<Button variant="outline" onClick={() => setDeletingCity(undefined)}>
+						<Button
+							variant="outline"
+							onClick={() => setDeletingCity(undefined)}
+						>
 							Cancel
 						</Button>
 						<Button variant="destructive" onClick={handleDelete}>
@@ -184,4 +186,3 @@ export function CityTable({ countryId }: CityTableProps) {
 		</div>
 	);
 }
-

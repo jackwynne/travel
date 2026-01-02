@@ -1,11 +1,16 @@
-import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { useQuery, useMutation } from "convex/react";
-import { Edit, Trash2, ChevronRight, Plus } from "lucide-react";
-
-import { api } from "../../../convex/_generated/api";
-import type { Doc } from "../../../convex/_generated/dataModel";
+import { useMutation, useQuery } from "convex/react";
+import { ChevronRight, Edit, Plus, Trash2 } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import {
 	Table,
 	TableBody,
@@ -14,14 +19,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogDescription,
-	DialogFooter,
-} from "@/components/ui/dialog";
+import { api } from "../../../convex/_generated/api";
+import type { Doc } from "../../../convex/_generated/dataModel";
 import { CountryForm } from "./CountryForm";
 
 export function CountryTable() {
@@ -29,8 +28,12 @@ export function CountryTable() {
 	const removeCountry = useMutation(api.functions.country.remove);
 
 	const [isFormOpen, setIsFormOpen] = useState(false);
-	const [editingCountry, setEditingCountry] = useState<Doc<"country"> | undefined>();
-	const [deletingCountry, setDeletingCountry] = useState<Doc<"country"> | undefined>();
+	const [editingCountry, setEditingCountry] = useState<
+		Doc<"country"> | undefined
+	>();
+	const [deletingCountry, setDeletingCountry] = useState<
+		Doc<"country"> | undefined
+	>();
 
 	const handleEdit = (country: Doc<"country">) => {
 		setEditingCountry(country);
@@ -155,12 +158,15 @@ export function CountryTable() {
 					<DialogHeader>
 						<DialogTitle>Delete Country</DialogTitle>
 						<DialogDescription>
-							Are you sure you want to delete "{deletingCountry?.name}"? This action
-							cannot be undone.
+							Are you sure you want to delete "{deletingCountry?.name}"? This
+							action cannot be undone.
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
-						<Button variant="outline" onClick={() => setDeletingCountry(undefined)}>
+						<Button
+							variant="outline"
+							onClick={() => setDeletingCountry(undefined)}
+						>
 							Cancel
 						</Button>
 						<Button variant="destructive" onClick={handleDelete}>
@@ -172,4 +178,3 @@ export function CountryTable() {
 		</div>
 	);
 }
-

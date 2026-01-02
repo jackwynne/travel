@@ -1,11 +1,16 @@
+import { useMutation, useQuery } from "convex/react";
+import { Edit, Plus, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
-import { useQuery, useMutation } from "convex/react";
-import { Edit, Trash2, Plus, Star } from "lucide-react";
-
-import { api } from "../../../convex/_generated/api";
-import type { Doc, Id } from "../../../convex/_generated/dataModel";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+} from "@/components/ui/dialog";
 import {
 	Table,
 	TableBody,
@@ -14,14 +19,8 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
-import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-	DialogDescription,
-	DialogFooter,
-} from "@/components/ui/dialog";
+import { api } from "../../../convex/_generated/api";
+import type { Doc, Id } from "../../../convex/_generated/dataModel";
 import { PlaceForm } from "./PlaceForm";
 
 interface PlaceTableProps {
@@ -34,7 +33,9 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 
 	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [editingPlace, setEditingPlace] = useState<Doc<"place"> | undefined>();
-	const [deletingPlace, setDeletingPlace] = useState<Doc<"place"> | undefined>();
+	const [deletingPlace, setDeletingPlace] = useState<
+		Doc<"place"> | undefined
+	>();
 
 	const handleEdit = (place: Doc<"place">) => {
 		setEditingPlace(place);
@@ -60,14 +61,17 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 
 	const getCategoryColor = (category: string) => {
 		const colors: Record<string, string> = {
-			gallery: "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
-			library: "bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
+			gallery:
+				"bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300",
+			library:
+				"bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-300",
 			museum: "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
 			park: "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300",
 			restaurant: "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300",
 			cafe: "bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300",
 			bar: "bg-pink-100 text-pink-800 dark:bg-pink-900 dark:text-pink-300",
-			theatre: "bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300",
+			theatre:
+				"bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-300",
 			other: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
 		};
 		return colors[category] || colors.other;
@@ -159,7 +163,9 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 			<Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
 				<DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
-						<DialogTitle>{editingPlace ? "Edit Place" : "Add Place"}</DialogTitle>
+						<DialogTitle>
+							{editingPlace ? "Edit Place" : "Add Place"}
+						</DialogTitle>
 						<DialogDescription>
 							{editingPlace
 								? "Update the place details below."
@@ -184,12 +190,15 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 					<DialogHeader>
 						<DialogTitle>Delete Place</DialogTitle>
 						<DialogDescription>
-							Are you sure you want to delete "{deletingPlace?.name}"? This action
-							cannot be undone.
+							Are you sure you want to delete "{deletingPlace?.name}"? This
+							action cannot be undone.
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
-						<Button variant="outline" onClick={() => setDeletingPlace(undefined)}>
+						<Button
+							variant="outline"
+							onClick={() => setDeletingPlace(undefined)}
+						>
 							Cancel
 						</Button>
 						<Button variant="destructive" onClick={handleDelete}>
@@ -201,4 +210,3 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 		</div>
 	);
 }
-

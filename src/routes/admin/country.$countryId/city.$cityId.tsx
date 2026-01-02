@@ -25,7 +25,9 @@ function CityLayout() {
 	if (city === null) {
 		return (
 			<div className="text-center py-16">
-				<h2 className="text-xl font-semibold text-destructive">City not found</h2>
+				<h2 className="text-xl font-semibold text-destructive">
+					City not found
+				</h2>
 				<p className="text-muted-foreground mt-2">
 					The city you're looking for doesn't exist.
 				</p>

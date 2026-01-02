@@ -1,12 +1,11 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "convex/react";
 import { z } from "zod";
-
-import { api } from "../../../convex/_generated/api";
-import type { Doc } from "../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api } from "../../../convex/_generated/api";
+import type { Doc } from "../../../convex/_generated/dataModel";
 
 const countrySchema = z.object({
 	name: z.string().min(1, "Name is required"),
@@ -20,7 +19,11 @@ interface CountryFormProps {
 	onCancel: () => void;
 }
 
-export function CountryForm({ country, onSuccess, onCancel }: CountryFormProps) {
+export function CountryForm({
+	country,
+	onSuccess,
+	onCancel,
+}: CountryFormProps) {
 	const createCountry = useMutation(api.functions.country.create);
 	const updateCountry = useMutation(api.functions.country.update);
 
@@ -67,11 +70,12 @@ export function CountryForm({ country, onSuccess, onCancel }: CountryFormProps) 
 							onChange={(e) => field.handleChange(e.target.value)}
 							placeholder="Country name"
 						/>
-						{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-							<p className="text-sm text-destructive">
-								{field.state.meta.errors.join(", ")}
-							</p>
-						)}
+						{field.state.meta.isTouched &&
+							field.state.meta.errors.length > 0 && (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							)}
 					</div>
 				)}
 			</form.Field>
@@ -90,11 +94,12 @@ export function CountryForm({ country, onSuccess, onCancel }: CountryFormProps) 
 								onChange={(e) => field.handleChange(Number(e.target.value))}
 								placeholder="-90 to 90"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -112,11 +117,12 @@ export function CountryForm({ country, onSuccess, onCancel }: CountryFormProps) 
 								onChange={(e) => field.handleChange(Number(e.target.value))}
 								placeholder="-180 to 180"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -137,4 +143,3 @@ export function CountryForm({ country, onSuccess, onCancel }: CountryFormProps) 
 		</form>
 	);
 }
-

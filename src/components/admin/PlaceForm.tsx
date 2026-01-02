@@ -1,13 +1,9 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "convex/react";
 import { z } from "zod";
-
-import { api } from "../../../convex/_generated/api";
-import type { Doc, Id } from "../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
 	Select,
 	SelectContent,
@@ -15,6 +11,9 @@ import {
 	SelectTrigger,
 	SelectValue,
 } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { api } from "../../../convex/_generated/api";
+import type { Doc, Id } from "../../../convex/_generated/dataModel";
 
 const PLACE_CATEGORIES = [
 	"gallery",
@@ -48,7 +47,12 @@ interface PlaceFormProps {
 	onCancel: () => void;
 }
 
-export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps) {
+export function PlaceForm({
+	cityId,
+	place,
+	onSuccess,
+	onCancel,
+}: PlaceFormProps) {
 	const createPlace = useMutation(api.functions.place.create);
 	const updatePlace = useMutation(api.functions.place.update);
 
@@ -110,11 +114,12 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 							onChange={(e) => field.handleChange(e.target.value)}
 							placeholder="Place name"
 						/>
-						{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-							<p className="text-sm text-destructive">
-								{field.state.meta.errors.join(", ")}
-							</p>
-						)}
+						{field.state.meta.isTouched &&
+							field.state.meta.errors.length > 0 && (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							)}
 					</div>
 				)}
 			</form.Field>
@@ -125,7 +130,9 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 						<Label>Category</Label>
 						<Select
 							value={field.state.value}
-							onValueChange={(value) => field.handleChange(value as PlaceCategory)}
+							onValueChange={(value) =>
+								field.handleChange(value as PlaceCategory)
+							}
 						>
 							<SelectTrigger className="w-full">
 								<SelectValue />
@@ -138,11 +145,12 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 								))}
 							</SelectContent>
 						</Select>
-						{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-							<p className="text-sm text-destructive">
-								{field.state.meta.errors.join(", ")}
-							</p>
-						)}
+						{field.state.meta.isTouched &&
+							field.state.meta.errors.length > 0 && (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							)}
 					</div>
 				)}
 			</form.Field>
@@ -159,11 +167,12 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 							placeholder="Describe this place..."
 							rows={3}
 						/>
-						{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-							<p className="text-sm text-destructive">
-								{field.state.meta.errors.join(", ")}
-							</p>
-						)}
+						{field.state.meta.isTouched &&
+							field.state.meta.errors.length > 0 && (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							)}
 					</div>
 				)}
 			</form.Field>
@@ -183,7 +192,7 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 								onBlur={field.handleBlur}
 								onChange={(e) =>
 									field.handleChange(
-										e.target.value ? Number(e.target.value) : undefined
+										e.target.value ? Number(e.target.value) : undefined,
 									)
 								}
 								placeholder="Optional"
@@ -203,11 +212,12 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 								onChange={(e) => field.handleChange(e.target.value)}
 								placeholder="Icon URL or emoji"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -243,11 +253,12 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 								onChange={(e) => field.handleChange(Number(e.target.value))}
 								placeholder="-90 to 90"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -265,11 +276,12 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 								onChange={(e) => field.handleChange(Number(e.target.value))}
 								placeholder="-180 to 180"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -290,4 +302,3 @@ export function PlaceForm({ cityId, place, onSuccess, onCancel }: PlaceFormProps
 		</form>
 	);
 }
-

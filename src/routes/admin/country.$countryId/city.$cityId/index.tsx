@@ -1,14 +1,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-
-import { api } from "../../../../../convex/_generated/api";
-import type { Id } from "../../../../../convex/_generated/dataModel";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { PlaceTable } from "@/components/admin/PlaceTable";
+import { api } from "../../../../../convex/_generated/api";
+import type { Id } from "../../../../../convex/_generated/dataModel";
 
-export const Route = createFileRoute("/admin/country/$countryId/city/$cityId/")({
-	component: AdminPlacesPage,
-});
+export const Route = createFileRoute("/admin/country/$countryId/city/$cityId/")(
+	{
+		component: AdminPlacesPage,
+	},
+);
 
 function AdminPlacesPage() {
 	const { countryId, cityId } = Route.useParams();
@@ -52,4 +53,3 @@ function AdminPlacesPage() {
 		</div>
 	);
 }
-

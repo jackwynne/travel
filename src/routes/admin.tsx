@@ -13,4 +13,3 @@ function AdminLayout() {
 		</div>
 	);
 }
-

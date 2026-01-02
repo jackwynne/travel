@@ -1,12 +1,11 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "convex/react";
 import { z } from "zod";
-
-import { api } from "../../../convex/_generated/api";
-import type { Doc, Id } from "../../../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { api } from "../../../convex/_generated/api";
+import type { Doc, Id } from "../../../convex/_generated/dataModel";
 
 const citySchema = z.object({
 	name: z.string().min(1, "Name is required"),
@@ -23,7 +22,12 @@ interface CityFormProps {
 	onCancel: () => void;
 }
 
-export function CityForm({ countryId, city, onSuccess, onCancel }: CityFormProps) {
+export function CityForm({
+	countryId,
+	city,
+	onSuccess,
+	onCancel,
+}: CityFormProps) {
 	const createCity = useMutation(api.functions.city.create);
 	const updateCity = useMutation(api.functions.city.update);
 
@@ -78,11 +82,12 @@ export function CityForm({ countryId, city, onSuccess, onCancel }: CityFormProps
 							onChange={(e) => field.handleChange(e.target.value)}
 							placeholder="City name"
 						/>
-						{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-							<p className="text-sm text-destructive">
-								{field.state.meta.errors.join(", ")}
-							</p>
-						)}
+						{field.state.meta.isTouched &&
+							field.state.meta.errors.length > 0 && (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							)}
 					</div>
 				)}
 			</form.Field>
@@ -100,11 +105,12 @@ export function CityForm({ countryId, city, onSuccess, onCancel }: CityFormProps
 								onChange={(e) => field.handleChange(Number(e.target.value))}
 								placeholder="2024"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -123,11 +129,12 @@ export function CityForm({ countryId, city, onSuccess, onCancel }: CityFormProps
 								onChange={(e) => field.handleChange(Number(e.target.value))}
 								placeholder="1-12"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -147,11 +154,12 @@ export function CityForm({ countryId, city, onSuccess, onCancel }: CityFormProps
 								onChange={(e) => field.handleChange(Number(e.target.value))}
 								placeholder="-90 to 90"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -169,11 +177,12 @@ export function CityForm({ countryId, city, onSuccess, onCancel }: CityFormProps
 								onChange={(e) => field.handleChange(Number(e.target.value))}
 								placeholder="-180 to 180"
 							/>
-							{field.state.meta.isTouched && field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
 						</div>
 					)}
 				</form.Field>
@@ -194,4 +203,3 @@ export function CityForm({ countryId, city, onSuccess, onCancel }: CityFormProps
 		</form>
 	);
 }
-

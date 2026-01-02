@@ -25,7 +25,9 @@ function CountryLayout() {
 	if (country === null) {
 		return (
 			<div className="text-center py-16">
-				<h2 className="text-xl font-semibold text-destructive">Country not found</h2>
+				<h2 className="text-xl font-semibold text-destructive">
+					Country not found
+				</h2>
 				<p className="text-muted-foreground mt-2">
 					The country you're looking for doesn't exist.
 				</p>
@@ -35,4 +37,3 @@ function CountryLayout() {
 
 	return <Outlet />;
 }
-
