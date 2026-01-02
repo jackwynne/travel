@@ -45,20 +45,20 @@ place: defineTable({
     lat: v.number(),
     lng: v.number(),
   }).index("byCity_byCategory", ["cityId", "category"]).index("byCity", ["cityId"]).index("byCategory", ["category"]),
-  image: defineTable(v.union(
+  image: defineTable({
+    bucket: v.string(),
+    key: v.string(),
+    dateTime: v.optional(v.number()),
+    lat: v.optional(v.number()),
+    lng: v.optional(v.number()),
+    location: v.optional(v.union(
     v.object({
-    placeId: v.id("place"),
-    imageKey: v.string(),
-    dateTime: v.number(),
-    lat: v.number(),
-    lng: v.number(),
+      imageType: v.literal("place"),
+    locationId: v.id("place"),
   }),
   v.object({
-    cityId: v.id("city"),
-    imageKey: v.string(),
-    dateTime: v.number(),
-    lat: v.number(),
-    lng: v.number(),
+    imageType: v.literal("city"),
+    locationId: v.id("city"),
   }),
-)).index("byPlace", ["placeId"]).index("byCity", ["cityId"]),
+))}).index("byImageType_byLocationId", ["location.imageType", "location.locationId"]),
 });
