@@ -4,29 +4,29 @@ overview: Create a hierarchical admin interface at `/admin` where users drill do
 todos:
   - id: add-delete-mutations
     content: Add delete mutations to country.ts and city.ts
-    status: pending
+    status: completed
   - id: ui-components
     content: Add dialog and table UI components using shadcn/Base UI
-    status: pending
+    status: completed
   - id: admin-breadcrumb
     content: Create AdminBreadcrumb component for hierarchy navigation
-    status: pending
+    status: completed
   - id: country-components
     content: Create CountryTable and CountryForm admin components
-    status: pending
+    status: completed
   - id: city-components
     content: Create CityTable and CityForm with auto-filled countryId
-    status: pending
+    status: completed
     dependencies:
       - country-components
   - id: place-components
     content: Create PlaceTable and PlaceForm with auto-filled cityId
-    status: pending
+    status: completed
     dependencies:
       - city-components
   - id: admin-routes
     content: Create admin route files with dynamic path params ($countryId, $cityId)
-    status: pending
+    status: completed
     dependencies:
       - admin-breadcrumb
       - country-components

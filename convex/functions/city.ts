@@ -96,3 +96,21 @@ export const getMany = query({
     return await ctx.db.query('city').collect()
   },
 })
+
+/**
+ * Delete a city by ID.
+ */
+export const remove = mutation({
+  args: {
+    id: v.id('city'),
+  },
+  returns: v.null(),
+  handler: async (ctx, args) => {
+    const city = await ctx.db.get(args.id)
+    if (!city) {
+      throw new Error('City not found')
+    }
+    await ctx.db.delete(args.id)
+    return null
+  },
+})

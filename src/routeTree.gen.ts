@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ColorsRouteImport } from './routes/colors'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
@@ -21,20 +23,34 @@ import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
 import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
 import { Route as DemoApiTqTodosRouteImport } from './routes/demo/api.tq-todos'
 import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
+import { Route as AdminCountryCountryIdRouteImport } from './routes/admin/country.$countryId'
 import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
+import { Route as AdminCountryCountryIdIndexRouteImport } from './routes/admin/country.$countryId/index'
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
+import { Route as AdminCountryCountryIdCityCityIdRouteImport } from './routes/admin/country.$countryId/city.$cityId'
+import { Route as AdminCountryCountryIdCityCityIdIndexRouteImport } from './routes/admin/country.$countryId/city.$cityId/index'
 
 const ColorsRoute = ColorsRouteImport.update({
   id: '/colors',
   path: '/colors',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const DemoWorkosRoute = DemoWorkosRouteImport.update({
   id: '/demo/workos',
@@ -86,11 +102,22 @@ const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
   path: '/demo/api/names',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCountryCountryIdRoute = AdminCountryCountryIdRouteImport.update({
+  id: '/country/$countryId',
+  path: '/country/$countryId',
+  getParentRoute: () => AdminRoute,
+} as any)
 const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
   id: '/demo/start/ssr/',
   path: '/demo/start/ssr/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCountryCountryIdIndexRoute =
+  AdminCountryCountryIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminCountryCountryIdRoute,
+  } as any)
 const DemoStartSsrSpaModeRoute = DemoStartSsrSpaModeRouteImport.update({
   id: '/demo/start/ssr/spa-mode',
   path: '/demo/start/ssr/spa-mode',
@@ -106,14 +133,29 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
   path: '/demo/start/ssr/data-only',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCountryCountryIdCityCityIdRoute =
+  AdminCountryCountryIdCityCityIdRouteImport.update({
+    id: '/city/$cityId',
+    path: '/city/$cityId',
+    getParentRoute: () => AdminCountryCountryIdRoute,
+  } as any)
+const AdminCountryCountryIdCityCityIdIndexRoute =
+  AdminCountryCountryIdCityCityIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminCountryCountryIdCityCityIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/colors': typeof ColorsRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/country/$countryId': typeof AdminCountryCountryIdRouteWithChildren
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/form/address': typeof DemoFormAddressRoute
@@ -123,7 +165,10 @@ export interface FileRoutesByFullPath {
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
+  '/admin/country/$countryId/': typeof AdminCountryCountryIdIndexRoute
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
+  '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdRouteWithChildren
+  '/admin/country/$countryId/city/$cityId/': typeof AdminCountryCountryIdCityCityIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -132,6 +177,7 @@ export interface FileRoutesByTo {
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/admin': typeof AdminIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/form/address': typeof DemoFormAddressRoute
@@ -141,16 +187,21 @@ export interface FileRoutesByTo {
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
+  '/admin/country/$countryId': typeof AdminCountryCountryIdIndexRoute
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
+  '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/colors': typeof ColorsRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
   '/demo/workos': typeof DemoWorkosRoute
+  '/admin/': typeof AdminIndexRoute
+  '/admin/country/$countryId': typeof AdminCountryCountryIdRouteWithChildren
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
   '/demo/form/address': typeof DemoFormAddressRoute
@@ -160,17 +211,23 @@ export interface FileRoutesById {
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
+  '/admin/country/$countryId/': typeof AdminCountryCountryIdIndexRoute
   '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
+  '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdRouteWithChildren
+  '/admin/country/$countryId/city/$cityId/': typeof AdminCountryCountryIdCityCityIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/colors'
     | '/demo/convex'
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/workos'
+    | '/admin/'
+    | '/admin/country/$countryId'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
@@ -180,7 +237,10 @@ export interface FileRouteTypes {
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
+    | '/admin/country/$countryId/'
     | '/demo/start/ssr'
+    | '/admin/country/$countryId/city/$cityId'
+    | '/admin/country/$countryId/city/$cityId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -189,6 +249,7 @@ export interface FileRouteTypes {
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/workos'
+    | '/admin'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
@@ -198,15 +259,20 @@ export interface FileRouteTypes {
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
+    | '/admin/country/$countryId'
     | '/demo/start/ssr'
+    | '/admin/country/$countryId/city/$cityId'
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/colors'
     | '/demo/convex'
     | '/demo/table'
     | '/demo/tanstack-query'
     | '/demo/workos'
+    | '/admin/'
+    | '/admin/country/$countryId'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
     | '/demo/form/address'
@@ -216,11 +282,15 @@ export interface FileRouteTypes {
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
+    | '/admin/country/$countryId/'
     | '/demo/start/ssr/'
+    | '/admin/country/$countryId/city/$cityId'
+    | '/admin/country/$countryId/city/$cityId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ColorsRoute: typeof ColorsRoute
   DemoConvexRoute: typeof DemoConvexRoute
   DemoTableRoute: typeof DemoTableRoute
@@ -247,12 +317,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ColorsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/demo/workos': {
       id: '/demo/workos'
@@ -324,12 +408,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoApiNamesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/country/$countryId': {
+      id: '/admin/country/$countryId'
+      path: '/country/$countryId'
+      fullPath: '/admin/country/$countryId'
+      preLoaderRoute: typeof AdminCountryCountryIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/demo/start/ssr/': {
       id: '/demo/start/ssr/'
       path: '/demo/start/ssr'
       fullPath: '/demo/start/ssr'
       preLoaderRoute: typeof DemoStartSsrIndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/country/$countryId/': {
+      id: '/admin/country/$countryId/'
+      path: '/'
+      fullPath: '/admin/country/$countryId/'
+      preLoaderRoute: typeof AdminCountryCountryIdIndexRouteImport
+      parentRoute: typeof AdminCountryCountryIdRoute
     }
     '/demo/start/ssr/spa-mode': {
       id: '/demo/start/ssr/spa-mode'
@@ -352,11 +450,69 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoStartSsrDataOnlyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/country/$countryId/city/$cityId': {
+      id: '/admin/country/$countryId/city/$cityId'
+      path: '/city/$cityId'
+      fullPath: '/admin/country/$countryId/city/$cityId'
+      preLoaderRoute: typeof AdminCountryCountryIdCityCityIdRouteImport
+      parentRoute: typeof AdminCountryCountryIdRoute
+    }
+    '/admin/country/$countryId/city/$cityId/': {
+      id: '/admin/country/$countryId/city/$cityId/'
+      path: '/'
+      fullPath: '/admin/country/$countryId/city/$cityId/'
+      preLoaderRoute: typeof AdminCountryCountryIdCityCityIdIndexRouteImport
+      parentRoute: typeof AdminCountryCountryIdCityCityIdRoute
+    }
   }
 }
 
+interface AdminCountryCountryIdCityCityIdRouteChildren {
+  AdminCountryCountryIdCityCityIdIndexRoute: typeof AdminCountryCountryIdCityCityIdIndexRoute
+}
+
+const AdminCountryCountryIdCityCityIdRouteChildren: AdminCountryCountryIdCityCityIdRouteChildren =
+  {
+    AdminCountryCountryIdCityCityIdIndexRoute:
+      AdminCountryCountryIdCityCityIdIndexRoute,
+  }
+
+const AdminCountryCountryIdCityCityIdRouteWithChildren =
+  AdminCountryCountryIdCityCityIdRoute._addFileChildren(
+    AdminCountryCountryIdCityCityIdRouteChildren,
+  )
+
+interface AdminCountryCountryIdRouteChildren {
+  AdminCountryCountryIdIndexRoute: typeof AdminCountryCountryIdIndexRoute
+  AdminCountryCountryIdCityCityIdRoute: typeof AdminCountryCountryIdCityCityIdRouteWithChildren
+}
+
+const AdminCountryCountryIdRouteChildren: AdminCountryCountryIdRouteChildren = {
+  AdminCountryCountryIdIndexRoute: AdminCountryCountryIdIndexRoute,
+  AdminCountryCountryIdCityCityIdRoute:
+    AdminCountryCountryIdCityCityIdRouteWithChildren,
+}
+
+const AdminCountryCountryIdRouteWithChildren =
+  AdminCountryCountryIdRoute._addFileChildren(
+    AdminCountryCountryIdRouteChildren,
+  )
+
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+  AdminCountryCountryIdRoute: typeof AdminCountryCountryIdRouteWithChildren
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+  AdminCountryCountryIdRoute: AdminCountryCountryIdRouteWithChildren,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   ColorsRoute: ColorsRoute,
   DemoConvexRoute: DemoConvexRoute,
   DemoTableRoute: DemoTableRoute,
