@@ -1,6 +1,6 @@
-import { R2, R2Callbacks } from "@convex-dev/r2";
+import { R2, type R2Callbacks } from "@convex-dev/r2";
 import { components, internal } from "../_generated/api";
-import { DataModel } from "../_generated/dataModel";
+import type { DataModel } from "../_generated/dataModel";
 import { action, internalMutation, mutation, query } from "../_generated/server";
 import { v } from 'convex/values'
 import schema from "../schema";
