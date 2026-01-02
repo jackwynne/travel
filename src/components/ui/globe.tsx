@@ -5,11 +5,6 @@ import { useEffect, useRef, useState } from "react";
 import { Color, type Group } from "three";
 import countries from "@/data/globe.json";
 
-console.log("[globe] module evaluated", {
-	hasWindow: typeof window !== "undefined",
-	ssr: import.meta.env.SSR,
-});
-
 type ThreeGlobe = any;
 let ThreeGlobeCtor: any | null = null;
 let didExtendThreeGlobe = false;

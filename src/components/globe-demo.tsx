@@ -1,50 +1,33 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { useTheme } from "@/hooks/theme-provider";
 
 export function GlobeDemo() {
 	const { theme } = useTheme();
-	console.log("[GlobeDemo] render entry", {
-		hasWindow: typeof window !== "undefined",
-		ssr: import.meta.env.SSR,
-	});
-
 	const [World, setWorld] = useState<null | ((props: any) => any)>(null);
+	const [isMounted, setIsMounted] = useState(false);
+
+	// Track client-side mounting
+	useEffect(() => {
+		setIsMounted(true);
+	}, []);
 
 	useEffect(() => {
-		if (typeof window === "undefined") return;
-
-		const onWindowError = (event: ErrorEvent) => {
-			console.error("[GlobeDemo] window.error captured", {
-				message: event.message,
-				filename: event.filename,
-				lineno: event.lineno,
-				colno: event.colno,
-			});
-		};
-		window.addEventListener("error", onWindowError);
-
-		console.log("[GlobeDemo] useEffect start (about to import World)", {
-			ssr: import.meta.env.SSR,
-		});
+		// Don't run on server or before mount
+		if (!isMounted) return;
 
 		import("./ui/globe")
 			.then((mod) => {
 				setWorld(() => (mod as any).World);
-				console.log("[GlobeDemo] imported World successfully", {
-					keys: Object.keys(mod as any),
-				});
 			})
 			.catch((err) => {
 				console.error("[GlobeDemo] failed importing World", err);
 			});
+	}, [isMounted]);
 
-		return () => {
-			window.removeEventListener("error", onWindowError);
-		};
-	}, []);
-
-	if (typeof window === "undefined") return null;
-	if (!World) return null;
+	// Return null during SSR and before client mount
+	if (!isMounted || !World) return null;
 
 	// Theme-aware globe configuration
 	const isDark = theme === "dark";
