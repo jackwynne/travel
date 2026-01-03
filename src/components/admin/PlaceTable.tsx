@@ -1,5 +1,6 @@
+import { Link } from "@tanstack/react-router";
 import { useMutation, useQuery } from "convex/react";
-import { Edit, ImagePlus, Plus, Star, Trash2 } from "lucide-react";
+import { Edit, ImagePlus, Images, Plus, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -26,9 +27,10 @@ import { PlaceImageUploadForm } from "./PlaceImageUploadForm";
 
 interface PlaceTableProps {
 	cityId: Id<"city">;
+	countryId?: string;
 }
 
-export function PlaceTable({ cityId }: PlaceTableProps) {
+export function PlaceTable({ cityId, countryId }: PlaceTableProps) {
 	const places = useQuery(api.functions.place.getMany, { cityId });
 	const removePlace = useMutation(api.functions.place.remove);
 
@@ -149,6 +151,25 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 										>
 											<Edit className="size-4" />
 										</Button>
+										{countryId && (
+											<Button
+												variant="ghost"
+												size="icon-sm"
+												asChild
+												title="View images"
+											>
+												<Link
+													to="/admin/country/$countryId/city/$cityId/place/$placeId"
+													params={{
+														countryId,
+														cityId: cityId as string,
+														placeId: place._id as string,
+													}}
+												>
+													<Images className="size-4" />
+												</Link>
+											</Button>
+										)}
 										<Button
 											variant="ghost"
 											size="icon-sm"

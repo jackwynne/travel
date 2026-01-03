@@ -131,3 +131,48 @@ export const getMany = query({
 		return await ctx.db.query("place").collect();
 	},
 });
+
+/**
+ * Copy iconImage and/or lat/lng from an image to a place.
+ */
+export const copyFromImage = mutation({
+	args: {
+		placeId: v.id("place"),
+		imageId: v.id("image"),
+		copyIconImage: v.boolean(),
+		copyLocation: v.boolean(),
+	},
+	returns: v.null(),
+	handler: async (ctx, args) => {
+		const place = await ctx.db.get(args.placeId);
+		if (!place) {
+			throw new Error("Place not found");
+		}
+
+		const image = await ctx.db.get(args.imageId);
+		if (!image) {
+			throw new Error("Image not found");
+		}
+
+		const updates: Partial<{
+			iconImage: string;
+			lat: number;
+			lng: number;
+		}> = {};
+
+		if (args.copyIconImage && image.iconImage) {
+			updates.iconImage = image.iconImage;
+		}
+
+		if (args.copyLocation && image.lat !== undefined && image.lng !== undefined) {
+			updates.lat = image.lat;
+			updates.lng = image.lng;
+		}
+
+		if (Object.keys(updates).length > 0) {
+			await ctx.db.patch(args.placeId, updates);
+		}
+
+		return null;
+	},
+});

@@ -31,6 +31,8 @@ import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
 import { Route as AdminCountryCountryIdCityCityIdRouteImport } from './routes/admin/country.$countryId/city.$cityId'
 import { Route as AdminCountryCountryIdCityCityIdIndexRouteImport } from './routes/admin/country.$countryId/city.$cityId/index'
+import { Route as AdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport } from './routes/admin/country.$countryId/city.$cityId/place.$placeId'
+import { Route as AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport } from './routes/admin/country.$countryId/city.$cityId/place.$placeId/index'
 
 const ColorsRoute = ColorsRouteImport.update({
   id: '/colors',
@@ -145,6 +147,18 @@ const AdminCountryCountryIdCityCityIdIndexRoute =
     path: '/',
     getParentRoute: () => AdminCountryCountryIdCityCityIdRoute,
   } as any)
+const AdminCountryCountryIdCityCityIdPlacePlaceIdRoute =
+  AdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport.update({
+    id: '/place/$placeId',
+    path: '/place/$placeId',
+    getParentRoute: () => AdminCountryCountryIdCityCityIdRoute,
+  } as any)
+const AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute =
+  AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AdminCountryCountryIdCityCityIdPlacePlaceIdRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -169,6 +183,8 @@ export interface FileRoutesByFullPath {
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
   '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdRouteWithChildren
   '/admin/country/$countryId/city/$cityId/': typeof AdminCountryCountryIdCityCityIdIndexRoute
+  '/admin/country/$countryId/city/$cityId/place/$placeId': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
+  '/admin/country/$countryId/city/$cityId/place/$placeId/': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -190,6 +206,7 @@ export interface FileRoutesByTo {
   '/admin/country/$countryId': typeof AdminCountryCountryIdIndexRoute
   '/demo/start/ssr': typeof DemoStartSsrIndexRoute
   '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdIndexRoute
+  '/admin/country/$countryId/city/$cityId/place/$placeId': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -215,6 +232,8 @@ export interface FileRoutesById {
   '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
   '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdRouteWithChildren
   '/admin/country/$countryId/city/$cityId/': typeof AdminCountryCountryIdCityCityIdIndexRoute
+  '/admin/country/$countryId/city/$cityId/place/$placeId': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
+  '/admin/country/$countryId/city/$cityId/place/$placeId/': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -241,6 +260,8 @@ export interface FileRouteTypes {
     | '/demo/start/ssr'
     | '/admin/country/$countryId/city/$cityId'
     | '/admin/country/$countryId/city/$cityId/'
+    | '/admin/country/$countryId/city/$cityId/place/$placeId'
+    | '/admin/country/$countryId/city/$cityId/place/$placeId/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -262,6 +283,7 @@ export interface FileRouteTypes {
     | '/admin/country/$countryId'
     | '/demo/start/ssr'
     | '/admin/country/$countryId/city/$cityId'
+    | '/admin/country/$countryId/city/$cityId/place/$placeId'
   id:
     | '__root__'
     | '/'
@@ -286,6 +308,8 @@ export interface FileRouteTypes {
     | '/demo/start/ssr/'
     | '/admin/country/$countryId/city/$cityId'
     | '/admin/country/$countryId/city/$cityId/'
+    | '/admin/country/$countryId/city/$cityId/place/$placeId'
+    | '/admin/country/$countryId/city/$cityId/place/$placeId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -464,17 +488,49 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCountryCountryIdCityCityIdIndexRouteImport
       parentRoute: typeof AdminCountryCountryIdCityCityIdRoute
     }
+    '/admin/country/$countryId/city/$cityId/place/$placeId': {
+      id: '/admin/country/$countryId/city/$cityId/place/$placeId'
+      path: '/place/$placeId'
+      fullPath: '/admin/country/$countryId/city/$cityId/place/$placeId'
+      preLoaderRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport
+      parentRoute: typeof AdminCountryCountryIdCityCityIdRoute
+    }
+    '/admin/country/$countryId/city/$cityId/place/$placeId/': {
+      id: '/admin/country/$countryId/city/$cityId/place/$placeId/'
+      path: '/'
+      fullPath: '/admin/country/$countryId/city/$cityId/place/$placeId/'
+      preLoaderRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport
+      parentRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRoute
+    }
   }
 }
 
+interface AdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren {
+  AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
+}
+
+const AdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren: AdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren =
+  {
+    AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute:
+      AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute,
+  }
+
+const AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren =
+  AdminCountryCountryIdCityCityIdPlacePlaceIdRoute._addFileChildren(
+    AdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren,
+  )
+
 interface AdminCountryCountryIdCityCityIdRouteChildren {
   AdminCountryCountryIdCityCityIdIndexRoute: typeof AdminCountryCountryIdCityCityIdIndexRoute
+  AdminCountryCountryIdCityCityIdPlacePlaceIdRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
 }
 
 const AdminCountryCountryIdCityCityIdRouteChildren: AdminCountryCountryIdCityCityIdRouteChildren =
   {
     AdminCountryCountryIdCityCityIdIndexRoute:
       AdminCountryCountryIdCityCityIdIndexRoute,
+    AdminCountryCountryIdCityCityIdPlacePlaceIdRoute:
+      AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren,
   }
 
 const AdminCountryCountryIdCityCityIdRouteWithChildren =

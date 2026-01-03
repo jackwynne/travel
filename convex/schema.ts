@@ -42,9 +42,9 @@ export default defineSchema({
 		description: v.string(),
 		rating: v.optional(v.number()),
 		notes: v.optional(v.string()),
-		iconImage: v.string(),
-		lat: v.number(),
-		lng: v.number(),
+		iconImage: v.optional(v.string()),
+		lat: v.optional(v.number()),
+		lng: v.optional(v.number()),
 	})
 		.index("byCity_byCategory", ["cityId", "category"])
 		.index("byCity", ["cityId"])

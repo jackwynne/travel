@@ -148,6 +148,69 @@ export const insertImage = internalMutation({
 	},
 });
 
+/**
+ * Get all images for a specific place.
+ */
+export const getByPlace = query({
+	args: {
+		placeId: v.id("place"),
+	},
+	handler: async (ctx, args) => {
+		const images = await ctx.db
+			.query("image")
+			.withIndex("byImageType_byLocationId", (q) =>
+				q
+					.eq("location.imageType", "place")
+					.eq("location.locationId", args.placeId),
+			)
+			.collect();
+
+		return Promise.all(
+			images.map(async (image) => ({
+				...image,
+				url: await r2.getUrl(image.key),
+			})),
+		);
+	},
+});
+
+/**
+ * Get a single image by ID with its URL.
+ */
+export const getOne = query({
+	args: {
+		id: v.id("image"),
+	},
+	handler: async (ctx, args) => {
+		const image = await ctx.db.get(args.id);
+		if (!image) {
+			return null;
+		}
+		return {
+			...image,
+			url: await r2.getUrl(image.key),
+		};
+	},
+});
+
+/**
+ * Delete an image by ID.
+ */
+export const remove = mutation({
+	args: {
+		id: v.id("image"),
+	},
+	returns: v.null(),
+	handler: async (ctx, args) => {
+		const image = await ctx.db.get(args.id);
+		if (!image) {
+			throw new Error("Image not found");
+		}
+		await ctx.db.delete(args.id);
+		return null;
+	},
+});
+
 // Insert an image server side (the insertImage mutation is just an example use
 // case, not required). When running the example app, you can run `npx convex run
 // example:store` (or run it in the dashboard) to insert an image this way.

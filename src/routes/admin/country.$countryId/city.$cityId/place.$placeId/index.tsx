@@ -1,18 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
-import { PlaceTable } from "@/components/admin/PlaceTable";
-import { api } from "../../../../../convex/_generated/api";
-import type { Id } from "../../../../../convex/_generated/dataModel";
+import { ImageTable } from "@/components/admin/ImageTable";
+import { api } from "../../../../../../convex/_generated/api";
+import type { Id } from "../../../../../../convex/_generated/dataModel";
 
-export const Route = createFileRoute("/admin/country/$countryId/city/$cityId/")(
-	{
-		component: AdminPlacesPage,
-	},
-);
+export const Route = createFileRoute(
+	"/admin/country/$countryId/city/$cityId/place/$placeId/",
+)({
+	component: AdminPlaceImagesPage,
+});
 
-function AdminPlacesPage() {
-	const { countryId, cityId } = Route.useParams();
+function AdminPlaceImagesPage() {
+	const { countryId, cityId, placeId } = Route.useParams();
 
 	const country = useQuery(api.functions.country.getOne, {
 		id: countryId as Id<"country">,
@@ -20,8 +20,11 @@ function AdminPlacesPage() {
 	const city = useQuery(api.functions.city.getOne, {
 		id: cityId as Id<"city">,
 	});
+	const place = useQuery(api.functions.place.getOne, {
+		id: placeId as Id<"place">,
+	});
 
-	if (!country || !city) {
+	if (!country || !city || !place) {
 		return (
 			<div className="flex items-center justify-center py-16">
 				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
@@ -44,12 +47,18 @@ function AdminPlacesPage() {
 					},
 					{
 						label: city.name,
+						to: "/admin/country/$countryId/city/$cityId",
+						params: { countryId, cityId },
+					},
+					{
+						label: place.name,
 					},
 				]}
 			/>
 			<div className="rounded-lg border bg-card p-6">
-				<PlaceTable cityId={cityId as Id<"city">} countryId={countryId} />
+				<ImageTable placeId={placeId as Id<"place">} />
 			</div>
 		</div>
 	);
 }
+
