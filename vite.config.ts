@@ -14,7 +14,6 @@ function clientOnlyModulesPlugin(): Plugin {
     '@react-three/fiber',
     '@react-three/drei',
     '@workos-inc/authkit-react',
-    '@convex-dev/workos',
   ]
 
   return {
@@ -50,11 +49,9 @@ function clientOnlyModulesPlugin(): Plugin {
           export const Color = class {};
           // WorkOS AuthKit stubs
           export const AuthKitProvider = ({ children }) => children;
-          export const useAuth = () => ({ isLoading: true, user: null });
+          export const useAuth = () => ({ isLoading: true, user: null, getAccessToken: async () => null });
           export const useSignIn = () => ({});
           export const useSignUp = () => ({});
-          // Convex WorkOS stubs
-          export const ConvexProviderWithAuthKit = ({ children }) => children;
         `
       }
       return null

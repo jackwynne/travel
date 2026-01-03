@@ -1,16 +1,42 @@
-import { ConvexProviderWithAuthKit as ConvexProvider } from "@convex-dev/workos";
 import { useAuth } from "@workos-inc/authkit-react";
-import { ConvexReactClient } from "convex/react";
-import { useMemo } from "react";
+import { ConvexProviderWithAuth, ConvexReactClient } from "convex/react";
+import type { ReactNode } from "react";
+import { useCallback, useMemo } from "react";
 
 const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL as
 	| string
 	| undefined;
 
+function useAuthFromWorkOS() {
+	const { isLoading, user, getAccessToken } = useAuth();
+
+	const fetchAccessToken = useCallback(
+		async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
+			try {
+				// WorkOS AuthKit's getAccessToken handles token refresh internally
+				const token = await getAccessToken();
+				return token ?? null;
+			} catch {
+				return null;
+			}
+		},
+		[getAccessToken],
+	);
+
+	return useMemo(
+		() => ({
+			isLoading,
+			isAuthenticated: !!user,
+			fetchAccessToken,
+		}),
+		[isLoading, user, fetchAccessToken],
+	);
+}
+
 export default function AppConvexProvider({
 	children,
 }: {
-	children: React.ReactNode;
+	children: ReactNode;
 }) {
 	const convexClient = useMemo(() => {
 		if (!CONVEX_URL) return null;
@@ -26,8 +52,8 @@ export default function AppConvexProvider({
 	}
 
 	return (
-		<ConvexProvider client={convexClient} useAuth={useAuth}>
+		<ConvexProviderWithAuth client={convexClient} useAuth={useAuthFromWorkOS}>
 			{children}
-		</ConvexProvider>
+		</ConvexProviderWithAuth>
 	);
 }
