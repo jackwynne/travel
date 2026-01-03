@@ -34,8 +34,10 @@ export default defineSchema({
 			v.literal("restaurant"),
 			v.literal("cafe+bakery+snacks"),
 			v.literal("bar+pub+club"),
+			v.literal("rooftop_bar"),
+			v.literal("hotel"),
 			v.literal("theatre+concert_hall+venue"),
-			v.literal("landmark"),
+			v.literal("landmark+church+view"),
 			v.literal("other"),
 		),
 		description: v.optional(v.string()),
@@ -74,4 +76,15 @@ export default defineSchema({
 			"location.imageType",
 			"location.locationId",
 		]),
+	route: defineTable({
+		name: v.string(),
+		description: v.optional(v.string()),
+		city: v.id("city"),
+		stops: v.array(
+			v.object({
+				placeId: v.id("place"),
+				notes: v.optional(v.string()),
+			}),
+		),
+	}).index("byCity", ["city"]),
 });

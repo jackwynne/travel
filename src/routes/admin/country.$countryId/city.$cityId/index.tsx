@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { AdminBreadcrumb } from "@/components/admin/AdminBreadcrumb";
 import { PlaceTable } from "@/components/admin/PlaceTable";
+import { RouteTable } from "@/components/admin/RouteTable";
 import { api } from "../../../../../convex/_generated/api";
 import type { Id } from "../../../../../convex/_generated/dataModel";
 
@@ -47,8 +48,13 @@ function AdminPlacesPage() {
 					},
 				]}
 			/>
-			<div className="rounded-lg border bg-card p-6">
-				<PlaceTable cityId={cityId as Id<"city">} countryId={countryId} />
+			<div className="space-y-6">
+				<div className="rounded-lg border bg-card p-6">
+					<PlaceTable cityId={cityId as Id<"city">} countryId={countryId} />
+				</div>
+				<div className="rounded-lg border bg-card p-6">
+					<RouteTable cityId={cityId as Id<"city">} />
+				</div>
 			</div>
 		</div>
 	);

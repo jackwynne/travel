@@ -13,6 +13,7 @@ import type * as functions_city from "../functions/city.js";
 import type * as functions_country from "../functions/country.js";
 import type * as functions_image from "../functions/image.js";
 import type * as functions_place from "../functions/place.js";
+import type * as functions_route from "../functions/route.js";
 import type * as todos from "../todos.js";
 
 import type {
@@ -27,6 +28,7 @@ declare const fullApi: ApiFromModules<{
   "functions/country": typeof functions_country;
   "functions/image": typeof functions_image;
   "functions/place": typeof functions_place;
+  "functions/route": typeof functions_route;
   todos: typeof todos;
 }>;
 
