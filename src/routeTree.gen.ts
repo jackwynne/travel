@@ -29,6 +29,7 @@ import { Route as AdminCountryCountryIdIndexRouteImport } from './routes/admin/c
 import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
 import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
 import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
+import { Route as CountryCountryIdCityCityIdRouteImport } from './routes/country.$countryId.city.$cityId'
 import { Route as AdminCountryCountryIdCityCityIdRouteImport } from './routes/admin/country.$countryId/city.$cityId'
 import { Route as AdminCountryCountryIdCityCityIdIndexRouteImport } from './routes/admin/country.$countryId/city.$cityId/index'
 import { Route as AdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport } from './routes/admin/country.$countryId/city.$cityId/place.$placeId'
@@ -135,6 +136,12 @@ const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
   path: '/demo/start/ssr/data-only',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CountryCountryIdCityCityIdRoute =
+  CountryCountryIdCityCityIdRouteImport.update({
+    id: '/country/$countryId/city/$cityId',
+    path: '/country/$countryId/city/$cityId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminCountryCountryIdCityCityIdRoute =
   AdminCountryCountryIdCityCityIdRouteImport.update({
     id: '/city/$cityId',
@@ -176,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/demo/form/simple': typeof DemoFormSimpleRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -200,6 +208,7 @@ export interface FileRoutesByTo {
   '/demo/form/simple': typeof DemoFormSimpleRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -225,6 +234,7 @@ export interface FileRoutesById {
   '/demo/form/simple': typeof DemoFormSimpleRoute
   '/demo/start/api-request': typeof DemoStartApiRequestRoute
   '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
+  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
   '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
   '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
   '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
@@ -253,6 +263,7 @@ export interface FileRouteTypes {
     | '/demo/form/simple'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/country/$countryId/city/$cityId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -277,6 +288,7 @@ export interface FileRouteTypes {
     | '/demo/form/simple'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/country/$countryId/city/$cityId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -301,6 +313,7 @@ export interface FileRouteTypes {
     | '/demo/form/simple'
     | '/demo/start/api-request'
     | '/demo/start/server-funcs'
+    | '/country/$countryId/city/$cityId'
     | '/demo/start/ssr/data-only'
     | '/demo/start/ssr/full-ssr'
     | '/demo/start/ssr/spa-mode'
@@ -326,6 +339,7 @@ export interface RootRouteChildren {
   DemoFormSimpleRoute: typeof DemoFormSimpleRoute
   DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
   DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
+  CountryCountryIdCityCityIdRoute: typeof CountryCountryIdCityCityIdRoute
   DemoStartSsrDataOnlyRoute: typeof DemoStartSsrDataOnlyRoute
   DemoStartSsrFullSsrRoute: typeof DemoStartSsrFullSsrRoute
   DemoStartSsrSpaModeRoute: typeof DemoStartSsrSpaModeRoute
@@ -474,6 +488,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoStartSsrDataOnlyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/country/$countryId/city/$cityId': {
+      id: '/country/$countryId/city/$cityId'
+      path: '/country/$countryId/city/$cityId'
+      fullPath: '/country/$countryId/city/$cityId'
+      preLoaderRoute: typeof CountryCountryIdCityCityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/country/$countryId/city/$cityId': {
       id: '/admin/country/$countryId/city/$cityId'
       path: '/city/$cityId'
@@ -580,6 +601,7 @@ const rootRouteChildren: RootRouteChildren = {
   DemoFormSimpleRoute: DemoFormSimpleRoute,
   DemoStartApiRequestRoute: DemoStartApiRequestRoute,
   DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
+  CountryCountryIdCityCityIdRoute: CountryCountryIdCityCityIdRoute,
   DemoStartSsrDataOnlyRoute: DemoStartSsrDataOnlyRoute,
   DemoStartSsrFullSsrRoute: DemoStartSsrFullSsrRoute,
   DemoStartSsrSpaModeRoute: DemoStartSsrSpaModeRoute,
