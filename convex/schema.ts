@@ -55,6 +55,8 @@ export default defineSchema({
 		dateTime: v.optional(v.number()),
 		lat: v.optional(v.number()),
 		lng: v.optional(v.number()),
+		description: v.optional(v.string()),
+		iconImage: v.optional(v.string()),
 		location: v.optional(
 			v.union(
 				v.object({
