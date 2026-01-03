@@ -39,4 +39,3 @@ function PlaceLayout() {
 
 	return <Outlet />;
 }
-

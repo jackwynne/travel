@@ -1,16 +1,16 @@
-import { useCallback, useRef, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
 import { useUploadFile } from "@convex-dev/r2/react";
+import { useMutation, useQuery } from "convex/react";
+import { useCallback, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { api } from "../../../convex/_generated/api";
-import type { Id } from "../../../convex/_generated/dataModel";
 import {
-	extractExifData,
 	createThumbnail,
 	type ExifData,
+	extractExifData,
 } from "@/lib/image-utils";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 
 interface PlaceImageUploadFormProps {
 	placeId: Id<"place">;
@@ -196,9 +196,7 @@ export function PlaceImageUploadForm({
 			)}
 
 			{isProcessing && (
-				<div className="text-sm text-muted-foreground">
-					Processing image...
-				</div>
+				<div className="text-sm text-muted-foreground">Processing image...</div>
 			)}
 
 			{processedImage && (
@@ -270,11 +268,7 @@ export function PlaceImageUploadForm({
 						>
 							Clear
 						</Button>
-						<Button
-							type="button"
-							onClick={handleUpload}
-							disabled={isUploading}
-						>
+						<Button type="button" onClick={handleUpload} disabled={isUploading}>
 							{isUploading ? "Uploading..." : "Upload Image"}
 						</Button>
 					</div>
@@ -291,4 +285,3 @@ export function PlaceImageUploadForm({
 		</div>
 	);
 }
-

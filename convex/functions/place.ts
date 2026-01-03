@@ -169,7 +169,11 @@ export const copyFromImage = mutation({
 			updates.iconImage = image.iconImage;
 		}
 
-		if (args.copyLocation && image.lat !== undefined && image.lng !== undefined) {
+		if (
+			args.copyLocation &&
+			image.lat !== undefined &&
+			image.lng !== undefined
+		) {
 			updates.lat = image.lat;
 			updates.lng = image.lng;
 		}

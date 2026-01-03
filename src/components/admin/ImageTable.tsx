@@ -49,7 +49,9 @@ export function ImageTable({ placeId }: ImageTableProps) {
 	const copyFromImage = useMutation(api.functions.place.copyFromImage);
 
 	const [editingImage, setEditingImage] = useState<ImageWithUrl | undefined>();
-	const [deletingImage, setDeletingImage] = useState<ImageWithUrl | undefined>();
+	const [deletingImage, setDeletingImage] = useState<
+		ImageWithUrl | undefined
+	>();
 	const [isFormOpen, setIsFormOpen] = useState(false);
 
 	const handleEdit = (image: ImageWithUrl) => {
@@ -152,7 +154,9 @@ export function ImageTable({ placeId }: ImageTableProps) {
 								</TableCell>
 								<TableCell className="max-w-[200px] truncate">
 									{image.description || (
-										<span className="text-muted-foreground">No description</span>
+										<span className="text-muted-foreground">
+											No description
+										</span>
 									)}
 								</TableCell>
 								<TableCell>{formatDateTime(image.dateTime)}</TableCell>
@@ -260,4 +264,3 @@ export function ImageTable({ placeId }: ImageTableProps) {
 		</div>
 	);
 }
-

@@ -14,4 +14,3 @@ export async function requireAuth(ctx: QueryCtx | MutationCtx) {
 	}
 	return identity;
 }
-
