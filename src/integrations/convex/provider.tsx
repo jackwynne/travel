@@ -29,12 +29,32 @@ function useAuthFromWorkOS() {
 		getAccessToken: async () => null,
 	};
 
+	// IMPORTANT: Don't call getAccessToken until auth is fully loaded
+	// This prevents the race condition where Convex tries to fetch a token
+	// before WorkOS has finished initializing
 	const fetchAccessToken = useCallback(
 		async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
 			console.log(
 				"[Convex Auth Debug] fetchAccessToken called, forceRefresh:",
 				forceRefreshToken,
+				"isLoading:",
+				isLoading,
 			);
+
+			// If still loading, return null - Convex will retry when loading completes
+			if (isLoading) {
+				console.log(
+					"[Convex Auth Debug] Auth still loading, returning null token",
+				);
+				return null;
+			}
+
+			// If no user, no token to fetch
+			if (!user) {
+				console.log("[Convex Auth Debug] No user, returning null token");
+				return null;
+			}
+
 			try {
 				const token = await getAccessToken();
 				console.log(
@@ -47,13 +67,15 @@ function useAuthFromWorkOS() {
 				return null;
 			}
 		},
-		[getAccessToken],
+		[getAccessToken, isLoading, user],
 	);
 
 	const authState = useMemo(
 		() => ({
+			// Keep loading state true until WorkOS is done loading
 			isLoading: isLoading ?? true,
-			isAuthenticated: !!user,
+			// Only consider authenticated when NOT loading AND user exists
+			isAuthenticated: !isLoading && !!user,
 			fetchAccessToken,
 		}),
 		[isLoading, user, fetchAccessToken],
