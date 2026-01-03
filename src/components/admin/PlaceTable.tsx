@@ -3,7 +3,7 @@ import { useMutation, useQuery } from "convex/react";
 import { Edit, ImagePlus, Images, Plus, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import {
 	Dialog,
 	DialogContent,
@@ -20,6 +20,7 @@ import {
 	TableHeader,
 	TableRow,
 } from "@/components/ui/table";
+import { cn } from "@/lib/utils";
 import { api } from "../../../convex/_generated/api";
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
 import { PlaceForm } from "./PlaceForm";
@@ -83,6 +84,19 @@ export function PlaceTable({ cityId, countryId }: PlaceTableProps) {
 		return colors[category] || colors.other;
 	};
 
+	const formatCategory = (category: string) => {
+		const parts = category
+			.split("+")
+			.map(
+				(part) =>
+					part.replace(/_/g, " ").charAt(0).toUpperCase() +
+					part.replace(/_/g, " ").slice(1),
+			);
+		return parts.length === 1
+			? parts[0]
+			: parts.slice(0, -1).join(", ") + " or " + parts.at(-1);
+	};
+
 	if (!places) {
 		return (
 			<div className="flex items-center justify-center py-8">
@@ -125,7 +139,7 @@ export function PlaceTable({ cityId, countryId }: PlaceTableProps) {
 										variant="secondary"
 										className={getCategoryColor(place.category)}
 									>
-										{place.category}
+										{formatCategory(place.category)}
 									</Badge>
 								</TableCell>
 								<TableCell>
@@ -152,23 +166,20 @@ export function PlaceTable({ cityId, countryId }: PlaceTableProps) {
 											<Edit className="size-4" />
 										</Button>
 										{countryId && (
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												asChild
+											<Link
+												to="/admin/country/$countryId/city/$cityId/place/$placeId"
+												params={{
+													countryId,
+													cityId: cityId as string,
+													placeId: place._id as string,
+												}}
+												className={cn(
+													buttonVariants({ variant: "ghost", size: "icon-sm" }),
+												)}
 												title="View images"
 											>
-												<Link
-													to="/admin/country/$countryId/city/$cityId/place/$placeId"
-													params={{
-														countryId,
-														cityId: cityId as string,
-														placeId: place._id as string,
-													}}
-												>
-													<Images className="size-4" />
-												</Link>
-											</Button>
+												<Images className="size-4" />
+											</Link>
 										)}
 										<Button
 											variant="ghost"

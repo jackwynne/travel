@@ -16,14 +16,13 @@ import { api } from "../../../convex/_generated/api";
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
 
 const PLACE_CATEGORIES = [
-	"gallery",
-	"library",
-	"museum",
+	"gallery+museum",
 	"park",
 	"restaurant",
-	"cafe",
-	"bar",
-	"theatre",
+	"cafe+bakery+snacks",
+	"bar+pub+club",
+	"theatre+concert_hall+venue",
+	"landmark",
 	"other",
 ] as const;
 
@@ -32,12 +31,12 @@ type PlaceCategory = (typeof PLACE_CATEGORIES)[number];
 const placeSchema = z.object({
 	name: z.string().min(1, "Name is required"),
 	category: z.enum(PLACE_CATEGORIES),
-	description: z.string().min(1, "Description is required"),
+	description: z.string().optional(),
 	rating: z.number().min(0).max(5).optional(),
 	notes: z.string().optional(),
-	iconImage: z.string().min(1, "Icon image is required"),
-	lat: z.number().min(-90).max(90),
-	lng: z.number().min(-180).max(180),
+	iconImage: z.string().optional(),
+	lat: z.number().optional(),
+	lng: z.number().optional(),
 });
 
 interface PlaceFormProps {
@@ -108,7 +107,6 @@ export function PlaceForm({
 					<div className="space-y-2">
 						<Label htmlFor="name">Name</Label>
 						<Input
-							id="name"
 							value={field.state.value}
 							onBlur={field.handleBlur}
 							onChange={(e) => field.handleChange(e.target.value)}
@@ -125,42 +123,58 @@ export function PlaceForm({
 			</form.Field>
 
 			<form.Field name="category">
-				{(field) => (
-					<div className="space-y-2">
-						<Label>Category</Label>
-						<Select
-							value={field.state.value}
-							onValueChange={(value) =>
-								field.handleChange(value as PlaceCategory)
-							}
-						>
-							<SelectTrigger className="w-full">
-								<SelectValue />
-							</SelectTrigger>
-							<SelectContent>
-								{PLACE_CATEGORIES.map((category) => (
-									<SelectItem key={category} value={category}>
-										{category.charAt(0).toUpperCase() + category.slice(1)}
-									</SelectItem>
-								))}
-							</SelectContent>
-						</Select>
-						{field.state.meta.isTouched &&
-							field.state.meta.errors.length > 0 && (
-								<p className="text-sm text-destructive">
-									{field.state.meta.errors.join(", ")}
-								</p>
-							)}
-					</div>
-				)}
+				{(field) => {
+					const formatCategory = (category: string) => {
+						const parts = category
+							.split("+")
+							.map(
+								(part) =>
+									part.replace(/_/g, " ").charAt(0).toUpperCase() +
+									part.replace(/_/g, " ").slice(1),
+							);
+						return parts.length === 1
+							? parts[0]
+							: parts.slice(0, -1).join(", ") + " or " + parts.at(-1);
+					};
+
+					return (
+						<div className="space-y-2">
+							<Label>Category</Label>
+							<Select
+								value={field.state.value}
+								onValueChange={(value) =>
+									field.handleChange(value as PlaceCategory)
+								}
+							>
+								<SelectTrigger className="w-full">
+									<SelectValue>
+										{field.state.value && formatCategory(field.state.value)}
+									</SelectValue>
+								</SelectTrigger>
+								<SelectContent>
+									{PLACE_CATEGORIES.map((category) => (
+										<SelectItem key={category} value={category}>
+											{formatCategory(category)}
+										</SelectItem>
+									))}
+								</SelectContent>
+							</Select>
+							{field.state.meta.isTouched &&
+								field.state.meta.errors.length > 0 && (
+									<p className="text-sm text-destructive">
+										{field.state.meta.errors.join(", ")}
+									</p>
+								)}
+						</div>
+					);
+				}}
 			</form.Field>
 
 			<form.Field name="description">
 				{(field) => (
 					<div className="space-y-2">
-						<Label htmlFor="description">Description</Label>
+						<Label htmlFor="description">Description (Optional)</Label>
 						<Textarea
-							id="description"
 							value={field.state.value}
 							onBlur={field.handleBlur}
 							onChange={(e) => field.handleChange(e.target.value)}
@@ -183,7 +197,6 @@ export function PlaceForm({
 						<div className="space-y-2">
 							<Label htmlFor="rating">Rating (0-5)</Label>
 							<Input
-								id="rating"
 								type="number"
 								min={0}
 								max={5}
@@ -204,9 +217,8 @@ export function PlaceForm({
 				<form.Field name="iconImage">
 					{(field) => (
 						<div className="space-y-2">
-							<Label htmlFor="iconImage">Icon Image</Label>
+							<Label htmlFor="iconImage">Icon Image (Optional)</Label>
 							<Input
-								id="iconImage"
 								value={field.state.value}
 								onBlur={field.handleBlur}
 								onChange={(e) => field.handleChange(e.target.value)}
@@ -228,7 +240,6 @@ export function PlaceForm({
 					<div className="space-y-2">
 						<Label htmlFor="notes">Notes (Optional)</Label>
 						<Textarea
-							id="notes"
 							value={field.state.value ?? ""}
 							onBlur={field.handleBlur}
 							onChange={(e) => field.handleChange(e.target.value)}
@@ -245,7 +256,6 @@ export function PlaceForm({
 						<div className="space-y-2">
 							<Label htmlFor="lat">Latitude</Label>
 							<Input
-								id="lat"
 								type="number"
 								step="any"
 								value={field.state.value}
@@ -268,7 +278,6 @@ export function PlaceForm({
 						<div className="space-y-2">
 							<Label htmlFor="lng">Longitude</Label>
 							<Input
-								id="lng"
 								type="number"
 								step="any"
 								value={field.state.value}
