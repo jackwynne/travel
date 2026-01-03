@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "convex/react";
-import { Edit, Plus, Star, Trash2 } from "lucide-react";
+import { Edit, ImagePlus, Plus, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -22,6 +22,7 @@ import {
 import { api } from "../../../convex/_generated/api";
 import type { Doc, Id } from "../../../convex/_generated/dataModel";
 import { PlaceForm } from "./PlaceForm";
+import { PlaceImageUploadForm } from "./PlaceImageUploadForm";
 
 interface PlaceTableProps {
 	cityId: Id<"city">;
@@ -34,6 +35,9 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 	const [isFormOpen, setIsFormOpen] = useState(false);
 	const [editingPlace, setEditingPlace] = useState<Doc<"place"> | undefined>();
 	const [deletingPlace, setDeletingPlace] = useState<
+		Doc<"place"> | undefined
+	>();
+	const [uploadingImageForPlace, setUploadingImageForPlace] = useState<
 		Doc<"place"> | undefined
 	>();
 
@@ -141,13 +145,23 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 											variant="ghost"
 											size="icon-sm"
 											onClick={() => handleEdit(place)}
+											title="Edit place"
 										>
 											<Edit className="size-4" />
 										</Button>
 										<Button
 											variant="ghost"
 											size="icon-sm"
+											onClick={() => setUploadingImageForPlace(place)}
+											title="Upload image"
+										>
+											<ImagePlus className="size-4" />
+										</Button>
+										<Button
+											variant="ghost"
+											size="icon-sm"
 											onClick={() => setDeletingPlace(place)}
+											title="Delete place"
 										>
 											<Trash2 className="size-4" />
 										</Button>
@@ -205,6 +219,30 @@ export function PlaceTable({ cityId }: PlaceTableProps) {
 							Delete
 						</Button>
 					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Image Upload Dialog */}
+			<Dialog
+				open={!!uploadingImageForPlace}
+				onOpenChange={(open) => !open && setUploadingImageForPlace(undefined)}
+			>
+				<DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+					<DialogHeader>
+						<DialogTitle>Upload Image</DialogTitle>
+						<DialogDescription>
+							Upload an image for "{uploadingImageForPlace?.name}". EXIF
+							metadata (location and capture time) will be extracted
+							automatically.
+						</DialogDescription>
+					</DialogHeader>
+					{uploadingImageForPlace && (
+						<PlaceImageUploadForm
+							placeId={uploadingImageForPlace._id}
+							onSuccess={() => setUploadingImageForPlace(undefined)}
+							onCancel={() => setUploadingImageForPlace(undefined)}
+						/>
+					)}
 				</DialogContent>
 			</Dialog>
 		</div>

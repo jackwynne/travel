@@ -81,4 +81,3 @@ Update the `onUpload` callback in `convex/functions/image.ts` to return the `_id
 Build a React component that:
 
 - Uses `useUploadFile` hook from `@convex-dev/r2/react` 
-- On file selection: extracts EXIF data and generates low-res AVIF thumbnail

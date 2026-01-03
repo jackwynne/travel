@@ -13,6 +13,10 @@ function clientOnlyModulesPlugin(): Plugin {
     'three-globe',
     '@react-three/fiber',
     '@react-three/drei',
+    '@jsquash/png',
+    '@jsquash/jpeg',
+    '@jsquash/avif',
+    '@jsquash/resize',
   ]
 
   return {

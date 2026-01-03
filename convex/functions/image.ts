@@ -107,6 +107,20 @@ export const listImages = query({
 	},
 });
 
+export const getByKey = query({
+	args: {
+		key: v.string(),
+	},
+	returns: v.union(imageValidator, v.null()),
+	handler: async (ctx, args) => {
+		const image = await ctx.db
+			.query("image")
+			.withIndex("byKey", (q) => q.eq("key", args.key))
+			.unique();
+		return image;
+	},
+});
+
 export const update = mutation({
 	args: {
 		image: imageUpdateValidator,

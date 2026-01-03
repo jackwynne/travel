@@ -4,20 +4,20 @@ overview: Create a dedicated image upload form component for places that uploads
 todos:
   - id: install-exif
     content: Install exifreader package for EXIF metadata extraction
-    status: pending
+    status: completed
   - id: exif-utils
     content: Add EXIF extraction functions to src/lib/image-utils.ts
-    status: pending
+    status: completed
     dependencies:
       - install-exif
   - id: upload-form
     content: Create PlaceImageUploadForm component with R2 upload and thumbnail generation
-    status: pending
+    status: completed
     dependencies:
       - exif-utils
   - id: integrate-admin
     content: Integrate the upload form into admin place detail page
-    status: pending
+    status: completed
     dependencies:
       - upload-form
 ---
@@ -74,5 +74,3 @@ Build a React component that:
 - Uses `useUploadFile` hook from `@convex-dev/r2/react`
 - On file selection: extracts EXIF data and generates low-res AVIF thumbnail using existing utilities
 - Uploads to R2 and receives the image `_id` from the hook
-- Calls the existing `update` mutation with the `_id`, extracted metadata (lat, lng, dateTime), thumbnail (iconImage), and place association
-- Shows preview and extracted metadata to user

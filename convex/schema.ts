@@ -69,8 +69,10 @@ export default defineSchema({
 				}),
 			),
 		),
-	}).index("byImageType_byLocationId", [
-		"location.imageType",
-		"location.locationId",
-	]),
+	})
+		.index("byKey", ["key"])
+		.index("byImageType_byLocationId", [
+			"location.imageType",
+			"location.locationId",
+		]),
 });
