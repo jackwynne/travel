@@ -13,10 +13,6 @@ function clientOnlyModulesPlugin(): Plugin {
     'three-globe',
     '@react-three/fiber',
     '@react-three/drei',
-    '@jsquash/png',
-    '@jsquash/jpeg',
-    '@jsquash/avif',
-    '@jsquash/resize',
   ]
 
   return {
@@ -58,6 +54,12 @@ function clientOnlyModulesPlugin(): Plugin {
 }
 
 const config = defineConfig({
+  worker: {
+    format: 'es',
+  },
+  optimizeDeps: {
+    exclude: ["@jsquash/avif", "@jsquash/jpeg", "@jsquash/png", "@jsquash/resize"]
+  },
   plugins: [
     // Client-only modules plugin MUST be first to intercept imports
     clientOnlyModulesPlugin(),
