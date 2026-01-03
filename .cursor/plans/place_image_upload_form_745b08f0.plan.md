@@ -83,8 +83,3 @@ Add a mutation in `convex/functions/image.ts` to create an image record with:
 ### 4. Create PlaceImageUploadForm Component
 
 Build a React component that:
-
-- Uses `useUploadFile` hook from `@convex-dev/r2/react`
-- Extracts EXIF data on file selection
-- Generates low-res AVIF thumbnail using existing `decode`, `resize`, `encode` utilities
-- Uploads to R2 and calls mutation with all metadata
