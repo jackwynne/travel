@@ -21,8 +21,10 @@ const PLACE_CATEGORIES = [
 	"restaurant",
 	"cafe+bakery+snacks",
 	"bar+pub+club",
+	"rooftop_bar",
+	"hotel",
 	"theatre+concert_hall+venue",
-	"landmark",
+	"landmark+church+view",
 	"other",
 ] as const;
 
