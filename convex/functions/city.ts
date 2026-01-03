@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 import schema from "../schema";
+import { requireAuth } from "./auth";
 
 const { ...cityCreateValidatorFields } = schema.tables.city.validator.fields;
 
@@ -26,6 +27,7 @@ export const create = mutation({
 	},
 	returns: v.id("city"),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		const country = await ctx.db.get(args.city.countryId);
 		if (!country) {
 			throw new Error("Country not found");
@@ -45,6 +47,7 @@ export const update = mutation({
 	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		const { _id, _creationTime, ...updates } = args.city;
 		const city = await ctx.db.get(_id);
 		if (!city) {
@@ -106,6 +109,7 @@ export const remove = mutation({
 	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		const city = await ctx.db.get(args.id);
 		if (!city) {
 			throw new Error("City not found");

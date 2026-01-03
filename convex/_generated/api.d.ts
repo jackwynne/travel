@@ -8,6 +8,7 @@
  * @module
  */
 
+import type * as functions_auth from "../functions/auth.js";
 import type * as functions_city from "../functions/city.js";
 import type * as functions_country from "../functions/country.js";
 import type * as functions_image from "../functions/image.js";
@@ -21,6 +22,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
+  "functions/auth": typeof functions_auth;
   "functions/city": typeof functions_city;
   "functions/country": typeof functions_country;
   "functions/image": typeof functions_image;

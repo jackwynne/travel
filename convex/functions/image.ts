@@ -9,6 +9,7 @@ import {
 	query,
 } from "../_generated/server";
 import schema from "../schema";
+import { requireAuth } from "./auth";
 
 export const r2 = new R2(components.r2);
 const callbacks: R2Callbacks = internal.functions.image;
@@ -43,8 +44,7 @@ export const {
 	// `syncMetadata`.
 	// In any of these checks, throw an error to reject the request.
 	checkUpload: async (ctx, bucket) => {
-		// const user = await userFromAuth(ctx);
-		// ...validate that the user can upload to this bucket
+		await requireAuth(ctx);
 	},
 	checkReadKey: async (ctx, bucket, key) => {
 		// const user = await userFromAuth(ctx);
@@ -127,6 +127,7 @@ export const update = mutation({
 	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		const { _id, _creationTime, ...updates } = args.image;
 		const image = await ctx.db.get(_id);
 		if (!image) {
@@ -202,6 +203,7 @@ export const remove = mutation({
 	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		const image = await ctx.db.get(args.id);
 		if (!image) {
 			throw new Error("Image not found");

@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "../_generated/server";
 import schema from "../schema";
+import { requireAuth } from "./auth";
 
 const { ...placeCreateValidatorFields } = schema.tables.place.validator.fields;
 
@@ -30,6 +31,7 @@ export const create = mutation({
 	},
 	returns: v.id("place"),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		return await ctx.db.insert("place", {
 			...args.place,
 		});
@@ -45,6 +47,7 @@ export const update = mutation({
 	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		const { _id, _creationTime, ...updates } = args.place;
 		const place = await ctx.db.get(_id);
 		if (!place) {
@@ -66,6 +69,7 @@ export const remove = mutation({
 	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		const place = await ctx.db.get(args.id);
 		if (!place) {
 			throw new Error("Place not found");
@@ -144,6 +148,7 @@ export const copyFromImage = mutation({
 	},
 	returns: v.null(),
 	handler: async (ctx, args) => {
+		await requireAuth(ctx);
 		const place = await ctx.db.get(args.placeId);
 		if (!place) {
 			throw new Error("Place not found");
