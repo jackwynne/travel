@@ -136,7 +136,7 @@ export function PlaceForm({
 							);
 						return parts.length === 1
 							? parts[0]
-							: parts.slice(0, -1).join(", ") + " or " + parts.at(-1);
+							: `${parts.slice(0, -1).join(", ")} or ${parts.at(-1)}`;
 					};
 
 					return (

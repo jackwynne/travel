@@ -18,7 +18,7 @@ const placeValidator = v.object({
 	...schema.tables.place.validator.fields,
 });
 
-const placeTypeValidator = v.object({
+const _placeTypeValidator = v.object({
 	type: v.union(schema.tables.place.validator.fields.category),
 });
 

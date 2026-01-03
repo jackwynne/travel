@@ -16,7 +16,7 @@ const callbacks: R2Callbacks = internal.functions.image;
 
 const { ...imageCreateValidatorFields } = schema.tables.image.validator.fields;
 
-const imageCreateValidator = v.object(imageCreateValidatorFields);
+const _imageCreateValidator = v.object(imageCreateValidatorFields);
 const imageUpdateValidator = v.object({
 	_id: v.id("image"),
 	_creationTime: v.number(),
@@ -43,18 +43,18 @@ export const {
 	// The checkUpload callback is used for both `generateUploadUrl` and
 	// `syncMetadata`.
 	// In any of these checks, throw an error to reject the request.
-	checkUpload: async (ctx, bucket) => {
+	checkUpload: async (ctx, _bucket) => {
 		await requireAuth(ctx);
 	},
-	checkReadKey: async (ctx, bucket, key) => {
+	checkReadKey: async (_ctx, _bucket, _key) => {
 		// const user = await userFromAuth(ctx);
 		// ...validate that the user can read this key
 	},
-	checkReadBucket: async (ctx, bucket) => {
+	checkReadBucket: async (_ctx, _bucket) => {
 		// const user = await userFromAuth(ctx);
 		// ...validate that the user can read this bucket
 	},
-	checkDelete: async (ctx, bucket, key) => {
+	checkDelete: async (_ctx, _bucket, _key) => {
 		// const user = await userFromAuth(ctx);
 		// ...validate that the user can delete this key
 	},

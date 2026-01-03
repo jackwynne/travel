@@ -135,7 +135,7 @@ function TableDemo() {
 				table.setSorting([{ id: "fullName", desc: false }]);
 			}
 		}
-	}, [table.getState().columnFilters[0]?.id]);
+	}, [table.getState, table.setSorting]);
 
 	return (
 		<div className="min-h-screen bg-gray-900 p-6">
@@ -346,7 +346,7 @@ function DebouncedInput({
 		}, debounce);
 
 		return () => clearTimeout(timeout);
-	}, [value]);
+	}, [value, debounce, onChange]);
 
 	return (
 		<input
