@@ -4,7 +4,7 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
-import { cloudflare } from '@cloudflare/vite-plugin'
+import { nitro } from 'nitro/vite'
 
 // Plugin to stub heavy 3D libraries during SSR to reduce bundle size
 function clientOnlyModulesPlugin(): Plugin {
@@ -13,6 +13,8 @@ function clientOnlyModulesPlugin(): Plugin {
     'three-globe',
     '@react-three/fiber',
     '@react-three/drei',
+    '@workos-inc/authkit-react',
+    '@convex-dev/workos',
   ]
 
   return {
@@ -46,6 +48,13 @@ function clientOnlyModulesPlugin(): Plugin {
           export const useThree = () => ({});
           export const useFrame = () => {};
           export const Color = class {};
+          // WorkOS AuthKit stubs
+          export const AuthKitProvider = ({ children }) => children;
+          export const useAuth = () => ({ isLoading: true, user: null });
+          export const useSignIn = () => ({});
+          export const useSignUp = () => ({});
+          // Convex WorkOS stubs
+          export const ConvexProviderWithAuthKit = ({ children }) => children;
         `
       }
       return null
@@ -64,7 +73,7 @@ const config = defineConfig({
     // Client-only modules plugin MUST be first to intercept imports
     clientOnlyModulesPlugin(),
     devtools(),
-    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    nitro(),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
