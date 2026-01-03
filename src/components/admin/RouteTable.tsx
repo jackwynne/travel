@@ -187,4 +187,3 @@ export function RouteTable({ cityId }: RouteTableProps) {
 		</div>
 	);
 }
-
