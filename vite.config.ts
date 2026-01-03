@@ -4,7 +4,7 @@ import { tanstackStart } from '@tanstack/react-start/plugin/vite'
 import viteReact from '@vitejs/plugin-react'
 import viteTsConfigPaths from 'vite-tsconfig-paths'
 import tailwindcss from '@tailwindcss/vite'
-import { cloudflare } from '@cloudflare/vite-plugin'
+import { nitro } from 'nitro/vite'
 
 // Plugin to stub heavy 3D libraries during SSR to reduce bundle size
 function clientOnlyModulesPlugin(): Plugin {
@@ -64,7 +64,7 @@ const config = defineConfig({
     // Client-only modules plugin MUST be first to intercept imports
     clientOnlyModulesPlugin(),
     devtools(),
-    cloudflare({ viteEnvironment: { name: 'ssr' } }),
+    nitro(),
     // this is the plugin that enables path aliases
     viteTsConfigPaths({
       projects: ['./tsconfig.json'],
