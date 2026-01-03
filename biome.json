@@ -10,6 +10,7 @@
 		"includes": [
 			"**/src/**/*",
 			"**/convex/**/*",
+			"!**/convex/_generated/**/*",
 			"**/.vscode/**/*",
 			"**/index.html",
 			"**/vite.config.js",
