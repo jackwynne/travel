@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { GlobeDemo } from "@/components/globe-demo";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -22,6 +22,7 @@ function App() {
 					<GlobeDemo />
 				</div>
 			</div>
+			<Link to="/admin">Admin</Link>
 		</div>
 	);
 }
