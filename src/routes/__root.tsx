@@ -1,60 +1,36 @@
-import type { QueryClient } from "@tanstack/react-query";
+import { Box, Button, Card, Container, Flex, Theme } from "@radix-ui/themes";
+import "@radix-ui/themes/styles.css";
+import { ConvexQueryClient } from "@convex-dev/react-query";
+import { QueryClient } from "@tanstack/react-query";
 import {
 	createRootRouteWithContext,
 	HeadContent,
 	Link,
 	Outlet,
 	Scripts,
+	useRouteContext,
 } from "@tanstack/react-router";
+import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+import { ConvexProviderWithAuth, ConvexReactClient } from "convex/react";
+import type { ReactNode } from "react";
+import { Suspense } from "react";
 import { ThemeProvider } from "@/hooks/theme-provider";
-import ClientDevtools from "../components/ClientDevtools";
-import ConvexProvider from "../integrations/convex/provider";
-import WorkOSProvider from "../integrations/workos/provider";
+import { getAuth, getSignInUrl } from "../authkit/serverFunctions";
+import Footer from "../components/footer";
+import SignInButton from "../components/sign-in-button";
 import appCss from "../styles.css?url";
 
-interface MyRouterContext {
+export const Route = createRootRouteWithContext<{
 	queryClient: QueryClient;
-}
+	convexClient: ConvexReactClient;
+	convexQueryClient: ConvexQueryClient;
+}>()({
+	beforeLoad: async () => {
+		const fullAuth = await getAuth();
 
-function NotFoundComponent() {
-	return (
-		<div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-			<div className="text-center">
-				<h1 className="text-8xl font-bold text-primary">404</h1>
-				<div className="mt-4 h-1 w-24 mx-auto bg-gradient-to-r from-primary/20 via-primary to-primary/20 rounded-full" />
-				<h2 className="mt-6 text-2xl font-semibold text-foreground">
-					Page not found
-				</h2>
-				<p className="mt-3 text-muted-foreground max-w-md">
-					The page you're looking for doesn't exist or has been moved.
-				</p>
-				<Link
-					to="/"
-					className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="16"
-						height="16"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						aria-hidden="true"
-					>
-						<path d="m12 19-7-7 7-7" />
-						<path d="M19 12H5" />
-					</svg>
-					Back to home
-				</Link>
-			</div>
-		</div>
-	);
-}
-
-export const Route = createRootRouteWithContext<MyRouterContext>()({
+		const { user } = fullAuth;
+		return { user, fullAuth };
+	},
 	head: () => ({
 		meta: [
 			{
@@ -65,7 +41,7 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 				content: "width=device-width, initial-scale=1",
 			},
 			{
-				title: "TanStack Start Starter",
+				title: "AuthKit Example in TanStack Start",
 			},
 		],
 		links: [
@@ -88,34 +64,91 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			},
 		],
 	}),
-
+	loader: async ({ context }) => {
+		const { user, fullAuth } = context;
+		const url = await getSignInUrl();
+		return {
+			user,
+			url,
+			fullAuth,
+		};
+	},
 	component: RootComponent,
-	shellComponent: RootDocument,
-	notFoundComponent: NotFoundComponent,
+	notFoundComponent: () => <div>Not Found</div>,
 });
 
 function RootComponent() {
+	const context = useRouteContext({ from: Route.id });
+	const { fullAuth, user, url } = Route.useLoaderData();
 	return (
-		<ThemeProvider>
-			<Outlet />
-		</ThemeProvider>
+		<RootDocument>
+			<ConvexProviderWithAuth
+				client={context.convexClient}
+				useAuth={() => {
+					return {
+						isLoading: false,
+						isAuthenticated: fullAuth.accessToken ? true : false,
+						fetchAccessToken: async (_args: { forceRefreshToken: boolean }) =>
+							(await getAuth()).accessToken ?? null,
+					};
+				}}
+			>
+				<ThemeProvider>
+					<Theme
+						accentColor="iris"
+						panelBackground="solid"
+						style={{ backgroundColor: "var(--gray-1)" }}
+					>
+						<Container style={{ backgroundColor: "var(--gray-1)" }}>
+							<Flex direction="column" gap="5" p="5" height="100vh">
+								<Box asChild flexGrow="1">
+									<Card size="4">
+										<Flex direction="column" height="100%">
+											<Flex asChild justify="between">
+												<header>
+													<Flex gap="4">
+														<Button asChild variant="soft">
+															<Link to="/">Home</Link>
+														</Button>
+
+														<Button asChild variant="soft">
+															<Link to="/admin">Admin</Link>
+														</Button>
+													</Flex>
+
+													<Suspense fallback={<div>Loading...</div>}>
+														<SignInButton user={user} url={url} />
+													</Suspense>
+												</header>
+											</Flex>
+
+											<Flex flexGrow="1" align="center" justify="center">
+												<main>
+													<Outlet />
+												</main>
+											</Flex>
+										</Flex>
+									</Card>
+								</Box>
+								<Footer />
+							</Flex>
+						</Container>
+					</Theme>
+				</ThemeProvider>
+			</ConvexProviderWithAuth>
+			<TanStackRouterDevtools position="bottom-right" />
+		</RootDocument>
 	);
 }
 
-function RootDocument({ children }: { children: React.ReactNode }) {
+function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
 	return (
 		<html lang="en">
 			<head>
 				<HeadContent />
 			</head>
 			<body>
-				<WorkOSProvider>
-					<ConvexProvider>
-						{/* <Header /> */}
-						{children}
-						<ClientDevtools />
-					</ConvexProvider>
-				</WorkOSProvider>
+				{children}
 				<Scripts />
 			</body>
 		</html>

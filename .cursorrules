@@ -91,10 +91,3 @@ export default defineSchema(
 ```
 
 Sourced from: https://github.com/PatrickJS/awesome-cursorrules/blob/main/rules/convex-cursorrules-prompt-file/.cursorrules
-# shadcn instructions
-
-Use the latest version of Shadcn to install new components, like this command to add a button component:
-
-```bash
-pnpm dlx shadcn@latest add button
-```
