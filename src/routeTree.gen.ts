@@ -9,40 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as ColorsRouteImport } from './routes/colors'
-import { Route as AdminRouteImport } from './routes/admin'
+import { Route as CallbackRouteImport } from './routes/callback'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
-import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
-import { Route as DemoTableRouteImport } from './routes/demo/table'
-import { Route as DemoConvexRouteImport } from './routes/demo/convex'
-import { Route as DemoStartServerFuncsRouteImport } from './routes/demo/start.server-funcs'
-import { Route as DemoStartApiRequestRouteImport } from './routes/demo/start.api-request'
-import { Route as DemoFormSimpleRouteImport } from './routes/demo/form.simple'
-import { Route as DemoFormAddressRouteImport } from './routes/demo/form.address'
-import { Route as DemoApiTqTodosRouteImport } from './routes/demo/api.tq-todos'
-import { Route as DemoApiNamesRouteImport } from './routes/demo/api.names'
-import { Route as AdminCountryCountryIdRouteImport } from './routes/admin/country.$countryId'
-import { Route as DemoStartSsrIndexRouteImport } from './routes/demo/start.ssr.index'
-import { Route as AdminCountryCountryIdIndexRouteImport } from './routes/admin/country.$countryId/index'
-import { Route as DemoStartSsrSpaModeRouteImport } from './routes/demo/start.ssr.spa-mode'
-import { Route as DemoStartSsrFullSsrRouteImport } from './routes/demo/start.ssr.full-ssr'
-import { Route as DemoStartSsrDataOnlyRouteImport } from './routes/demo/start.ssr.data-only'
-import { Route as CountryCountryIdCityCityIdRouteImport } from './routes/country.$countryId.city.$cityId'
-import { Route as AdminCountryCountryIdCityCityIdRouteImport } from './routes/admin/country.$countryId/city.$cityId'
-import { Route as AdminCountryCountryIdCityCityIdIndexRouteImport } from './routes/admin/country.$countryId/city.$cityId/index'
-import { Route as AdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport } from './routes/admin/country.$countryId/city.$cityId/place.$placeId'
-import { Route as AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport } from './routes/admin/country.$countryId/city.$cityId/place.$placeId/index'
+import { Route as AuthenticatedAuthenticatedRouteImport } from './routes/_authenticated/authenticated'
 
-const ColorsRoute = ColorsRouteImport.update({
-  id: '/colors',
-  path: '/colors',
+const CallbackRoute = CallbackRouteImport.update({
+  id: '/callback',
+  path: '/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -50,316 +28,63 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const DemoWorkosRoute = DemoWorkosRouteImport.update({
-  id: '/demo/workos',
-  path: '/demo/workos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
-  id: '/demo/tanstack-query',
-  path: '/demo/tanstack-query',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoTableRoute = DemoTableRouteImport.update({
-  id: '/demo/table',
-  path: '/demo/table',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoConvexRoute = DemoConvexRouteImport.update({
-  id: '/demo/convex',
-  path: '/demo/convex',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartServerFuncsRoute = DemoStartServerFuncsRouteImport.update({
-  id: '/demo/start/server-funcs',
-  path: '/demo/start/server-funcs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartApiRequestRoute = DemoStartApiRequestRouteImport.update({
-  id: '/demo/start/api-request',
-  path: '/demo/start/api-request',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoFormSimpleRoute = DemoFormSimpleRouteImport.update({
-  id: '/demo/form/simple',
-  path: '/demo/form/simple',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoFormAddressRoute = DemoFormAddressRouteImport.update({
-  id: '/demo/form/address',
-  path: '/demo/form/address',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoApiTqTodosRoute = DemoApiTqTodosRouteImport.update({
-  id: '/demo/api/tq-todos',
-  path: '/demo/api/tq-todos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoApiNamesRoute = DemoApiNamesRouteImport.update({
-  id: '/demo/api/names',
-  path: '/demo/api/names',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminCountryCountryIdRoute = AdminCountryCountryIdRouteImport.update({
-  id: '/country/$countryId',
-  path: '/country/$countryId',
-  getParentRoute: () => AdminRoute,
-} as any)
-const DemoStartSsrIndexRoute = DemoStartSsrIndexRouteImport.update({
-  id: '/demo/start/ssr/',
-  path: '/demo/start/ssr/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminCountryCountryIdIndexRoute =
-  AdminCountryCountryIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AdminCountryCountryIdRoute,
-  } as any)
-const DemoStartSsrSpaModeRoute = DemoStartSsrSpaModeRouteImport.update({
-  id: '/demo/start/ssr/spa-mode',
-  path: '/demo/start/ssr/spa-mode',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrFullSsrRoute = DemoStartSsrFullSsrRouteImport.update({
-  id: '/demo/start/ssr/full-ssr',
-  path: '/demo/start/ssr/full-ssr',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DemoStartSsrDataOnlyRoute = DemoStartSsrDataOnlyRouteImport.update({
-  id: '/demo/start/ssr/data-only',
-  path: '/demo/start/ssr/data-only',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CountryCountryIdCityCityIdRoute =
-  CountryCountryIdCityCityIdRouteImport.update({
-    id: '/country/$countryId/city/$cityId',
-    path: '/country/$countryId/city/$cityId',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const AdminCountryCountryIdCityCityIdRoute =
-  AdminCountryCountryIdCityCityIdRouteImport.update({
-    id: '/city/$cityId',
-    path: '/city/$cityId',
-    getParentRoute: () => AdminCountryCountryIdRoute,
-  } as any)
-const AdminCountryCountryIdCityCityIdIndexRoute =
-  AdminCountryCountryIdCityCityIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AdminCountryCountryIdCityCityIdRoute,
-  } as any)
-const AdminCountryCountryIdCityCityIdPlacePlaceIdRoute =
-  AdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport.update({
-    id: '/place/$placeId',
-    path: '/place/$placeId',
-    getParentRoute: () => AdminCountryCountryIdCityCityIdRoute,
-  } as any)
-const AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute =
-  AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport.update({
-    id: '/',
-    path: '/',
-    getParentRoute: () => AdminCountryCountryIdCityCityIdPlacePlaceIdRoute,
+const AuthenticatedAuthenticatedRoute =
+  AuthenticatedAuthenticatedRouteImport.update({
+    id: '/authenticated',
+    path: '/authenticated',
+    getParentRoute: () => AuthenticatedRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/colors': typeof ColorsRoute
-  '/demo/convex': typeof DemoConvexRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/country/$countryId': typeof AdminCountryCountryIdRouteWithChildren
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/admin/country/$countryId/': typeof AdminCountryCountryIdIndexRoute
-  '/demo/start/ssr': typeof DemoStartSsrIndexRoute
-  '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdRouteWithChildren
-  '/admin/country/$countryId/city/$cityId/': typeof AdminCountryCountryIdCityCityIdIndexRoute
-  '/admin/country/$countryId/city/$cityId/place/$placeId': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
-  '/admin/country/$countryId/city/$cityId/place/$placeId/': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
+  '/callback': typeof CallbackRoute
+  '/authenticated': typeof AuthenticatedAuthenticatedRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/colors': typeof ColorsRoute
-  '/demo/convex': typeof DemoConvexRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
-  '/admin': typeof AdminIndexRoute
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/admin/country/$countryId': typeof AdminCountryCountryIdIndexRoute
-  '/demo/start/ssr': typeof DemoStartSsrIndexRoute
-  '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdIndexRoute
-  '/admin/country/$countryId/city/$cityId/place/$placeId': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
+  '/callback': typeof CallbackRoute
+  '/authenticated': typeof AuthenticatedAuthenticatedRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
-  '/colors': typeof ColorsRoute
-  '/demo/convex': typeof DemoConvexRoute
-  '/demo/table': typeof DemoTableRoute
-  '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
-  '/admin/': typeof AdminIndexRoute
-  '/admin/country/$countryId': typeof AdminCountryCountryIdRouteWithChildren
-  '/demo/api/names': typeof DemoApiNamesRoute
-  '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
-  '/demo/form/address': typeof DemoFormAddressRoute
-  '/demo/form/simple': typeof DemoFormSimpleRoute
-  '/demo/start/api-request': typeof DemoStartApiRequestRoute
-  '/demo/start/server-funcs': typeof DemoStartServerFuncsRoute
-  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
-  '/demo/start/ssr/data-only': typeof DemoStartSsrDataOnlyRoute
-  '/demo/start/ssr/full-ssr': typeof DemoStartSsrFullSsrRoute
-  '/demo/start/ssr/spa-mode': typeof DemoStartSsrSpaModeRoute
-  '/admin/country/$countryId/': typeof AdminCountryCountryIdIndexRoute
-  '/demo/start/ssr/': typeof DemoStartSsrIndexRoute
-  '/admin/country/$countryId/city/$cityId': typeof AdminCountryCountryIdCityCityIdRouteWithChildren
-  '/admin/country/$countryId/city/$cityId/': typeof AdminCountryCountryIdCityCityIdIndexRoute
-  '/admin/country/$countryId/city/$cityId/place/$placeId': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
-  '/admin/country/$countryId/city/$cityId/place/$placeId/': typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/callback': typeof CallbackRoute
+  '/_authenticated/authenticated': typeof AuthenticatedAuthenticatedRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths:
-    | '/'
-    | '/admin'
-    | '/colors'
-    | '/demo/convex'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/workos'
-    | '/admin/'
-    | '/admin/country/$countryId'
-    | '/demo/api/names'
-    | '/demo/api/tq-todos'
-    | '/demo/form/address'
-    | '/demo/form/simple'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
-    | '/country/$countryId/city/$cityId'
-    | '/demo/start/ssr/data-only'
-    | '/demo/start/ssr/full-ssr'
-    | '/demo/start/ssr/spa-mode'
-    | '/admin/country/$countryId/'
-    | '/demo/start/ssr'
-    | '/admin/country/$countryId/city/$cityId'
-    | '/admin/country/$countryId/city/$cityId/'
-    | '/admin/country/$countryId/city/$cityId/place/$placeId'
-    | '/admin/country/$countryId/city/$cityId/place/$placeId/'
+  fullPaths: '/' | '/callback' | '/authenticated'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/colors'
-    | '/demo/convex'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/workos'
-    | '/admin'
-    | '/demo/api/names'
-    | '/demo/api/tq-todos'
-    | '/demo/form/address'
-    | '/demo/form/simple'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
-    | '/country/$countryId/city/$cityId'
-    | '/demo/start/ssr/data-only'
-    | '/demo/start/ssr/full-ssr'
-    | '/demo/start/ssr/spa-mode'
-    | '/admin/country/$countryId'
-    | '/demo/start/ssr'
-    | '/admin/country/$countryId/city/$cityId'
-    | '/admin/country/$countryId/city/$cityId/place/$placeId'
+  to: '/' | '/callback' | '/authenticated'
   id:
     | '__root__'
     | '/'
-    | '/admin'
-    | '/colors'
-    | '/demo/convex'
-    | '/demo/table'
-    | '/demo/tanstack-query'
-    | '/demo/workos'
-    | '/admin/'
-    | '/admin/country/$countryId'
-    | '/demo/api/names'
-    | '/demo/api/tq-todos'
-    | '/demo/form/address'
-    | '/demo/form/simple'
-    | '/demo/start/api-request'
-    | '/demo/start/server-funcs'
-    | '/country/$countryId/city/$cityId'
-    | '/demo/start/ssr/data-only'
-    | '/demo/start/ssr/full-ssr'
-    | '/demo/start/ssr/spa-mode'
-    | '/admin/country/$countryId/'
-    | '/demo/start/ssr/'
-    | '/admin/country/$countryId/city/$cityId'
-    | '/admin/country/$countryId/city/$cityId/'
-    | '/admin/country/$countryId/city/$cityId/place/$placeId'
-    | '/admin/country/$countryId/city/$cityId/place/$placeId/'
+    | '/_authenticated'
+    | '/callback'
+    | '/_authenticated/authenticated'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRouteWithChildren
-  ColorsRoute: typeof ColorsRoute
-  DemoConvexRoute: typeof DemoConvexRoute
-  DemoTableRoute: typeof DemoTableRoute
-  DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  DemoWorkosRoute: typeof DemoWorkosRoute
-  DemoApiNamesRoute: typeof DemoApiNamesRoute
-  DemoApiTqTodosRoute: typeof DemoApiTqTodosRoute
-  DemoFormAddressRoute: typeof DemoFormAddressRoute
-  DemoFormSimpleRoute: typeof DemoFormSimpleRoute
-  DemoStartApiRequestRoute: typeof DemoStartApiRequestRoute
-  DemoStartServerFuncsRoute: typeof DemoStartServerFuncsRoute
-  CountryCountryIdCityCityIdRoute: typeof CountryCountryIdCityCityIdRoute
-  DemoStartSsrDataOnlyRoute: typeof DemoStartSsrDataOnlyRoute
-  DemoStartSsrFullSsrRoute: typeof DemoStartSsrFullSsrRoute
-  DemoStartSsrSpaModeRoute: typeof DemoStartSsrSpaModeRoute
-  DemoStartSsrIndexRoute: typeof DemoStartSsrIndexRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  CallbackRoute: typeof CallbackRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/colors': {
-      id: '/colors'
-      path: '/colors'
-      fullPath: '/colors'
-      preLoaderRoute: typeof ColorsRouteImport
+    '/callback': {
+      id: '/callback'
+      path: '/callback'
+      fullPath: '/callback'
+      preLoaderRoute: typeof CallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -369,253 +94,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/demo/workos': {
-      id: '/demo/workos'
-      path: '/demo/workos'
-      fullPath: '/demo/workos'
-      preLoaderRoute: typeof DemoWorkosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/tanstack-query': {
-      id: '/demo/tanstack-query'
-      path: '/demo/tanstack-query'
-      fullPath: '/demo/tanstack-query'
-      preLoaderRoute: typeof DemoTanstackQueryRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/table': {
-      id: '/demo/table'
-      path: '/demo/table'
-      fullPath: '/demo/table'
-      preLoaderRoute: typeof DemoTableRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/convex': {
-      id: '/demo/convex'
-      path: '/demo/convex'
-      fullPath: '/demo/convex'
-      preLoaderRoute: typeof DemoConvexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/server-funcs': {
-      id: '/demo/start/server-funcs'
-      path: '/demo/start/server-funcs'
-      fullPath: '/demo/start/server-funcs'
-      preLoaderRoute: typeof DemoStartServerFuncsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/api-request': {
-      id: '/demo/start/api-request'
-      path: '/demo/start/api-request'
-      fullPath: '/demo/start/api-request'
-      preLoaderRoute: typeof DemoStartApiRequestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/form/simple': {
-      id: '/demo/form/simple'
-      path: '/demo/form/simple'
-      fullPath: '/demo/form/simple'
-      preLoaderRoute: typeof DemoFormSimpleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/form/address': {
-      id: '/demo/form/address'
-      path: '/demo/form/address'
-      fullPath: '/demo/form/address'
-      preLoaderRoute: typeof DemoFormAddressRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/api/tq-todos': {
-      id: '/demo/api/tq-todos'
-      path: '/demo/api/tq-todos'
-      fullPath: '/demo/api/tq-todos'
-      preLoaderRoute: typeof DemoApiTqTodosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/api/names': {
-      id: '/demo/api/names'
-      path: '/demo/api/names'
-      fullPath: '/demo/api/names'
-      preLoaderRoute: typeof DemoApiNamesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/country/$countryId': {
-      id: '/admin/country/$countryId'
-      path: '/country/$countryId'
-      fullPath: '/admin/country/$countryId'
-      preLoaderRoute: typeof AdminCountryCountryIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/demo/start/ssr/': {
-      id: '/demo/start/ssr/'
-      path: '/demo/start/ssr'
-      fullPath: '/demo/start/ssr'
-      preLoaderRoute: typeof DemoStartSsrIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/country/$countryId/': {
-      id: '/admin/country/$countryId/'
-      path: '/'
-      fullPath: '/admin/country/$countryId/'
-      preLoaderRoute: typeof AdminCountryCountryIdIndexRouteImport
-      parentRoute: typeof AdminCountryCountryIdRoute
-    }
-    '/demo/start/ssr/spa-mode': {
-      id: '/demo/start/ssr/spa-mode'
-      path: '/demo/start/ssr/spa-mode'
-      fullPath: '/demo/start/ssr/spa-mode'
-      preLoaderRoute: typeof DemoStartSsrSpaModeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/ssr/full-ssr': {
-      id: '/demo/start/ssr/full-ssr'
-      path: '/demo/start/ssr/full-ssr'
-      fullPath: '/demo/start/ssr/full-ssr'
-      preLoaderRoute: typeof DemoStartSsrFullSsrRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/demo/start/ssr/data-only': {
-      id: '/demo/start/ssr/data-only'
-      path: '/demo/start/ssr/data-only'
-      fullPath: '/demo/start/ssr/data-only'
-      preLoaderRoute: typeof DemoStartSsrDataOnlyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/country/$countryId/city/$cityId': {
-      id: '/country/$countryId/city/$cityId'
-      path: '/country/$countryId/city/$cityId'
-      fullPath: '/country/$countryId/city/$cityId'
-      preLoaderRoute: typeof CountryCountryIdCityCityIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/country/$countryId/city/$cityId': {
-      id: '/admin/country/$countryId/city/$cityId'
-      path: '/city/$cityId'
-      fullPath: '/admin/country/$countryId/city/$cityId'
-      preLoaderRoute: typeof AdminCountryCountryIdCityCityIdRouteImport
-      parentRoute: typeof AdminCountryCountryIdRoute
-    }
-    '/admin/country/$countryId/city/$cityId/': {
-      id: '/admin/country/$countryId/city/$cityId/'
-      path: '/'
-      fullPath: '/admin/country/$countryId/city/$cityId/'
-      preLoaderRoute: typeof AdminCountryCountryIdCityCityIdIndexRouteImport
-      parentRoute: typeof AdminCountryCountryIdCityCityIdRoute
-    }
-    '/admin/country/$countryId/city/$cityId/place/$placeId': {
-      id: '/admin/country/$countryId/city/$cityId/place/$placeId'
-      path: '/place/$placeId'
-      fullPath: '/admin/country/$countryId/city/$cityId/place/$placeId'
-      preLoaderRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport
-      parentRoute: typeof AdminCountryCountryIdCityCityIdRoute
-    }
-    '/admin/country/$countryId/city/$cityId/place/$placeId/': {
-      id: '/admin/country/$countryId/city/$cityId/place/$placeId/'
-      path: '/'
-      fullPath: '/admin/country/$countryId/city/$cityId/place/$placeId/'
-      preLoaderRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport
-      parentRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRoute
+    '/_authenticated/authenticated': {
+      id: '/_authenticated/authenticated'
+      path: '/authenticated'
+      fullPath: '/authenticated'
+      preLoaderRoute: typeof AuthenticatedAuthenticatedRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
-interface AdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren {
-  AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
+interface AuthenticatedRouteChildren {
+  AuthenticatedAuthenticatedRoute: typeof AuthenticatedAuthenticatedRoute
 }
 
-const AdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren: AdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren =
-  {
-    AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute:
-      AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute,
-  }
-
-const AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren =
-  AdminCountryCountryIdCityCityIdPlacePlaceIdRoute._addFileChildren(
-    AdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren,
-  )
-
-interface AdminCountryCountryIdCityCityIdRouteChildren {
-  AdminCountryCountryIdCityCityIdIndexRoute: typeof AdminCountryCountryIdCityCityIdIndexRoute
-  AdminCountryCountryIdCityCityIdPlacePlaceIdRoute: typeof AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
+const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAuthenticatedRoute: AuthenticatedAuthenticatedRoute,
 }
 
-const AdminCountryCountryIdCityCityIdRouteChildren: AdminCountryCountryIdCityCityIdRouteChildren =
-  {
-    AdminCountryCountryIdCityCityIdIndexRoute:
-      AdminCountryCountryIdCityCityIdIndexRoute,
-    AdminCountryCountryIdCityCityIdPlacePlaceIdRoute:
-      AdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren,
-  }
-
-const AdminCountryCountryIdCityCityIdRouteWithChildren =
-  AdminCountryCountryIdCityCityIdRoute._addFileChildren(
-    AdminCountryCountryIdCityCityIdRouteChildren,
-  )
-
-interface AdminCountryCountryIdRouteChildren {
-  AdminCountryCountryIdIndexRoute: typeof AdminCountryCountryIdIndexRoute
-  AdminCountryCountryIdCityCityIdRoute: typeof AdminCountryCountryIdCityCityIdRouteWithChildren
-}
-
-const AdminCountryCountryIdRouteChildren: AdminCountryCountryIdRouteChildren = {
-  AdminCountryCountryIdIndexRoute: AdminCountryCountryIdIndexRoute,
-  AdminCountryCountryIdCityCityIdRoute:
-    AdminCountryCountryIdCityCityIdRouteWithChildren,
-}
-
-const AdminCountryCountryIdRouteWithChildren =
-  AdminCountryCountryIdRoute._addFileChildren(
-    AdminCountryCountryIdRouteChildren,
-  )
-
-interface AdminRouteChildren {
-  AdminIndexRoute: typeof AdminIndexRoute
-  AdminCountryCountryIdRoute: typeof AdminCountryCountryIdRouteWithChildren
-}
-
-const AdminRouteChildren: AdminRouteChildren = {
-  AdminIndexRoute: AdminIndexRoute,
-  AdminCountryCountryIdRoute: AdminCountryCountryIdRouteWithChildren,
-}
-
-const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
+  AuthenticatedRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRouteWithChildren,
-  ColorsRoute: ColorsRoute,
-  DemoConvexRoute: DemoConvexRoute,
-  DemoTableRoute: DemoTableRoute,
-  DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  DemoWorkosRoute: DemoWorkosRoute,
-  DemoApiNamesRoute: DemoApiNamesRoute,
-  DemoApiTqTodosRoute: DemoApiTqTodosRoute,
-  DemoFormAddressRoute: DemoFormAddressRoute,
-  DemoFormSimpleRoute: DemoFormSimpleRoute,
-  DemoStartApiRequestRoute: DemoStartApiRequestRoute,
-  DemoStartServerFuncsRoute: DemoStartServerFuncsRoute,
-  CountryCountryIdCityCityIdRoute: CountryCountryIdCityCityIdRoute,
-  DemoStartSsrDataOnlyRoute: DemoStartSsrDataOnlyRoute,
-  DemoStartSsrFullSsrRoute: DemoStartSsrFullSsrRoute,
-  DemoStartSsrSpaModeRoute: DemoStartSsrSpaModeRoute,
-  DemoStartSsrIndexRoute: DemoStartSsrIndexRoute,
+  AuthenticatedRoute: AuthenticatedRouteWithChildren,
+  CallbackRoute: CallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

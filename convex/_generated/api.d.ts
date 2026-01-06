@@ -8,13 +8,7 @@
  * @module
  */
 
-import type * as functions_auth from "../functions/auth.js";
-import type * as functions_city from "../functions/city.js";
-import type * as functions_country from "../functions/country.js";
-import type * as functions_image from "../functions/image.js";
-import type * as functions_place from "../functions/place.js";
-import type * as functions_route from "../functions/route.js";
-import type * as todos from "../todos.js";
+import type * as myFunctions from "../myFunctions.js";
 
 import type {
   ApiFromModules,
@@ -23,13 +17,7 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  "functions/auth": typeof functions_auth;
-  "functions/city": typeof functions_city;
-  "functions/country": typeof functions_country;
-  "functions/image": typeof functions_image;
-  "functions/place": typeof functions_place;
-  "functions/route": typeof functions_route;
-  todos: typeof todos;
+  myFunctions: typeof myFunctions;
 }>;
 
 /**
@@ -58,129 +46,4 @@ export declare const internal: FilterApi<
   FunctionReference<any, "internal">
 >;
 
-export declare const components: {
-  r2: {
-    lib: {
-      deleteMetadata: FunctionReference<
-        "mutation",
-        "internal",
-        { bucket: string; key: string },
-        null
-      >;
-      deleteObject: FunctionReference<
-        "mutation",
-        "internal",
-        {
-          accessKeyId: string;
-          bucket: string;
-          endpoint: string;
-          key: string;
-          secretAccessKey: string;
-        },
-        null
-      >;
-      deleteR2Object: FunctionReference<
-        "action",
-        "internal",
-        {
-          accessKeyId: string;
-          bucket: string;
-          endpoint: string;
-          key: string;
-          secretAccessKey: string;
-        },
-        null
-      >;
-      getMetadata: FunctionReference<
-        "query",
-        "internal",
-        {
-          accessKeyId: string;
-          bucket: string;
-          endpoint: string;
-          key: string;
-          secretAccessKey: string;
-        },
-        {
-          bucket: string;
-          bucketLink: string;
-          contentType?: string;
-          key: string;
-          lastModified: string;
-          link: string;
-          sha256?: string;
-          size?: number;
-          url: string;
-        } | null
-      >;
-      listMetadata: FunctionReference<
-        "query",
-        "internal",
-        {
-          accessKeyId: string;
-          bucket: string;
-          cursor?: string;
-          endpoint: string;
-          limit?: number;
-          secretAccessKey: string;
-        },
-        {
-          continueCursor: string;
-          isDone: boolean;
-          page: Array<{
-            bucket: string;
-            bucketLink: string;
-            contentType?: string;
-            key: string;
-            lastModified: string;
-            link: string;
-            sha256?: string;
-            size?: number;
-            url: string;
-          }>;
-          pageStatus?: null | "SplitRecommended" | "SplitRequired";
-          splitCursor?: null | string;
-        }
-      >;
-      store: FunctionReference<
-        "action",
-        "internal",
-        {
-          accessKeyId: string;
-          bucket: string;
-          endpoint: string;
-          secretAccessKey: string;
-          url: string;
-        },
-        any
-      >;
-      syncMetadata: FunctionReference<
-        "action",
-        "internal",
-        {
-          accessKeyId: string;
-          bucket: string;
-          endpoint: string;
-          key: string;
-          onComplete?: string;
-          secretAccessKey: string;
-        },
-        null
-      >;
-      upsertMetadata: FunctionReference<
-        "mutation",
-        "internal",
-        {
-          bucket: string;
-          contentType?: string;
-          key: string;
-          lastModified: string;
-          link: string;
-          sha256?: string;
-          size?: number;
-        },
-        { isNew: boolean }
-      >;
-    };
-  };
-};
+export declare const components: {};

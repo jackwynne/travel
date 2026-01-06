@@ -1,316 +1,85 @@
-Welcome to your new TanStack app! 
+# Welcome to your Convex + TanStack Start + WorkOS AuthKit app
 
-# Getting Started
+This is a [Convex](https://convex.dev/) project using WorkOS AuthKit for authentication.
 
-To run this application:
+After the initial setup (<2 minutes) you'll have a working full-stack app using:
 
-```bash
-pnpm install
-pnpm start
-```
+- Convex as your backend (database, server logic)
+- [React](https://react.dev/) as your frontend (web page interactivity)
+- [TanStack Start](https://tanstack.com/start) for modern full-stack React with file-based routing
+- [Tailwind](https://tailwindcss.com/) for building great looking accessible UI
+- [WorkOS AuthKit](https://authkit.com/) for authentication
 
-# Building For Production
+## Get started
 
-To build this application for production:
+1. Clone this repository and install dependencies:
 
-```bash
-pnpm build
-```
+   ```bash
+   npm install
+   ```
 
-## Testing
+2. Set up your environment variables:
 
-This project uses [Vitest](https://vitest.dev/) for testing. You can run the tests with:
+   ```bash
+   cp .env.local.example .env.local
+   ```
 
-```bash
-pnpm test
-```
+3. Configure WorkOS AuthKit:
+   - Create a [WorkOS account](https://workos.com/)
+   - Get your Client ID and API Key from the WorkOS dashboard
+   - In the WorkOS dashboard, add `http://localhost:3000/callback` as a redirect URI
+   - Generate a secure password for cookie encryption (minimum 32 characters)
+   - Update your `.env.local` file with these values
 
-## Styling
+4. Configure Convex:
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+   ```bash
+   npx convex dev
+   ```
 
+   This will:
+   - Set up your Convex deployment
+   - Add your Convex URL to `.env.local`
+   - Open the Convex dashboard
 
-## Linting & Formatting
+   Then set your WorkOS Client ID in Convex:
 
-This project uses [Biome](https://biomejs.dev/) for linting and formatting. The following scripts are available:
+   ```bash
+   npx convex env set WORKOS_CLIENT_ID <your_client_id>
+   ```
 
+   This allows Convex to validate JWT tokens from WorkOS
 
-```bash
-pnpm lint
-pnpm format
-pnpm check
-```
+5. Run the development server:
 
+   ```bash
+   npm run dev
+   ```
 
-## Setting up Convex
+   This starts both the Vite dev server (TanStack Start frontend) and Convex backend in parallel
 
-- Set the `VITE_CONVEX_URL` and `CONVEX_DEPLOYMENT` environment variables in your `.env.local`. (Or run `npx convex init` to set them automatically.)
-- Run `npx convex dev` to start the Convex server.
+6. Open [http://localhost:3000](http://localhost:3000) to see your app
 
+## WorkOS AuthKit Setup
 
-## Shadcn
+This app uses WorkOS AuthKit for authentication. Key features:
 
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+- **Redirect-based authentication**: Users are redirected to WorkOS for sign-in/sign-up
+- **Session management**: Automatic token refresh and session handling
+- **Route loader protection**: Protected routes use loaders to check authentication
+- **Client and server functions**: `useAuth()` for client components, `getAuth()` for server loaders
 
-```bash
-pnpm dlx shadcn@latest add button
-```
+## Learn more
 
+To learn more about developing your project with Convex, check out:
 
+- The [Tour of Convex](https://docs.convex.dev/get-started) for a thorough introduction to Convex principles.
+- The rest of [Convex docs](https://docs.convex.dev/) to learn about all Convex features.
+- [Stack](https://stack.convex.dev/) for in-depth articles on advanced topics.
 
-## Routing
-This project uses [TanStack Router](https://tanstack.com/router). The initial setup is a file based router. Which means that the routes are managed as files in `src/routes`.
+## Join the community
 
-### Adding A Route
+Join thousands of developers building full-stack apps with Convex:
 
-To add a new route to your application just add another a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from "@tanstack/react-router";
-```
-
-Then anywhere in your JSX you can use it like so:
-
-```tsx
-<Link to="/about">About</Link>
-```
-
-This will create a link that will navigate to the `/about` route.
-
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
-
-### Using A Layout
-
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you use the `<Outlet />` component.
-
-Here is an example layout that includes a header:
-
-```tsx
-import { Outlet, createRootRoute } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
-
-import { Link } from "@tanstack/react-router";
-
-export const Route = createRootRoute({
-  component: () => (
-    <>
-      <header>
-        <nav>
-          <Link to="/">Home</Link>
-          <Link to="/about">About</Link>
-        </nav>
-      </header>
-      <Outlet />
-      <TanStackRouterDevtools />
-    </>
-  ),
-})
-```
-
-The `<TanStackRouterDevtools />` component is not required so you can remove it if you don't want it in your layout.
-
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
-
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-const peopleRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/people",
-  loader: async () => {
-    const response = await fetch("https://swapi.dev/api/people");
-    return response.json() as Promise<{
-      results: {
-        name: string;
-      }[];
-    }>;
-  },
-  component: () => {
-    const data = peopleRoute.useLoaderData();
-    return (
-      <ul>
-        {data.results.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    );
-  },
-});
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-### React-Query
-
-React-Query is an excellent addition or alternative to route loading and integrating it into you application is a breeze.
-
-First add your dependencies:
-
-```bash
-pnpm add @tanstack/react-query @tanstack/react-query-devtools
-```
-
-Next we'll need to create a query client and provider. We recommend putting those in `main.tsx`.
-
-```tsx
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
-// ...
-
-const queryClient = new QueryClient();
-
-// ...
-
-if (!rootElement.innerHTML) {
-  const root = ReactDOM.createRoot(rootElement);
-
-  root.render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>
-  );
-}
-```
-
-You can also add TanStack Query Devtools to the root route (optional).
-
-```tsx
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-
-const rootRoute = createRootRoute({
-  component: () => (
-    <>
-      <Outlet />
-      <ReactQueryDevtools buttonPosition="top-right" />
-      <TanStackRouterDevtools />
-    </>
-  ),
-});
-```
-
-Now you can use `useQuery` to fetch your data.
-
-```tsx
-import { useQuery } from "@tanstack/react-query";
-
-import "./App.css";
-
-function App() {
-  const { data } = useQuery({
-    queryKey: ["people"],
-    queryFn: () =>
-      fetch("https://swapi.dev/api/people")
-        .then((res) => res.json())
-        .then((data) => data.results as { name: string }[]),
-    initialData: [],
-  });
-
-  return (
-    <div>
-      <ul>
-        {data.map((person) => (
-          <li key={person.name}>{person.name}</li>
-        ))}
-      </ul>
-    </div>
-  );
-}
-
-export default App;
-```
-
-You can find out everything you need to know on how to use React-Query in the [React-Query documentation](https://tanstack.com/query/latest/docs/framework/react/overview).
-
-## State Management
-
-Another common requirement for React applications is state management. There are many options for state management in React. TanStack Store provides a great starting point for your project.
-
-First you need to add TanStack Store as a dependency:
-
-```bash
-pnpm add @tanstack/store
-```
-
-Now let's create a simple counter in the `src/App.tsx` file as a demonstration.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-function App() {
-  const count = useStore(countStore);
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-    </div>
-  );
-}
-
-export default App;
-```
-
-One of the many nice features of TanStack Store is the ability to derive state from other state. That derived state will update when the base state updates.
-
-Let's check this out by doubling the count using derived state.
-
-```tsx
-import { useStore } from "@tanstack/react-store";
-import { Store, Derived } from "@tanstack/store";
-import "./App.css";
-
-const countStore = new Store(0);
-
-const doubledStore = new Derived({
-  fn: () => countStore.state * 2,
-  deps: [countStore],
-});
-doubledStore.mount();
-
-function App() {
-  const count = useStore(countStore);
-  const doubledCount = useStore(doubledStore);
-
-  return (
-    <div>
-      <button onClick={() => countStore.setState((n) => n + 1)}>
-        Increment - {count}
-      </button>
-      <div>Doubled - {doubledCount}</div>
-    </div>
-  );
-}
-
-export default App;
-```
-
-We use the `Derived` class to create a new store that is derived from another store. The `Derived` class has a `mount` method that will start the derived store updating.
-
-Once we've created the derived store we can use it in the `App` component just like we would any other store using the `useStore` hook.
-
-You can find out everything you need to know on how to use TanStack Store in the [TanStack Store documentation](https://tanstack.com/store/latest).
-
-# Demo files
-
-Files prefixed with `demo` can be safely deleted. They are there to provide a starting point for you to play around with the features you've installed.
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
+- Join the [Convex Discord community](https://convex.dev/community) to get help in real-time.
+- Follow [Convex on GitHub](https://github.com/get-convex/), star and contribute to the open-source implementation of Convex.
