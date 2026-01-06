@@ -14,11 +14,6 @@ export default defineSchema({
 		imageId: v.string(),
 		price: v.number(),
 	}),
-	todos: defineTable({
-		text: v.string(),
-		notes: v.optional(v.string()),
-		completed: v.boolean(),
-	}),
 	country: defineTable({
 		name: v.string(),
 		lat: v.number(),
