@@ -99,17 +99,15 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <Link to="/admin">
-              <SidebarMenuButton size="lg">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Plane className="size-4" />
-                </div>
-                <div className="flex flex-col gap-0.5 leading-none">
-                  <span className="font-medium">Travel Admin</span>
-                  <span className="text-xs text-muted-foreground">Content Management</span>
-                </div>
-              </SidebarMenuButton>
-            </Link>
+            <SidebarMenuButton size="lg" render={<Link to="/admin" />}>
+              <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
+                <Plane className="size-4" />
+              </div>
+              <div className="flex flex-col gap-0.5 leading-none">
+                <span className="font-medium">Travel Admin</span>
+                <span className="text-xs text-muted-foreground">Content Management</span>
+              </div>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarHeader>
@@ -120,10 +118,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
           <SidebarMenu>
             <SidebarMenuItem>
               <Link to="/admin">
-                <SidebarMenuButton
-                  isActive={isDashboardActive}
-                  tooltip="Dashboard"
-                >
+                <SidebarMenuButton isActive={isDashboardActive} tooltip="Dashboard">
                   <Home className="size-4" />
                   <span>Dashboard</span>
                 </SidebarMenuButton>
@@ -156,10 +151,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
 
             <SidebarMenuItem>
               <Link to="/admin/colours">
-                <SidebarMenuButton
-                  isActive={isColoursActive}
-                  tooltip="Colours"
-                >
+                <SidebarMenuButton isActive={isColoursActive} tooltip="Colours">
                   <Palette className="size-4" />
                   <span>Colours</span>
                 </SidebarMenuButton>
@@ -168,10 +160,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
 
             <SidebarMenuItem>
               <Link to="/">
-                <SidebarMenuButton
-                  isActive={false}
-                  tooltip="Back to Home"
-                >
+                <SidebarMenuButton isActive={false} tooltip="Back to Home">
                   <PlaneTakeoff className="size-4" />
                   <span>Back to Home</span>
                 </SidebarMenuButton>
@@ -247,15 +236,18 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
 
                           return (
                             <SidebarMenuSubItem key={city._id}>
-                              <Link
-                                to="/admin/country/$countryId/city/$cityId"
-                                params={{ countryId: country._id, cityId: city._id }}
+                              <SidebarMenuSubButton
+                                isActive={isCityActive}
+                                render={
+                                  <Link
+                                    to="/admin/country/$countryId/city/$cityId"
+                                    params={{ countryId: country._id, cityId: city._id }}
+                                  />
+                                }
                               >
-                                <SidebarMenuSubButton isActive={isCityActive}>
-                                  <Building2 className="size-3" />
-                                  <span>{city.name}</span>
-                                </SidebarMenuSubButton>
-                              </Link>
+                                <Building2 className="size-3" />
+                                <span>{city.name}</span>
+                              </SidebarMenuSubButton>
                             </SidebarMenuSubItem>
                           )
                         })}
