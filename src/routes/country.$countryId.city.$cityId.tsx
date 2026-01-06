@@ -1,10 +1,13 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { Link, createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import {
 	ChevronRight,
+	Globe,
 	MapPin,
+	Plane,
 	Route as RouteIcon,
 	Search,
+	Settings,
 	Star,
 } from "lucide-react";
 import { useMemo, useState } from "react";
@@ -40,6 +43,7 @@ import {
 	getCategoryLabel,
 } from "@/lib/category-utils";
 import { cn } from "@/lib/utils";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { api } from "../../convex/_generated/api";
 import type { Doc, Id } from "../../convex/_generated/dataModel";
 
@@ -145,25 +149,42 @@ function CityPage() {
 	}
 
 	return (
-		<div className="min-h-screen bg-background">
-			{/* Header */}
-			<header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
-				<div className="container mx-auto px-4 py-6">
-					<div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
-						<span>{country.name}</span>
-						<ChevronRight className="size-4" />
-						<span className="text-foreground font-medium">{city.name}</span>
-					</div>
-					<h1 className="text-3xl font-bold tracking-tight">{city.name}</h1>
-					{city.lastVistitedYear && (
-						<p className="text-muted-foreground mt-1">
-							Last visited: {city.lastVistitedMonth}/{city.lastVistitedYear}
-						</p>
-					)}
+		<div className="min-h-screen flex flex-col bg-background">
+			{/* Minimal Header (copied from index) */}
+			<header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-lg">
+				<div className="container mx-auto px-4 h-14 flex items-center justify-between">
+					<Link to="/" className="flex items-center gap-2 group">
+						<div className="relative">
+							<Plane className="h-6 w-6 text-primary transition-transform group-hover:rotate-12" />
+							<div className="absolute -inset-1 bg-primary/20 rounded-full blur-sm opacity-0 group-hover:opacity-100 transition-opacity" />
+						</div>
+						<span className="font-semibold text-lg tracking-tight">
+							Travel
+						</span>
+					</Link>
+					<ThemeToggle />
 				</div>
 			</header>
 
-			<main className="container mx-auto px-4 py-8 space-y-8">
+			<main className="flex-1">
+				{/* City Title (moved from old header) */}
+				<div className="border-b bg-card/50 backdrop-blur-sm">
+					<div className="container mx-auto px-4 py-6">
+						<div className="flex items-center gap-2 text-sm text-muted-foreground mb-2">
+							<span>{country.name}</span>
+							<ChevronRight className="size-4" />
+							<span className="text-foreground font-medium">{city.name}</span>
+						</div>
+						<h1 className="text-3xl font-bold tracking-tight">{city.name}</h1>
+						{city.lastVistitedYear && (
+							<p className="text-muted-foreground mt-1">
+								Last visited: {city.lastVistitedMonth}/{city.lastVistitedYear}
+							</p>
+						)}
+					</div>
+				</div>
+
+				<div className="container mx-auto px-4 py-8 space-y-8">
 				{/* Map Section */}
 				<section>
 					<div className="flex items-center justify-between mb-4">
@@ -342,7 +363,31 @@ function CityPage() {
 						</div>
 					)}
 				</section>
+				</div>
 			</main>
+
+			{/* Footer (copied from index; link updated to current city) */}
+			<footer className="border-t border-border/40 bg-muted/30">
+				<div className="container mx-auto px-4 py-8">
+					<div className="flex flex-col md:flex-row items-center justify-between gap-4">
+						<div className="flex items-center gap-2 text-muted-foreground">
+							<Globe className="h-4 w-4" />
+							<span className="text-sm">
+								Explore the world, one city at a time
+							</span>
+						</div>
+						<Link
+							to="/country/$countryId/city/$cityId"
+							params={{ countryId, cityId }}
+						>
+							<Button variant="outline" className="gap-2">
+								<Settings className="h-4 w-4" />
+								Admin Portal
+							</Button>
+						</Link>
+					</div>
+				</div>
+			</footer>
 
 			{/* Place Details Dialog */}
 			<PlaceDetailsDialog
