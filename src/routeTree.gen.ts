@@ -9,11 +9,11 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as ColorsRouteImport } from './routes/colors'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
-import { Route as DemoWorkosRouteImport } from './routes/demo/workos'
 import { Route as DemoTanstackQueryRouteImport } from './routes/demo/tanstack-query'
 import { Route as DemoTableRouteImport } from './routes/demo/table'
 import { Route as DemoConvexRouteImport } from './routes/demo/convex'
@@ -35,6 +35,11 @@ import { Route as AdminCountryCountryIdCityCityIdIndexRouteImport } from './rout
 import { Route as AdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport } from './routes/admin/country.$countryId/city.$cityId/place.$placeId'
 import { Route as AdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport } from './routes/admin/country.$countryId/city.$cityId/place.$placeId/index'
 
+const SignInRoute = SignInRouteImport.update({
+  id: '/sign-in',
+  path: '/sign-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ColorsRoute = ColorsRouteImport.update({
   id: '/colors',
   path: '/colors',
@@ -54,11 +59,6 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
-} as any)
-const DemoWorkosRoute = DemoWorkosRouteImport.update({
-  id: '/demo/workos',
-  path: '/demo/workos',
-  getParentRoute: () => rootRouteImport,
 } as any)
 const DemoTanstackQueryRoute = DemoTanstackQueryRouteImport.update({
   id: '/demo/tanstack-query',
@@ -171,10 +171,10 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/colors': typeof ColorsRoute
+  '/sign-in': typeof SignInRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/country/$countryId': typeof AdminCountryCountryIdRouteWithChildren
   '/demo/api/names': typeof DemoApiNamesRoute
@@ -197,10 +197,10 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/colors': typeof ColorsRoute
+  '/sign-in': typeof SignInRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
   '/admin': typeof AdminIndexRoute
   '/demo/api/names': typeof DemoApiNamesRoute
   '/demo/api/tq-todos': typeof DemoApiTqTodosRoute
@@ -222,10 +222,10 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/colors': typeof ColorsRoute
+  '/sign-in': typeof SignInRoute
   '/demo/convex': typeof DemoConvexRoute
   '/demo/table': typeof DemoTableRoute
   '/demo/tanstack-query': typeof DemoTanstackQueryRoute
-  '/demo/workos': typeof DemoWorkosRoute
   '/admin/': typeof AdminIndexRoute
   '/admin/country/$countryId': typeof AdminCountryCountryIdRouteWithChildren
   '/demo/api/names': typeof DemoApiNamesRoute
@@ -251,10 +251,10 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/colors'
+    | '/sign-in'
     | '/demo/convex'
     | '/demo/table'
     | '/demo/tanstack-query'
-    | '/demo/workos'
     | '/admin/'
     | '/admin/country/$countryId'
     | '/demo/api/names'
@@ -277,10 +277,10 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/colors'
+    | '/sign-in'
     | '/demo/convex'
     | '/demo/table'
     | '/demo/tanstack-query'
-    | '/demo/workos'
     | '/admin'
     | '/demo/api/names'
     | '/demo/api/tq-todos'
@@ -301,10 +301,10 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/colors'
+    | '/sign-in'
     | '/demo/convex'
     | '/demo/table'
     | '/demo/tanstack-query'
-    | '/demo/workos'
     | '/admin/'
     | '/admin/country/$countryId'
     | '/demo/api/names'
@@ -329,10 +329,10 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   ColorsRoute: typeof ColorsRoute
+  SignInRoute: typeof SignInRoute
   DemoConvexRoute: typeof DemoConvexRoute
   DemoTableRoute: typeof DemoTableRoute
   DemoTanstackQueryRoute: typeof DemoTanstackQueryRoute
-  DemoWorkosRoute: typeof DemoWorkosRoute
   DemoApiNamesRoute: typeof DemoApiNamesRoute
   DemoApiTqTodosRoute: typeof DemoApiTqTodosRoute
   DemoFormAddressRoute: typeof DemoFormAddressRoute
@@ -348,6 +348,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/colors': {
       id: '/colors'
       path: '/colors'
@@ -375,13 +382,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
-    }
-    '/demo/workos': {
-      id: '/demo/workos'
-      path: '/demo/workos'
-      fullPath: '/demo/workos'
-      preLoaderRoute: typeof DemoWorkosRouteImport
-      parentRoute: typeof rootRouteImport
     }
     '/demo/tanstack-query': {
       id: '/demo/tanstack-query'
@@ -591,10 +591,10 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   ColorsRoute: ColorsRoute,
+  SignInRoute: SignInRoute,
   DemoConvexRoute: DemoConvexRoute,
   DemoTableRoute: DemoTableRoute,
   DemoTanstackQueryRoute: DemoTanstackQueryRoute,
-  DemoWorkosRoute: DemoWorkosRoute,
   DemoApiNamesRoute: DemoApiNamesRoute,
   DemoApiTqTodosRoute: DemoApiTqTodosRoute,
   DemoFormAddressRoute: DemoFormAddressRoute,
@@ -612,10 +612,11 @@ export const routeTree = rootRouteImport
   ._addFileTypes<FileRouteTypes>()
 
 import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
+import type { startInstance } from './start.ts'
 declare module '@tanstack/react-start' {
   interface Register {
     ssr: true
     router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
   }
 }

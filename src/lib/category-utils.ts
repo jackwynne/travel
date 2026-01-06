@@ -1,5 +1,5 @@
-import type schema from "../../convex/schema";
 import type { Infer } from "convex/values";
+import type schema from "../../convex/schema";
 
 type Category = Infer<typeof schema.tables.place.validator.fields.category>;
 
@@ -30,4 +30,3 @@ export function getAllCategories(): { value: Category; label: string }[] {
 }
 
 export type { Category };
-

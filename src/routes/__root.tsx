@@ -1,60 +1,36 @@
+import { ClerkProvider } from "@clerk/tanstack-react-start";
+import { auth } from "@clerk/tanstack-react-start/server";
+import type { ConvexQueryClient } from "@convex-dev/react-query";
 import type { QueryClient } from "@tanstack/react-query";
 import {
 	createRootRouteWithContext,
 	HeadContent,
-	Link,
 	Outlet,
 	Scripts,
+	useRouteContext,
 } from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/react-start";
+import type { ConvexReactClient } from "convex/react";
+import DefaultCatchBoundary from "@/components/default-catch-boundary";
 import { ThemeProvider } from "@/hooks/theme-provider";
 import ClientDevtools from "../components/ClientDevtools";
-import ConvexProvider from "../integrations/convex/provider";
-import WorkOSProvider from "../integrations/workos/provider";
 import appCss from "../styles.css?url";
 
-interface MyRouterContext {
+const fetchClerkAuth = createServerFn({ method: "GET" }).handler(async () => {
+	const authObject = await auth();
+	const token = authObject.getToken({ template: "convex" });
+
+	return {
+		userId: authObject.userId,
+		token,
+	};
+});
+
+export const Route = createRootRouteWithContext<{
 	queryClient: QueryClient;
-}
-
-function NotFoundComponent() {
-	return (
-		<div className="flex min-h-screen flex-col items-center justify-center bg-background px-4">
-			<div className="text-center">
-				<h1 className="text-8xl font-bold text-primary">404</h1>
-				<div className="mt-4 h-1 w-24 mx-auto bg-gradient-to-r from-primary/20 via-primary to-primary/20 rounded-full" />
-				<h2 className="mt-6 text-2xl font-semibold text-foreground">
-					Page not found
-				</h2>
-				<p className="mt-3 text-muted-foreground max-w-md">
-					The page you're looking for doesn't exist or has been moved.
-				</p>
-				<Link
-					to="/"
-					className="mt-8 inline-flex items-center gap-2 rounded-lg bg-primary px-6 py-3 text-sm font-medium text-primary-foreground transition-all hover:bg-primary/90 hover:scale-105 active:scale-95"
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="16"
-						height="16"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-						aria-hidden="true"
-					>
-						<path d="m12 19-7-7 7-7" />
-						<path d="M19 12H5" />
-					</svg>
-					Back to home
-				</Link>
-			</div>
-		</div>
-	);
-}
-
-export const Route = createRootRouteWithContext<MyRouterContext>()({
+	convexClient: ConvexReactClient;
+	convexQueryClient: ConvexQueryClient;
+}>()({
 	head: () => ({
 		meta: [
 			{
@@ -88,10 +64,27 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 			},
 		],
 	}),
+	beforeLoad: async (ctx) => {
+		const auth = await fetchClerkAuth();
+		const { userId, token } = auth;
 
+		const tokenValue = await token;
+		console.log("tokenValue", tokenValue);
+
+		// During SSR only (the only time serverHttpClient exists),
+		// set the Clerk auth token to make HTTP queries with.
+		if (tokenValue) {
+			ctx.context.convexQueryClient.serverHttpClient?.setAuth(tokenValue);
+		}
+
+		return {
+			userId,
+			tokenValue,
+		};
+	},
 	component: RootComponent,
+	errorComponent: DefaultCatchBoundary,
 	shellComponent: RootDocument,
-	notFoundComponent: NotFoundComponent,
 });
 
 function RootComponent() {
@@ -104,20 +97,18 @@ function RootComponent() {
 
 function RootDocument({ children }: { children: React.ReactNode }) {
 	return (
-		<html lang="en">
-			<head>
-				<HeadContent />
-			</head>
-			<body>
-				<WorkOSProvider>
-					<ConvexProvider>
-						{/* <Header /> */}
-						{children}
-						<ClientDevtools />
-					</ConvexProvider>
-				</WorkOSProvider>
-				<Scripts />
-			</body>
-		</html>
+		<ClerkProvider>
+			<html lang="en">
+				<head>
+					<HeadContent />
+				</head>
+				<body>
+					{/* <Header /> */}
+					{children}
+					<ClientDevtools />
+					<Scripts />
+				</body>
+			</html>
+		</ClerkProvider>
 	);
 }
