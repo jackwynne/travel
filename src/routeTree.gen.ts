@@ -9,11 +9,26 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ColorsRouteImport } from './routes/colors'
 import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedAuthenticatedRouteImport } from './routes/_authenticated/authenticated'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as CountryCountryIdCityCityIdRouteImport } from './routes/country.$countryId.city.$cityId'
+import { Route as AuthenticatedAdminCountryCountryIdRouteImport } from './routes/_authenticated/admin/country.$countryId'
+import { Route as AuthenticatedAdminCountryCountryIdIndexRouteImport } from './routes/_authenticated/admin/country.$countryId/index'
+import { Route as AuthenticatedAdminCountryCountryIdCityCityIdRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId'
+import { Route as AuthenticatedAdminCountryCountryIdCityCityIdIndexRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/index'
+import { Route as AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/place.$placeId'
+import { Route as AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/place.$placeId/index'
 
+const ColorsRoute = ColorsRouteImport.update({
+  id: '/colors',
+  path: '/colors',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CallbackRoute = CallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
@@ -34,45 +49,167 @@ const AuthenticatedAuthenticatedRoute =
     path: '/authenticated',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const CountryCountryIdCityCityIdRoute =
+  CountryCountryIdCityCityIdRouteImport.update({
+    id: '/country/$countryId/city/$cityId',
+    path: '/country/$countryId/city/$cityId',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AuthenticatedAdminCountryCountryIdRoute =
+  AuthenticatedAdminCountryCountryIdRouteImport.update({
+    id: '/country/$countryId',
+    path: '/country/$countryId',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminCountryCountryIdIndexRoute =
+  AuthenticatedAdminCountryCountryIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminCountryCountryIdRoute,
+  } as any)
+const AuthenticatedAdminCountryCountryIdCityCityIdRoute =
+  AuthenticatedAdminCountryCountryIdCityCityIdRouteImport.update({
+    id: '/city/$cityId',
+    path: '/city/$cityId',
+    getParentRoute: () => AuthenticatedAdminCountryCountryIdRoute,
+  } as any)
+const AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute =
+  AuthenticatedAdminCountryCountryIdCityCityIdIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminCountryCountryIdCityCityIdRoute,
+  } as any)
+const AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRoute =
+  AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport.update({
+    id: '/place/$placeId',
+    path: '/place/$placeId',
+    getParentRoute: () => AuthenticatedAdminCountryCountryIdCityCityIdRoute,
+  } as any)
+const AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute =
+  AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport.update(
+    {
+      id: '/',
+      path: '/',
+      getParentRoute: () =>
+        AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRoute,
+    } as any,
+  )
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
+  '/colors': typeof ColorsRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdRouteWithChildren
+  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
+  '/admin/country/$countryId/': typeof AuthenticatedAdminCountryCountryIdIndexRoute
+  '/admin/country/$countryId/city/$cityId': typeof AuthenticatedAdminCountryCountryIdCityCityIdRouteWithChildren
+  '/admin/country/$countryId/city/$cityId/': typeof AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute
+  '/admin/country/$countryId/city/$cityId/place/$placeId': typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
+  '/admin/country/$countryId/city/$cityId/place/$placeId/': typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
+  '/colors': typeof ColorsRoute
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
+  '/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdIndexRoute
+  '/admin/country/$countryId/city/$cityId': typeof AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute
+  '/admin/country/$countryId/city/$cityId/place/$placeId': typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/callback': typeof CallbackRoute
+  '/colors': typeof ColorsRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/authenticated': typeof AuthenticatedAuthenticatedRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdRouteWithChildren
+  '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
+  '/_authenticated/admin/country/$countryId/': typeof AuthenticatedAdminCountryCountryIdIndexRoute
+  '/_authenticated/admin/country/$countryId/city/$cityId': typeof AuthenticatedAdminCountryCountryIdCityCityIdRouteWithChildren
+  '/_authenticated/admin/country/$countryId/city/$cityId/': typeof AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute
+  '/_authenticated/admin/country/$countryId/city/$cityId/place/$placeId': typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
+  '/_authenticated/admin/country/$countryId/city/$cityId/place/$placeId/': typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/callback' | '/authenticated'
+  fullPaths:
+    | '/'
+    | '/callback'
+    | '/colors'
+    | '/admin'
+    | '/authenticated'
+    | '/admin/'
+    | '/admin/country/$countryId'
+    | '/country/$countryId/city/$cityId'
+    | '/admin/country/$countryId/'
+    | '/admin/country/$countryId/city/$cityId'
+    | '/admin/country/$countryId/city/$cityId/'
+    | '/admin/country/$countryId/city/$cityId/place/$placeId'
+    | '/admin/country/$countryId/city/$cityId/place/$placeId/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/callback' | '/authenticated'
+  to:
+    | '/'
+    | '/callback'
+    | '/colors'
+    | '/authenticated'
+    | '/admin'
+    | '/country/$countryId/city/$cityId'
+    | '/admin/country/$countryId'
+    | '/admin/country/$countryId/city/$cityId'
+    | '/admin/country/$countryId/city/$cityId/place/$placeId'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/callback'
+    | '/colors'
+    | '/_authenticated/admin'
     | '/_authenticated/authenticated'
+    | '/_authenticated/admin/'
+    | '/_authenticated/admin/country/$countryId'
+    | '/country/$countryId/city/$cityId'
+    | '/_authenticated/admin/country/$countryId/'
+    | '/_authenticated/admin/country/$countryId/city/$cityId'
+    | '/_authenticated/admin/country/$countryId/city/$cityId/'
+    | '/_authenticated/admin/country/$countryId/city/$cityId/place/$placeId'
+    | '/_authenticated/admin/country/$countryId/city/$cityId/place/$placeId/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   CallbackRoute: typeof CallbackRoute
+  ColorsRoute: typeof ColorsRoute
+  CountryCountryIdCityCityIdRoute: typeof CountryCountryIdCityCityIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/colors': {
+      id: '/colors'
+      path: '/colors'
+      fullPath: '/colors'
+      preLoaderRoute: typeof ColorsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/callback': {
       id: '/callback'
       path: '/callback'
@@ -101,14 +238,144 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAuthenticatedRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/country/$countryId/city/$cityId': {
+      id: '/country/$countryId/city/$cityId'
+      path: '/country/$countryId/city/$cityId'
+      fullPath: '/country/$countryId/city/$cityId'
+      preLoaderRoute: typeof CountryCountryIdCityCityIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/country/$countryId': {
+      id: '/_authenticated/admin/country/$countryId'
+      path: '/country/$countryId'
+      fullPath: '/admin/country/$countryId'
+      preLoaderRoute: typeof AuthenticatedAdminCountryCountryIdRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/country/$countryId/': {
+      id: '/_authenticated/admin/country/$countryId/'
+      path: '/'
+      fullPath: '/admin/country/$countryId/'
+      preLoaderRoute: typeof AuthenticatedAdminCountryCountryIdIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminCountryCountryIdRoute
+    }
+    '/_authenticated/admin/country/$countryId/city/$cityId': {
+      id: '/_authenticated/admin/country/$countryId/city/$cityId'
+      path: '/city/$cityId'
+      fullPath: '/admin/country/$countryId/city/$cityId'
+      preLoaderRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdRouteImport
+      parentRoute: typeof AuthenticatedAdminCountryCountryIdRoute
+    }
+    '/_authenticated/admin/country/$countryId/city/$cityId/': {
+      id: '/_authenticated/admin/country/$countryId/city/$cityId/'
+      path: '/'
+      fullPath: '/admin/country/$countryId/city/$cityId/'
+      preLoaderRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdRoute
+    }
+    '/_authenticated/admin/country/$countryId/city/$cityId/place/$placeId': {
+      id: '/_authenticated/admin/country/$countryId/city/$cityId/place/$placeId'
+      path: '/place/$placeId'
+      fullPath: '/admin/country/$countryId/city/$cityId/place/$placeId'
+      preLoaderRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport
+      parentRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdRoute
+    }
+    '/_authenticated/admin/country/$countryId/city/$cityId/place/$placeId/': {
+      id: '/_authenticated/admin/country/$countryId/city/$cityId/place/$placeId/'
+      path: '/'
+      fullPath: '/admin/country/$countryId/city/$cityId/place/$placeId/'
+      preLoaderRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRoute
+    }
   }
 }
 
+interface AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren {
+  AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
+}
+
+const AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren: AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren =
+  {
+    AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute:
+      AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute,
+  }
+
+const AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren =
+  AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRoute._addFileChildren(
+    AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren,
+  )
+
+interface AuthenticatedAdminCountryCountryIdCityCityIdRouteChildren {
+  AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute
+  AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren
+}
+
+const AuthenticatedAdminCountryCountryIdCityCityIdRouteChildren: AuthenticatedAdminCountryCountryIdCityCityIdRouteChildren =
+  {
+    AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute:
+      AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute,
+    AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRoute:
+      AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteWithChildren,
+  }
+
+const AuthenticatedAdminCountryCountryIdCityCityIdRouteWithChildren =
+  AuthenticatedAdminCountryCountryIdCityCityIdRoute._addFileChildren(
+    AuthenticatedAdminCountryCountryIdCityCityIdRouteChildren,
+  )
+
+interface AuthenticatedAdminCountryCountryIdRouteChildren {
+  AuthenticatedAdminCountryCountryIdIndexRoute: typeof AuthenticatedAdminCountryCountryIdIndexRoute
+  AuthenticatedAdminCountryCountryIdCityCityIdRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdRouteWithChildren
+}
+
+const AuthenticatedAdminCountryCountryIdRouteChildren: AuthenticatedAdminCountryCountryIdRouteChildren =
+  {
+    AuthenticatedAdminCountryCountryIdIndexRoute:
+      AuthenticatedAdminCountryCountryIdIndexRoute,
+    AuthenticatedAdminCountryCountryIdCityCityIdRoute:
+      AuthenticatedAdminCountryCountryIdCityCityIdRouteWithChildren,
+  }
+
+const AuthenticatedAdminCountryCountryIdRouteWithChildren =
+  AuthenticatedAdminCountryCountryIdRoute._addFileChildren(
+    AuthenticatedAdminCountryCountryIdRouteChildren,
+  )
+
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminCountryCountryIdRoute: typeof AuthenticatedAdminCountryCountryIdRouteWithChildren
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminCountryCountryIdRoute:
+    AuthenticatedAdminCountryCountryIdRouteWithChildren,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedAuthenticatedRoute: typeof AuthenticatedAuthenticatedRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedAuthenticatedRoute: AuthenticatedAuthenticatedRoute,
 }
 
@@ -120,6 +387,8 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   CallbackRoute: CallbackRoute,
+  ColorsRoute: ColorsRoute,
+  CountryCountryIdCityCityIdRoute: CountryCountryIdCityCityIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
