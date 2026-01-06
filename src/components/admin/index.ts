@@ -4,6 +4,7 @@ export { CityForm } from "./CityForm";
 export { CityTable } from "./CityTable";
 export { CountryForm } from "./CountryForm";
 export { CountryTable } from "./CountryTable";
+export { FeaturedImagesTable } from "./FeaturedImagesTable";
 export { ImageEditForm } from "./ImageEditForm";
 export { ImageTable } from "./ImageTable";
 export { PlaceForm } from "./PlaceForm";

@@ -15,6 +15,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedAuthenticatedRouteImport } from './routes/_authenticated/authenticated'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminFeaturedRouteImport } from './routes/_authenticated/admin/featured'
 import { Route as AuthenticatedAdminCountriesRouteImport } from './routes/_authenticated/admin/countries'
 import { Route as AuthenticatedAdminColoursRouteImport } from './routes/_authenticated/admin/colours'
 import { Route as CountryCountryIdCityCityIdRouteImport } from './routes/country.$countryId.city.$cityId'
@@ -55,6 +56,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminFeaturedRoute =
+  AuthenticatedAdminFeaturedRouteImport.update({
+    id: '/featured',
+    path: '/featured',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminCountriesRoute =
   AuthenticatedAdminCountriesRouteImport.update({
     id: '/countries',
@@ -120,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/admin/colours': typeof AuthenticatedAdminColoursRoute
   '/admin/countries': typeof AuthenticatedAdminCountriesRoute
+  '/admin/featured': typeof AuthenticatedAdminFeaturedRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdRouteWithChildren
   '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
@@ -135,6 +143,7 @@ export interface FileRoutesByTo {
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/admin/colours': typeof AuthenticatedAdminColoursRoute
   '/admin/countries': typeof AuthenticatedAdminCountriesRoute
+  '/admin/featured': typeof AuthenticatedAdminFeaturedRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
   '/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdIndexRoute
@@ -150,6 +159,7 @@ export interface FileRoutesById {
   '/_authenticated/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/_authenticated/admin/colours': typeof AuthenticatedAdminColoursRoute
   '/_authenticated/admin/countries': typeof AuthenticatedAdminCountriesRoute
+  '/_authenticated/admin/featured': typeof AuthenticatedAdminFeaturedRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdRouteWithChildren
   '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
@@ -168,6 +178,7 @@ export interface FileRouteTypes {
     | '/authenticated'
     | '/admin/colours'
     | '/admin/countries'
+    | '/admin/featured'
     | '/admin/'
     | '/admin/country/$countryId'
     | '/country/$countryId/city/$cityId'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/authenticated'
     | '/admin/colours'
     | '/admin/countries'
+    | '/admin/featured'
     | '/admin'
     | '/country/$countryId/city/$cityId'
     | '/admin/country/$countryId'
@@ -197,6 +209,7 @@ export interface FileRouteTypes {
     | '/_authenticated/authenticated'
     | '/_authenticated/admin/colours'
     | '/_authenticated/admin/countries'
+    | '/_authenticated/admin/featured'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/country/$countryId'
     | '/country/$countryId/city/$cityId'
@@ -256,6 +269,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/featured': {
+      id: '/_authenticated/admin/featured'
+      path: '/featured'
+      fullPath: '/admin/featured'
+      preLoaderRoute: typeof AuthenticatedAdminFeaturedRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
     '/_authenticated/admin/countries': {
@@ -378,6 +398,7 @@ const AuthenticatedAdminCountryCountryIdRouteWithChildren =
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminColoursRoute: typeof AuthenticatedAdminColoursRoute
   AuthenticatedAdminCountriesRoute: typeof AuthenticatedAdminCountriesRoute
+  AuthenticatedAdminFeaturedRoute: typeof AuthenticatedAdminFeaturedRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminCountryCountryIdRoute: typeof AuthenticatedAdminCountryCountryIdRouteWithChildren
 }
@@ -385,6 +406,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminColoursRoute: AuthenticatedAdminColoursRoute,
   AuthenticatedAdminCountriesRoute: AuthenticatedAdminCountriesRoute,
+  AuthenticatedAdminFeaturedRoute: AuthenticatedAdminFeaturedRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminCountryCountryIdRoute:
     AuthenticatedAdminCountryCountryIdRouteWithChildren,

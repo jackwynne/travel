@@ -4,6 +4,7 @@ import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
@@ -13,6 +14,7 @@ const imageSchema = z.object({
 	lat: z.number().min(-90).max(90).optional(),
 	lng: z.number().min(-180).max(180).optional(),
 	dateTime: z.number().optional(),
+	featured: z.boolean().optional(),
 });
 
 type ImageWithUrl = {
@@ -25,6 +27,7 @@ type ImageWithUrl = {
 	lng?: number;
 	description?: string;
 	iconImage?: string;
+	featured?: boolean;
 	location?: {
 		imageType: "place" | "city";
 		locationId: Id<"place"> | Id<"city">;
@@ -51,6 +54,7 @@ export function ImageEditForm({
 			lat: image.lat ?? undefined,
 			lng: image.lng ?? undefined,
 			dateTime: image.dateTime ?? undefined,
+			featured: image.featured ?? false,
 		},
 		onSubmit: async ({ value }) => {
 			const validated = imageSchema.parse({
@@ -58,6 +62,7 @@ export function ImageEditForm({
 				lat: value.lat,
 				lng: value.lng,
 				dateTime: value.dateTime,
+				featured: value.featured,
 			});
 
 			await updateImage({
@@ -70,6 +75,7 @@ export function ImageEditForm({
 					lat: validated.lat,
 					lng: validated.lng,
 					dateTime: validated.dateTime,
+					featured: validated.featured,
 					iconImage: image.iconImage,
 					location: image.location,
 				},
@@ -140,6 +146,24 @@ export function ImageEditForm({
 							onChange={(e) =>
 								field.handleChange(parseDateTimeFromInput(e.target.value))
 							}
+						/>
+					</div>
+				)}
+			</form.Field>
+
+			<form.Field name="featured">
+				{(field) => (
+					<div className="flex items-center justify-between rounded-lg border p-3">
+						<div className="space-y-0.5">
+							<Label htmlFor="featured">Featured Image</Label>
+							<p className="text-sm text-muted-foreground">
+								Display this image on the homepage
+							</p>
+						</div>
+						<Switch
+							id="featured"
+							checked={field.state.value}
+							onCheckedChange={(checked) => field.handleChange(checked)}
 						/>
 					</div>
 				)}

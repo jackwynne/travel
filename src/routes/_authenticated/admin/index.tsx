@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Globe, Palette, MapPin, Building2, Image } from "lucide-react";
+import { Globe, Palette, MapPin, Building2, Image, Star } from "lucide-react";
 import type { AdminPageContext } from "../admin";
 
 import {
@@ -35,6 +35,14 @@ const navigationItems = [
 			{ icon: MapPin, label: "Places" },
 			{ icon: Image, label: "Images" },
 		],
+	},
+	{
+		title: "Featured Images",
+		description: "Manage the images displayed on the homepage. Curate highlights from your travel experiences.",
+		icon: Star,
+		to: "/admin/featured" as const,
+		gradient: "from-yellow-500/20 to-orange-500/20",
+		iconColor: "text-yellow-500",
 	},
 	{
 		title: "Colours",

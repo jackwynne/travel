@@ -195,6 +195,26 @@ export const getOne = query({
 });
 
 /**
+ * Get all featured images with their URLs.
+ */
+export const getFeatured = query({
+	args: {},
+	handler: async (ctx) => {
+		const images = await ctx.db
+			.query("image")
+			.withIndex("byFeatured", (q) => q.eq("featured", true))
+			.collect();
+
+		return Promise.all(
+			images.map(async (image) => ({
+				...image,
+				url: await r2.getUrl(image.key),
+			})),
+		);
+	},
+});
+
+/**
  * Delete an image by ID.
  */
 export const remove = mutation({

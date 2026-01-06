@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "convex/react";
-import { Edit, ImageIcon, MapPin, Trash2 } from "lucide-react";
+import { Edit, ImageIcon, Star, StarOff } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -40,17 +40,12 @@ type ImageWithUrl = {
 	url: string | null;
 };
 
-interface ImageTableProps {
-	placeId: Id<"place">;
-}
-
-export function ImageTable({ placeId }: ImageTableProps) {
-	const images = useQuery(api.functions.image.getByPlace, { placeId });
-	const removeImage = useMutation(api.functions.image.remove);
-	const copyFromImage = useMutation(api.functions.place.copyFromImage);
+export function FeaturedImagesTable() {
+	const images = useQuery(api.functions.image.getFeatured, {});
+	const updateImage = useMutation(api.functions.image.update);
 
 	const [editingImage, setEditingImage] = useState<ImageWithUrl | undefined>();
-	const [deletingImage, setDeletingImage] = useState<
+	const [removingImage, setRemovingImage] = useState<
 		ImageWithUrl | undefined
 	>();
 	const [isFormOpen, setIsFormOpen] = useState(false);
@@ -65,29 +60,25 @@ export function ImageTable({ placeId }: ImageTableProps) {
 		setEditingImage(undefined);
 	};
 
-	const handleDelete = async () => {
-		if (deletingImage) {
-			await removeImage({ id: deletingImage._id });
-			setDeletingImage(undefined);
+	const handleRemoveFromFeatured = async () => {
+		if (removingImage) {
+			await updateImage({
+				image: {
+					_id: removingImage._id,
+					_creationTime: removingImage._creationTime,
+					bucket: removingImage.bucket,
+					key: removingImage.key,
+					featured: false,
+					description: removingImage.description,
+					lat: removingImage.lat,
+					lng: removingImage.lng,
+					dateTime: removingImage.dateTime,
+					iconImage: removingImage.iconImage,
+					location: removingImage.location,
+				},
+			});
+			setRemovingImage(undefined);
 		}
-	};
-
-	const handleSetAsIcon = async (image: ImageWithUrl) => {
-		await copyFromImage({
-			placeId,
-			imageId: image._id,
-			copyIconImage: true,
-			copyLocation: false,
-		});
-	};
-
-	const handleCopyLocation = async (image: ImageWithUrl) => {
-		await copyFromImage({
-			placeId,
-			imageId: image._id,
-			copyIconImage: false,
-			copyLocation: true,
-		});
 	};
 
 	const formatDateTime = (timestamp?: number) => {
@@ -113,12 +104,22 @@ export function ImageTable({ placeId }: ImageTableProps) {
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-4">
-				<h2 className="text-lg font-semibold">Images</h2>
+				<div className="flex items-center gap-2">
+					<Star className="size-5 text-yellow-500" />
+					<h2 className="text-lg font-semibold">Featured Images</h2>
+				</div>
+				<p className="text-sm text-muted-foreground">
+					{images.length} featured image{images.length !== 1 ? "s" : ""}
+				</p>
 			</div>
 
 			{images.length === 0 ? (
-				<div className="text-center py-8 text-muted-foreground">
-					<p>No images yet. Upload images from the places table.</p>
+				<div className="text-center py-8 text-muted-foreground border rounded-lg">
+					<Star className="size-12 mx-auto mb-4 opacity-20" />
+					<p>No featured images yet.</p>
+					<p className="text-sm mt-1">
+						Mark images as featured from the places image editor.
+					</p>
 				</div>
 			) : (
 				<Table>
@@ -128,7 +129,7 @@ export function ImageTable({ placeId }: ImageTableProps) {
 							<TableHead>Description</TableHead>
 							<TableHead>Capture Date</TableHead>
 							<TableHead>Location</TableHead>
-							<TableHead className="w-[180px]">Actions</TableHead>
+							<TableHead className="w-[120px]">Actions</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -181,33 +182,13 @@ export function ImageTable({ placeId }: ImageTableProps) {
 										>
 											<Edit className="size-4" />
 										</Button>
-										{image.iconImage && (
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												onClick={() => handleSetAsIcon(image)}
-												title="Set as place icon"
-											>
-												<ImageIcon className="size-4" />
-											</Button>
-										)}
-										{image.lat !== undefined && image.lng !== undefined && (
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												onClick={() => handleCopyLocation(image)}
-												title="Copy location to place"
-											>
-												<MapPin className="size-4" />
-											</Button>
-										)}
 										<Button
 											variant="ghost"
 											size="icon-sm"
-											onClick={() => setDeletingImage(image)}
-											title="Delete image"
+											onClick={() => setRemovingImage(image)}
+											title="Remove from featured"
 										>
-											<Trash2 className="size-4" />
+											<StarOff className="size-4" />
 										</Button>
 									</div>
 								</TableCell>
@@ -221,7 +202,7 @@ export function ImageTable({ placeId }: ImageTableProps) {
 			<Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
 				<DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
-						<DialogTitle>Edit Image</DialogTitle>
+						<DialogTitle>Edit Featured Image</DialogTitle>
 						<DialogDescription>
 							Update the image details below.
 						</DialogDescription>
@@ -236,28 +217,28 @@ export function ImageTable({ placeId }: ImageTableProps) {
 				</DialogContent>
 			</Dialog>
 
-			{/* Delete Confirmation Dialog */}
+			{/* Remove from Featured Confirmation Dialog */}
 			<Dialog
-				open={!!deletingImage}
-				onOpenChange={(open) => !open && setDeletingImage(undefined)}
+				open={!!removingImage}
+				onOpenChange={(open) => !open && setRemovingImage(undefined)}
 			>
 				<DialogContent className="sm:max-w-md">
 					<DialogHeader>
-						<DialogTitle>Delete Image</DialogTitle>
+						<DialogTitle>Remove from Featured</DialogTitle>
 						<DialogDescription>
-							Are you sure you want to delete this image? This action cannot be
-							undone.
+							Are you sure you want to remove this image from featured? The
+							image will no longer appear on the homepage.
 						</DialogDescription>
 					</DialogHeader>
 					<DialogFooter>
 						<Button
 							variant="outline"
-							onClick={() => setDeletingImage(undefined)}
+							onClick={() => setRemovingImage(undefined)}
 						>
 							Cancel
 						</Button>
-						<Button variant="destructive" onClick={handleDelete}>
-							Delete
+						<Button variant="default" onClick={handleRemoveFromFeatured}>
+							Remove from Featured
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -265,3 +246,4 @@ export function ImageTable({ placeId }: ImageTableProps) {
 		</div>
 	);
 }
+

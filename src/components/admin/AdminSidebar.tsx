@@ -4,7 +4,7 @@ import * as React from "react"
 import { Link, useParams, useRouterState } from "@tanstack/react-router"
 import { useQuery } from "convex/react"
 import { api } from "../../../convex/_generated/api"
-import { ChevronRight, Globe, Building2, Palette, Home, Plane, PlaneTakeoff } from "lucide-react"
+import { ChevronRight, Globe, Building2, Palette, Home, Plane, PlaneTakeoff, Star } from "lucide-react"
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -92,6 +92,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
   const isDashboardActive = currentPath === "/admin"
   const isColoursActive = currentPath === "/admin/colours"
   const isCountriesActive = currentPath === "/admin/countries"
+  const isFeaturedActive = currentPath === "/admin/featured"
 
   return (
     <Sidebar variant="floating" collapsible="icon" {...props}>
@@ -137,6 +138,18 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                 >
                   <Globe className="size-4" />
                   <span>All Countries</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <Link to="/admin/featured">
+                <SidebarMenuButton
+                  isActive={isFeaturedActive}
+                  tooltip="Featured Images"
+                >
+                  <Star className="size-4" />
+                  <span>Featured Images</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
