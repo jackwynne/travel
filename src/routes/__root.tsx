@@ -1,11 +1,15 @@
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getAuth } from '@workos/authkit-tanstack-react-start';
+import { AuthKitProvider, useAccessToken, useAuth } from '@workos/authkit-tanstack-react-start/client';
 import appCssUrl from '../app.css?url';
 import type { QueryClient } from '@tanstack/react-query';
+import { useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { ConvexReactClient } from 'convex/react';
 import type { ConvexQueryClient } from '@convex-dev/react-query';
+import { ConvexProviderWithAuth } from 'convex/react';
+import { ThemeProvider } from '../hooks/theme-provider';
 
 const fetchWorkosAuth = createServerFn({ method: 'GET' }).handler(async () => {
   const auth = await getAuth();
@@ -58,8 +62,47 @@ export const Route = createRootRouteWithContext<{
 function RootComponent() {
   return (
     <RootDocument>
-      <Outlet />
+      <AppProviders>
+        <Outlet />
+      </AppProviders>
     </RootDocument>
+  );
+}
+
+function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
+  const { convexQueryClient } = Route.useRouteContext();
+
+  return (
+    <AuthKitProvider>
+      <ConvexProviderWithAuth client={convexQueryClient.convexClient} useAuth={useAuthFromWorkOS}>
+        <ThemeProvider>{children}</ThemeProvider>
+      </ConvexProviderWithAuth>
+    </AuthKitProvider>
+  );
+}
+
+function useAuthFromWorkOS() {
+  const { loading, user } = useAuth();
+  const { accessToken, getAccessToken } = useAccessToken();
+
+  const fetchAccessToken = useCallback(
+    async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
+      if (!accessToken || forceRefreshToken) {
+        return (await getAccessToken()) ?? null;
+      }
+
+      return accessToken;
+    },
+    [accessToken, getAccessToken],
+  );
+
+  return useMemo(
+    () => ({
+      isLoading: loading,
+      isAuthenticated: !!user,
+      fetchAccessToken,
+    }),
+    [loading, user, fetchAccessToken],
   );
 }
 
