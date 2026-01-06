@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "convex/react";
-import { Edit, ImageIcon, MapPin, Trash2 } from "lucide-react";
+import { Edit, ImageIcon, ImagePlus, MapPin, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,7 @@ import {
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
 import { ImageEditForm } from "./ImageEditForm";
+import { PlaceImageUploadForm } from "./PlaceImageUploadForm";
 
 type ImageWithUrl = {
 	_id: Id<"image">;
@@ -54,6 +55,7 @@ export function ImageTable({ placeId }: ImageTableProps) {
 		ImageWithUrl | undefined
 	>();
 	const [isFormOpen, setIsFormOpen] = useState(false);
+	const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
 	const handleEdit = (image: ImageWithUrl) => {
 		setEditingImage(image);
@@ -114,6 +116,10 @@ export function ImageTable({ placeId }: ImageTableProps) {
 		<div>
 			<div className="flex items-center justify-between mb-4">
 				<h2 className="text-lg font-semibold">Images</h2>
+				<Button onClick={() => setIsUploadDialogOpen(true)} size="sm">
+					<ImagePlus className="size-4 mr-1" />
+					Upload Image
+				</Button>
 			</div>
 
 			{images.length === 0 ? (
@@ -260,6 +266,27 @@ export function ImageTable({ placeId }: ImageTableProps) {
 							Delete
 						</Button>
 					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Image Upload Dialog */}
+			<Dialog
+				open={isUploadDialogOpen}
+				onOpenChange={setIsUploadDialogOpen}
+			>
+				<DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
+					<DialogHeader>
+						<DialogTitle>Upload Image</DialogTitle>
+						<DialogDescription>
+							Upload an image for this place. EXIF metadata (location and
+							capture time) will be extracted automatically.
+						</DialogDescription>
+					</DialogHeader>
+					<PlaceImageUploadForm
+						placeId={placeId}
+						onSuccess={() => setIsUploadDialogOpen(false)}
+						onCancel={() => setIsUploadDialogOpen(false)}
+					/>
 				</DialogContent>
 			</Dialog>
 		</div>
