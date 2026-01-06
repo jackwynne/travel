@@ -6,6 +6,7 @@ import { ConvexProvider, ConvexProviderWithAuth, ConvexReactClient } from 'conve
 import { AuthKitProvider, useAccessToken, useAuth } from '@workos/authkit-tanstack-react-start/client';
 import { useCallback, useMemo } from 'react';
 import { routeTree } from './routeTree.gen';
+import { ThemeProvider } from './hooks/theme-provider';
 
 export function getRouter() {
   const CONVEX_URL = (import.meta as any).env.VITE_CONVEX_URL!;
@@ -37,7 +38,9 @@ export function getRouter() {
     Wrap: ({ children }) => (
       <AuthKitProvider>
         <ConvexProviderWithAuth client={convexQueryClient.convexClient} useAuth={useAuthFromWorkOS}>
+          <ThemeProvider>
           {children}
+          </ThemeProvider>
         </ConvexProviderWithAuth>
       </AuthKitProvider>
     ),
