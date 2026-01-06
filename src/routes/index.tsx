@@ -336,6 +336,7 @@ function MapSection() {
 							<Map
 								center={[10, 45]}
 								zoom={3}
+								maxZoom={12}
 								// maxBounds={[
 								// 	[-180, -85],
 								// 	[180, 85],
