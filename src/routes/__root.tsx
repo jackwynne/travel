@@ -32,12 +32,12 @@ export const Route = createRootRouteWithContext<{
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Convex + TanStack Start + WorkOS AuthKit',
+        title: 'Jack Travel',
       },
     ],
     links: [
       { rel: 'stylesheet', href: appCssUrl },
-      { rel: 'icon', href: '/convex.svg' },
+      { rel: 'icon', href: '/plane.svg' },
     ],
   }),
   component: RootComponent,
