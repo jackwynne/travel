@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
-export const Route = createFileRoute("/colors")({ component: ColorsPage });
+export const Route = createFileRoute("/_authenticated/admin/colours")({ component: ColorsPage });
 
 // Define all color variables from styles.css with their OKLCH values for both themes
 const colorVariables = [
@@ -270,12 +270,12 @@ function ColorCard({
 	useEffect(() => {
 		const observer = new MutationObserver(() => {
 			computeColors();
-		});
+		})
 
 		observer.observe(document.documentElement, {
 			attributes: true,
 			attributeFilter: ["class"],
-		});
+		})
 
 		return () => observer.disconnect();
 	}, [computeColors]);
@@ -375,7 +375,7 @@ function ColorCard({
 					</div>
 				</div>
 			</div>
-		);
+		)
 	}
 
 	const isLightColor = currentHex ? isLight(currentHex) : false;
@@ -434,7 +434,7 @@ function ColorCard({
 				</div>
 			</div>
 		</div>
-	);
+	)
 }
 
 function ColorsPage() {
@@ -442,11 +442,11 @@ function ColorsPage() {
 
 	const coreColors = colorVariables.filter(
 		(c) => !c.name.startsWith("chart-") && !c.name.startsWith("sidebar"),
-	);
+	)
 	const chartColors = colorVariables.filter((c) => c.name.startsWith("chart-"));
 	const sidebarColors = colorVariables.filter((c) =>
 		c.name.startsWith("sidebar"),
-	);
+	)
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -584,5 +584,5 @@ function ColorsPage() {
 				</div>
 			</footer>
 		</div>
-	);
+	)
 }
