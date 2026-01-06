@@ -1,8 +1,18 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useCallback, useEffect, useState } from "react";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import type { AdminPageContext } from "../admin";
 
-export const Route = createFileRoute("/_authenticated/admin/colours")({ component: ColorsPage });
+export const Route = createFileRoute("/_authenticated/admin/colours")({
+	beforeLoad: () => {
+		return {
+			adminPage: {
+				title: "Colours",
+				breadcrumbs: [{ label: "Colours" }],
+			} satisfies AdminPageContext,
+		};
+	},
+	component: ColorsPage,
+});
 
 // Define all color variables from styles.css with their OKLCH values for both themes
 const colorVariables = [
@@ -449,140 +459,122 @@ function ColorsPage() {
 	)
 
 	return (
-		<div className="min-h-screen bg-background">
-			{/* Header */}
-			<header className="sticky top-0 z-50 backdrop-blur-xl bg-background/80 border-b border-border/50">
-				<div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-					<div>
-						<h1 className="text-2xl font-bold text-foreground tracking-tight">
-							Color Palette
-						</h1>
-						<p className="text-sm text-muted-foreground mt-0.5">
-							Design system color tokens from styles.css
-						</p>
-					</div>
-					<div className="flex items-center gap-4">
-						<ThemeToggle />
-					</div>
-				</div>
-			</header>
+		<div className="space-y-8">
+			{/* Description */}
+			<p className="text-muted-foreground">
+				Design system color tokens from styles.css
+			</p>
 
 			{/* View Mode Toggle */}
-			<div className="max-w-7xl mx-auto px-6 pt-8">
-				<div className="flex items-center justify-center gap-2 p-1 bg-muted rounded-xl w-fit mx-auto">
-					<button
-						type="button"
-						onClick={() => setShowBothModes(false)}
-						className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-							!showBothModes
-								? "bg-background text-foreground shadow-sm"
-								: "text-muted-foreground hover:text-foreground"
-						}`}
-					>
-						Current Theme
-					</button>
-					<button
-						type="button"
-						onClick={() => setShowBothModes(true)}
-						className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-							showBothModes
-								? "bg-background text-foreground shadow-sm"
-								: "text-muted-foreground hover:text-foreground"
-						}`}
-					>
-						Compare Light & Dark
-					</button>
-				</div>
+			<div className="flex items-center justify-center gap-2 p-1 bg-muted rounded-xl w-fit mx-auto">
+				<button
+					type="button"
+					onClick={() => setShowBothModes(false)}
+					className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+						!showBothModes
+							? "bg-background text-foreground shadow-sm"
+							: "text-muted-foreground hover:text-foreground"
+					}`}
+				>
+					Current Theme
+				</button>
+				<button
+					type="button"
+					onClick={() => setShowBothModes(true)}
+					className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
+						showBothModes
+							? "bg-background text-foreground shadow-sm"
+							: "text-muted-foreground hover:text-foreground"
+					}`}
+				>
+					Compare Light & Dark
+				</button>
 			</div>
 
-			<main className="max-w-7xl mx-auto px-6 py-12 space-y-16">
-				{/* Core Colors */}
-				<section>
-					<div className="mb-8">
-						<h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-							<span className="w-2 h-2 rounded-full bg-primary" />
-							Core Colors
-						</h2>
-						<p className="text-sm text-muted-foreground mt-1">
-							Primary UI colors including backgrounds, text, and interactive
-							elements
-						</p>
-					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-						{coreColors.map((color) => (
-							<ColorCard
-								key={color.name}
-								name={color.name}
-								variable={color.variable}
-								lightOklch={color.light}
-								darkOklch={color.dark}
-								showBothModes={showBothModes}
-							/>
-						))}
-					</div>
-				</section>
-
-				{/* Chart Colors */}
-				<section>
-					<div className="mb-8">
-						<h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-							<span className="w-2 h-2 rounded-full bg-chart-3" />
-							Chart Colors
-						</h2>
-						<p className="text-sm text-muted-foreground mt-1">
-							Sequential palette for data visualization and charts
-						</p>
-					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
-						{chartColors.map((color) => (
-							<ColorCard
-								key={color.name}
-								name={color.name}
-								variable={color.variable}
-								lightOklch={color.light}
-								darkOklch={color.dark}
-								showBothModes={showBothModes}
-							/>
-						))}
-					</div>
-				</section>
-
-				{/* Sidebar Colors */}
-				<section>
-					<div className="mb-8">
-						<h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
-							<span className="w-2 h-2 rounded-full bg-sidebar-primary" />
-							Sidebar Colors
-						</h2>
-						<p className="text-sm text-muted-foreground mt-1">
-							Dedicated colors for sidebar navigation components
-						</p>
-					</div>
-					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-						{sidebarColors.map((color) => (
-							<ColorCard
-								key={color.name}
-								name={color.name}
-								variable={color.variable}
-								lightOklch={color.light}
-								darkOklch={color.dark}
-								showBothModes={showBothModes}
-							/>
-						))}
-					</div>
-				</section>
-			</main>
-
-			{/* Footer */}
-			<footer className="border-t border-border/50 mt-20">
-				<div className="max-w-7xl mx-auto px-6 py-8">
-					<p className="text-center text-sm text-muted-foreground">
-						{showBothModes
-							? "Comparing light and dark mode colors side by side"
-							: "Toggle dark mode or use 'Compare Light & Dark' to see both themes"}
+			{/* Core Colors */}
+			<section>
+				<div className="mb-8">
+					<h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+						<span className="w-2 h-2 rounded-full bg-primary" />
+						Core Colors
+					</h2>
+					<p className="text-sm text-muted-foreground mt-1">
+						Primary UI colors including backgrounds, text, and interactive
+						elements
 					</p>
 				</div>
-			</footer>
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+					{coreColors.map((color) => (
+						<ColorCard
+							key={color.name}
+							name={color.name}
+							variable={color.variable}
+							lightOklch={color.light}
+							darkOklch={color.dark}
+							showBothModes={showBothModes}
+						/>
+					))}
+				</div>
+			</section>
+
+			{/* Chart Colors */}
+			<section>
+				<div className="mb-8">
+					<h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+						<span className="w-2 h-2 rounded-full bg-chart-3" />
+						Chart Colors
+					</h2>
+					<p className="text-sm text-muted-foreground mt-1">
+						Sequential palette for data visualization and charts
+					</p>
+				</div>
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
+					{chartColors.map((color) => (
+						<ColorCard
+							key={color.name}
+							name={color.name}
+							variable={color.variable}
+							lightOklch={color.light}
+							darkOklch={color.dark}
+							showBothModes={showBothModes}
+						/>
+					))}
+				</div>
+			</section>
+
+			{/* Sidebar Colors */}
+			<section>
+				<div className="mb-8">
+					<h2 className="text-lg font-semibold text-foreground flex items-center gap-2">
+						<span className="w-2 h-2 rounded-full bg-sidebar-primary" />
+						Sidebar Colors
+					</h2>
+					<p className="text-sm text-muted-foreground mt-1">
+						Dedicated colors for sidebar navigation components
+					</p>
+				</div>
+				<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+					{sidebarColors.map((color) => (
+						<ColorCard
+							key={color.name}
+							name={color.name}
+							variable={color.variable}
+							lightOklch={color.light}
+							darkOklch={color.dark}
+							showBothModes={showBothModes}
+						/>
+					))}
+				</div>
+			</section>
+
+			{/* Footer */}
+			<div className="border-t border-border/50 pt-8">
+				<p className="text-center text-sm text-muted-foreground">
+					{showBothModes
+						? "Comparing light and dark mode colors side by side"
+						: "Toggle dark mode or use 'Compare Light & Dark' to see both themes"}
+				</p>
+			</div>
 		</div>
 	)
 }

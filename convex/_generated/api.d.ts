@@ -15,7 +15,6 @@ import type * as functions_image from "../functions/image.js";
 import type * as functions_place from "../functions/place.js";
 import type * as functions_route from "../functions/route.js";
 import type * as myFunctions from "../myFunctions.js";
-import type * as todos from "../todos.js";
 
 import type {
   ApiFromModules,
@@ -31,7 +30,6 @@ declare const fullApi: ApiFromModules<{
   "functions/place": typeof functions_place;
   "functions/route": typeof functions_route;
   myFunctions: typeof myFunctions;
-  todos: typeof todos;
 }>;
 
 /**
