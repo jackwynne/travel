@@ -205,6 +205,3 @@ Use React Suspense boundaries around each section for clean loading states.
 | File | Action ||------|--------|| `convex/schema.ts` | Add `featured` field + `byFeatured` index to image table || `convex/functions/homepage.ts` | Create with 3 new queries || `src/components/PlaceCard.tsx` | New reusable place card component || `src/lib/image-utils.ts` | Add getImageUrl helper (if needed) || `src/routes/index.tsx` | Complete rewrite with new layout |
 
 ## Navigation Flow
-
-- **Hero carousel images**: Click navigates to `/country/$countryId/city/$cityId`
-- **Map city markers**: Click navigates to `/country/$countryId/city/$cityId`
