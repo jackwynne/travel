@@ -11,6 +11,7 @@ import type { ConvexReactClient } from 'convex/react';
 import type { ConvexQueryClient } from '@convex-dev/react-query';
 import { ConvexProviderWithAuth } from 'convex/react';
 import { ThemeProvider } from '../hooks/theme-provider';
+import { useEffect } from 'react';
 
 const fetchWorkosAuth = createServerFn({ method: 'GET' }).handler(async () => {
   const auth = await getAuth();
@@ -57,6 +58,9 @@ export const Route = createRootRouteWithContext<{
       ctx.context.convexQueryClient.serverHttpClient?.setAuth(token);
     }
 
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:beforeLoad',message:'root beforeLoad resolved',data:{hasUserId:!!userId,hasToken:!!token,hasServerHttpClient:!!ctx.context.convexQueryClient.serverHttpClient},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
     return { userId, token };
   },
 });
@@ -86,6 +90,12 @@ function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
 function useAuthFromWorkOS() {
   const { loading, user } = useAuth();
   const { accessToken, getAccessToken } = useAccessToken();
+
+  useEffect(() => {
+    // #region agent log
+    fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:useAuthFromWorkOS',message:'workos auth state',data:{loading,hasUser:!!user,hasAccessToken:!!accessToken},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'A'})}).catch(()=>{});
+    // #endregion
+  }, [loading, user, accessToken]);
 
   const fetchAccessToken = useCallback(
     async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {

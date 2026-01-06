@@ -10,7 +10,7 @@ import {
 	Settings,
 	Star,
 } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -78,6 +78,12 @@ function CityPage() {
 	const routes = useQuery(api.functions.route.getMany, {
 		cityId: cityId as Id<"city">,
 	});
+
+	useEffect(() => {
+		// #region agent log
+		fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/country.$countryId.city.$cityId.tsx:CityPage',message:'city page query state',data:{countryId,cityId,cityState:city===undefined?'undefined':city===null?'null':'value',countryState:country===undefined?'undefined':country===null?'null':'value',placesState:places===undefined?'undefined':places===null?'null':'value',routesState:routes===undefined?'undefined':routes===null?'null':'value'},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'C'})}).catch(()=>{});
+		// #endregion
+	}, [countryId, cityId, city, country, places, routes]);
 
 	// Filter places by category
 	const filteredPlacesByCategory = useMemo(() => {
