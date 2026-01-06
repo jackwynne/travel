@@ -11,7 +11,7 @@ import type { ConvexReactClient } from 'convex/react';
 import type { ConvexQueryClient } from '@convex-dev/react-query';
 import { ConvexProviderWithAuth } from 'convex/react';
 import { ThemeProvider } from '../hooks/theme-provider';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 const fetchWorkosAuth = createServerFn({ method: 'GET' }).handler(async () => {
   const auth = await getAuth();
@@ -90,6 +90,7 @@ function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
 function useAuthFromWorkOS() {
   const { loading, user } = useAuth();
   const { accessToken, getAccessToken } = useAccessToken();
+  const tokenCallCountRef = useRef(0);
 
   useEffect(() => {
     // #region agent log
@@ -99,8 +100,20 @@ function useAuthFromWorkOS() {
 
   const fetchAccessToken = useCallback(
     async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
+      tokenCallCountRef.current += 1;
+      // #region agent log
+      if (tokenCallCountRef.current <= 5) {
+        fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:fetchAccessToken',message:'fetchAccessToken called',data:{call:tokenCallCountRef.current,forceRefreshToken,hasAccessToken:!!accessToken,loading,hasUser:!!user},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'E'})}).catch(()=>{});
+      }
+      // #endregion
       if (!accessToken || forceRefreshToken) {
-        return (await getAccessToken()) ?? null;
+        const t = (await getAccessToken()) ?? null;
+        // #region agent log
+        if (tokenCallCountRef.current <= 5) {
+          fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:fetchAccessToken',message:'fetchAccessToken result',data:{call:tokenCallCountRef.current,returned:!!t},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'E'})}).catch(()=>{});
+        }
+        // #endregion
+        return t;
       }
 
       return accessToken;

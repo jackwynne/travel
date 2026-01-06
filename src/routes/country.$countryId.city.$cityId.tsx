@@ -44,6 +44,7 @@ import {
 } from "@/lib/category-utils";
 import { cn } from "@/lib/utils";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { getConvexHttpClient } from "@/lib/convex-http";
 import { api } from "../../convex/_generated/api";
 import type { Doc, Id } from "../../convex/_generated/dataModel";
 
@@ -84,6 +85,38 @@ function CityPage() {
 		fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/country.$countryId.city.$cityId.tsx:CityPage',message:'city page query state',data:{countryId,cityId,cityState:city===undefined?'undefined':city===null?'null':'value',countryState:country===undefined?'undefined':country===null?'null':'value',placesState:places===undefined?'undefined':places===null?'null':'value',routesState:routes===undefined?'undefined':routes===null?'null':'value'},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'C'})}).catch(()=>{});
 		// #endregion
 	}, [countryId, cityId, city, country, places, routes]);
+
+	useEffect(() => {
+		let cancelled = false;
+		(async () => {
+			try {
+				const client = getConvexHttpClient();
+				// #region agent log
+				fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/country.$countryId.city.$cityId.tsx:CityPage',message:'city http query start',data:{countryId,cityId},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'F'})}).catch(()=>{});
+				// #endregion
+				const [cityHttp, countryHttp] = await Promise.all([
+					client.query(api.functions.city.getOne, { id: cityId as Id<"city"> }),
+					client.query(api.functions.country.getOne, {
+						id: countryId as Id<"country">,
+					}),
+				]);
+				if (cancelled) return;
+				// #region agent log
+				fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/country.$countryId.city.$cityId.tsx:CityPage',message:'city http query success',data:{hasCity:!!cityHttp,hasCountry:!!countryHttp},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'F'})}).catch(()=>{});
+				// #endregion
+			} catch (e) {
+				if (cancelled) return;
+				const err = e as { name?: string; message?: string };
+				// #region agent log
+				fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/country.$countryId.city.$cityId.tsx:CityPage',message:'city http query error',data:{name:err?.name??null,message:err?.message??String(e)},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'F'})}).catch(()=>{});
+				// #endregion
+			}
+		})();
+		return () => {
+			cancelled = true;
+		};
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
 
 	// Filter places by category
 	const filteredPlacesByCategory = useMemo(() => {
