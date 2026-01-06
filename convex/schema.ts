@@ -43,6 +43,7 @@ export default defineSchema({
 			v.literal("other"),
 		),
 		description: v.optional(v.string()),
+		address: v.optional(v.string()),
 		rating: v.optional(v.number()),
 		notes: v.optional(v.string()),
 		iconImage: v.optional(v.string()),

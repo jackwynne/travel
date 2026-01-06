@@ -34,6 +34,7 @@ const placeSchema = z.object({
 	name: z.string().min(1, "Name is required"),
 	category: z.enum(PLACE_CATEGORIES),
 	description: z.string().optional(),
+	address: z.string().optional(),
 	rating: z.number().min(0).max(5).optional(),
 	notes: z.string().optional(),
 	iconImage: z.string().optional(),
@@ -62,6 +63,7 @@ export function PlaceForm({
 			name: place?.name ?? "",
 			category: (place?.category ?? "other") as PlaceCategory,
 			description: place?.description ?? "",
+			address: place?.address ?? "",
 			rating: place?.rating ?? undefined,
 			notes: place?.notes ?? "",
 			iconImage: place?.iconImage ?? "",
@@ -71,6 +73,7 @@ export function PlaceForm({
 		onSubmit: async ({ value }) => {
 			const validated = placeSchema.parse({
 				...value,
+				address: value.address || undefined,
 				rating: value.rating || undefined,
 				notes: value.notes || undefined,
 			});
@@ -182,6 +185,26 @@ export function PlaceForm({
 							onChange={(e) => field.handleChange(e.target.value)}
 							placeholder="Describe this place..."
 							rows={3}
+						/>
+						{field.state.meta.isTouched &&
+							field.state.meta.errors.length > 0 && (
+								<p className="text-sm text-destructive">
+									{field.state.meta.errors.join(", ")}
+								</p>
+							)}
+					</div>
+				)}
+			</form.Field>
+
+			<form.Field name="address">
+				{(field) => (
+					<div className="space-y-2">
+						<Label htmlFor="address">Address (Optional)</Label>
+						<Input
+							value={field.state.value}
+							onBlur={field.handleBlur}
+							onChange={(e) => field.handleChange(e.target.value)}
+							placeholder="Street address..."
 						/>
 						{field.state.meta.isTouched &&
 							field.state.meta.errors.length > 0 && (
