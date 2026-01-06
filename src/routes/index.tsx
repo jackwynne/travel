@@ -31,6 +31,7 @@ import {
 	ChevronRight,
 	Settings,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 export const Route = createFileRoute("/")({
 	component: Home,
@@ -51,6 +52,7 @@ function Home() {
 							Travel
 						</span>
 					</Link>
+				<ThemeToggle />
 				</div>
 			</header>
 
