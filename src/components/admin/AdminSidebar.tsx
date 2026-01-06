@@ -4,7 +4,7 @@ import * as React from "react"
 import { Link, useParams, useRouterState } from "@tanstack/react-router"
 import { useQuery } from "convex/react"
 import { api } from "../../../convex/_generated/api"
-import { ChevronRight, Globe, Building2, Palette, Home, Plane } from "lucide-react"
+import { ChevronRight, Globe, Building2, Palette, Home, Plane, PlaneTakeoff } from "lucide-react"
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -130,6 +130,18 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
             </SidebarMenuItem>
 
             <SidebarMenuItem>
+              <Link to="/admin/countries">
+                <SidebarMenuButton
+                  isActive={isCountriesActive}
+                  tooltip="All Countries"
+                >
+                  <Globe className="size-4" />
+                  <span>All Countries</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
               <Link to="/admin/colours">
                 <SidebarMenuButton
                   isActive={isColoursActive}
@@ -142,18 +154,20 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
             </SidebarMenuItem>
 
             <SidebarMenuItem>
-              <Link to="/admin/countries">
+              <Link to="/">
                 <SidebarMenuButton
-                  isActive={isCountriesActive}
-                  tooltip="All Countries"
+                  isActive={false}
+                  tooltip="Back to Home"
                 >
-                  <Globe className="size-4" />
-                  <span>All Countries</span>
+                  <PlaneTakeoff className="size-4" />
+                  <span>Back to Home</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>
+
           </SidebarMenu>
         </SidebarGroup>
+
 
         {/* Countries Section */}
         <SidebarGroup>
