@@ -12,6 +12,7 @@ import {
 	CarouselNext,
 	CarouselPrevious,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 import {
 	Map,
 	MapMarker,
@@ -111,6 +112,11 @@ function HeroSection() {
 						setCurrentSlide(api.selectedScrollSnap());
 					});
 				}}
+				plugins={[
+					Autoplay({
+					  delay: 2000,
+					}),
+				  ]}
 			>
 				<CarouselContent className="ml-0">
 					{featuredImages.map((image, index) => (
