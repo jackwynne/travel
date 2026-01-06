@@ -2,6 +2,7 @@ import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanst
 import { createServerFn } from '@tanstack/react-start';
 import { getAuth } from '@workos/authkit-tanstack-react-start';
 import { AuthKitProvider, useAccessToken, useAuth } from '@workos/authkit-tanstack-react-start/client';
+import interCssUrl from '@fontsource-variable/inter/index.css?url';
 import appCssUrl from '../app.css?url';
 import type { QueryClient } from '@tanstack/react-query';
 import { useCallback, useMemo } from 'react';
@@ -40,6 +41,7 @@ export const Route = createRootRouteWithContext<{
       },
     ],
     links: [
+      { rel: 'stylesheet', href: interCssUrl },
       { rel: 'stylesheet', href: appCssUrl },
       { rel: 'icon', href: '/plane.svg' },
     ],
