@@ -208,4 +208,3 @@ Use React Suspense boundaries around each section for clean loading states.
 
 - **Hero carousel images**: Click navigates to `/country/$countryId/city/$cityId`
 - **Map city markers**: Click navigates to `/country/$countryId/city/$cityId`
-- **Place cards**: Click navigates to `/country/$countryId/city/$cityId` (place's city)
