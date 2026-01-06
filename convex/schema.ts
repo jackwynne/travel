@@ -60,6 +60,7 @@ export default defineSchema({
 		lng: v.optional(v.number()),
 		description: v.optional(v.string()),
 		iconImage: v.optional(v.string()),
+		featured: v.optional(v.boolean()),
 		location: v.optional(
 			v.union(
 				v.object({
@@ -77,7 +78,8 @@ export default defineSchema({
 		.index("byImageType_byLocationId", [
 			"location.imageType",
 			"location.locationId",
-		]),
+		])
+		.index("byFeatured", ["featured"]),
 	route: defineTable({
 		name: v.string(),
 		description: v.optional(v.string()),

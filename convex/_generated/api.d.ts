@@ -11,6 +11,7 @@
 import type * as functions_auth from "../functions/auth.js";
 import type * as functions_city from "../functions/city.js";
 import type * as functions_country from "../functions/country.js";
+import type * as functions_homepage from "../functions/homepage.js";
 import type * as functions_image from "../functions/image.js";
 import type * as functions_place from "../functions/place.js";
 import type * as functions_route from "../functions/route.js";
@@ -26,6 +27,7 @@ declare const fullApi: ApiFromModules<{
   "functions/auth": typeof functions_auth;
   "functions/city": typeof functions_city;
   "functions/country": typeof functions_country;
+  "functions/homepage": typeof functions_homepage;
   "functions/image": typeof functions_image;
   "functions/place": typeof functions_place;
   "functions/route": typeof functions_route;

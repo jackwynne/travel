@@ -2,7 +2,7 @@
 
 import MapLibreGL, { type PopupOptions, type MarkerOptions } from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { useTheme } from "next-themes";
+import { useTheme } from "@/hooks/theme-provider";
 import {
   createContext,
   forwardRef,
@@ -73,7 +73,8 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
   const [mapInstance, setMapInstance] = useState<MapLibreGL.Map | null>(null);
   const [isLoaded, setIsLoaded] = useState(false);
   const [isStyleLoaded, setIsStyleLoaded] = useState(false);
-  const { resolvedTheme } = useTheme();
+  const [isContainerReady, setIsContainerReady] = useState(false);
+  const { theme: resolvedTheme } = useTheme();
   const currentStyleRef = useRef<MapStyleOption | null>(null);
 
   const mapStyles = useMemo(
@@ -86,7 +87,34 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
 
   useImperativeHandle(ref, () => mapInstance as MapLibreGL.Map, [mapInstance]);
 
+  // Wait for container to have dimensions before allowing map initialization
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!containerRef.current) return;
+
+    const container = containerRef.current;
+    const { clientWidth, clientHeight } = container;
+
+    if (clientWidth > 0 && clientHeight > 0) {
+      setIsContainerReady(true);
+      return;
+    }
+
+    // Wait for dimensions via ResizeObserver
+    const resizeObserver = new ResizeObserver((entries) => {
+      const entry = entries[0];
+      if (entry && entry.contentRect.width > 0 && entry.contentRect.height > 0) {
+        resizeObserver.disconnect();
+        setIsContainerReady(true);
+      }
+    });
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, []);
+
+  // Initialize map only when container is ready
+  useEffect(() => {
+    if (!isContainerReady) return;
     if (!containerRef.current) return;
 
     const initialStyle =
@@ -119,7 +147,7 @@ const Map = forwardRef<MapRef, MapProps>(function Map(
       setMapInstance(null);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isContainerReady]);
 
   useEffect(() => {
     if (!mapInstance || !resolvedTheme) return;
