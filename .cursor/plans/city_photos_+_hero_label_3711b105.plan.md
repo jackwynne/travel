@@ -83,4 +83,3 @@ todos:
 - Upload a city image and confirm:
 - it appears in the new city images table
 - editing can toggle `featured`
-- it appears in the Featured Images admin page when featured

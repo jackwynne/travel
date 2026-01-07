@@ -117,4 +117,3 @@ todos:
 - can set city icon (city gains `iconImage`)
 - can copy GPS (city lat/lng updates)
 - Mark a city image as featured and confirm:
-- Featured Images admin list includes it

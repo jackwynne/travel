@@ -80,4 +80,3 @@ todos:
 ## Implementation todos
 
 - `city-header-footer-wrap`: Add index header/footer wrapper to `country.$countryId.city.$cityId.tsx` and adjust layout.
-- `city-footer-link`: Change footer `<Link>` to `to="/country/$countryId/city/$cityId"` with `params` from `Route.useParams()`.
