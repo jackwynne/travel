@@ -477,9 +477,14 @@ function PlacesSection() {
 					<Carousel
 						opts={{
 							align: "start",
-							loop: false,
+							loop: true,
 						}}
 						className="w-full"
+						plugins={[
+							Autoplay({
+							  delay: 5000,
+							}),
+						  ]}
 					>
 						<CarouselContent className="-ml-4">
 							{recentPlaces.map((place) => (
