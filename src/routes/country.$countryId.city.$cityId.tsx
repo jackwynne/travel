@@ -215,7 +215,7 @@ function CityPage() {
 					</div>
 
 					<div className="rounded-xl overflow-hidden border bg-card h-[500px]">
-						<MapComponent center={[city.lng, city.lat]} zoom={13}>
+						<MapComponent center={[city.lng, city.lat]} zoom={13} maxZoom={15}>
 							<MapControls position="bottom-right" showZoom showLocate />
 
 							{/* Place markers */}
