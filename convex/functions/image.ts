@@ -134,9 +134,29 @@ export const update = mutation({
 			throw new Error("Image not found");
 		}
 
-		return await ctx.db.patch(_id, {
+		await ctx.db.patch(_id, {
 			...updates,
 		});
+
+		// Auto-update place.lastVisitedAt from image.dateTime if newer
+		if (
+			typeof updates.dateTime === "number" &&
+			updates.location?.imageType === "place"
+		) {
+			const place = await ctx.db.get(updates.location.locationId);
+			if (place) {
+				const shouldUpdate =
+					place.lastVisitedAt === undefined ||
+					updates.dateTime > place.lastVisitedAt;
+				if (shouldUpdate) {
+					await ctx.db.patch(place._id, {
+						lastVisitedAt: updates.dateTime,
+					});
+				}
+			}
+		}
+
+		return null;
 	},
 });
 

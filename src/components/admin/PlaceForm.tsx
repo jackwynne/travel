@@ -40,7 +40,23 @@ const placeSchema = z.object({
 	iconImage: z.string().optional(),
 	lat: z.number().optional(),
 	lng: z.number().optional(),
+	lastVisitedAt: z.number().optional(),
 });
+
+// Convert ms timestamp to datetime-local string (YYYY-MM-DDTHH:MM)
+function timestampToDatetimeLocal(ms: number | undefined): string {
+	if (!ms) return "";
+	const date = new Date(ms);
+	const pad = (n: number) => n.toString().padStart(2, "0");
+	return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+// Convert datetime-local string to ms timestamp
+function datetimeLocalToTimestamp(str: string): number | undefined {
+	if (!str) return undefined;
+	const date = new Date(str);
+	return Number.isNaN(date.getTime()) ? undefined : date.getTime();
+}
 
 interface PlaceFormProps {
 	cityId: Id<"city">;
@@ -69,6 +85,7 @@ export function PlaceForm({
 			iconImage: place?.iconImage ?? "",
 			lat: place?.lat ?? 0,
 			lng: place?.lng ?? 0,
+			lastVisitedAt: timestampToDatetimeLocal(place?.lastVisitedAt),
 		},
 		onSubmit: async ({ value }) => {
 			const validated = placeSchema.parse({
@@ -76,6 +93,7 @@ export function PlaceForm({
 				address: value.address || undefined,
 				rating: value.rating || undefined,
 				notes: value.notes || undefined,
+				lastVisitedAt: datetimeLocalToTimestamp(value.lastVisitedAt),
 			});
 			if (place) {
 				await updatePlace({
@@ -271,6 +289,24 @@ export function PlaceForm({
 							placeholder="Any additional notes..."
 							rows={2}
 						/>
+					</div>
+				)}
+			</form.Field>
+
+			<form.Field name="lastVisitedAt">
+				{(field) => (
+					<div className="space-y-2">
+						<Label htmlFor="lastVisitedAt">Last Visited (Optional)</Label>
+						<Input
+							id="lastVisitedAt"
+							type="datetime-local"
+							value={field.state.value}
+							onBlur={field.handleBlur}
+							onChange={(e) => field.handleChange(e.target.value)}
+						/>
+						<p className="text-xs text-muted-foreground">
+							Auto-set when uploading images with EXIF data
+						</p>
 					</div>
 				)}
 			</form.Field>
