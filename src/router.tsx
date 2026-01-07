@@ -10,9 +10,6 @@ export function getRouter() {
   if (!CONVEX_URL) {
     throw new Error('missing VITE_CONVEX_URL env var');
   }
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/router.tsx:getRouter',message:'getRouter init',data:(() => { try { const u = new URL(CONVEX_URL); return { isBrowser: typeof window !== 'undefined', convexProtocol: u.protocol, convexHost: u.host, pageProtocol: typeof window !== 'undefined' ? window.location.protocol : null }; } catch { return { isBrowser: typeof window !== 'undefined', convexUrlParseError: true, pageProtocol: typeof window !== 'undefined' ? window.location.protocol : null }; } })(),timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
   const convex = new ConvexReactClient(CONVEX_URL);
   const convexQueryClient = new ConvexQueryClient(convex);
 
@@ -26,9 +23,6 @@ export function getRouter() {
     },
   });
   convexQueryClient.connect(queryClient);
-  // #region agent log
-  fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/router.tsx:getRouter',message:'convexQueryClient connected',data:{isBrowser:typeof window!=='undefined'},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'B'})}).catch(()=>{});
-  // #endregion
 
   const router = createRouter({
     routeTree,

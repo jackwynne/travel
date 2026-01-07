@@ -1,9 +1,8 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
-import { getConvexHttpClient } from "@/lib/convex-http";
 import { PlaceCard, PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,11 +38,6 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-	useEffect(() => {
-		// #region agent log
-		fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/index.tsx:Home',message:'home mounted',data:{pathname:typeof window!=='undefined'?window.location.pathname:null,online:typeof navigator!=='undefined'?navigator.onLine:null},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'D'})}).catch(()=>{});
-		// #endregion
-	}, []);
 	return (
 		<div className="min-h-screen flex flex-col bg-background">
 			{/* Minimal Header */}
@@ -98,33 +92,6 @@ function Home() {
 function HeroSection() {
 	const featuredImages = useQuery(api.functions.homepage.getFeaturedImages);
 	const [currentSlide, setCurrentSlide] = useState(0);
-
-	useEffect(() => {
-		let cancelled = false;
-		(async () => {
-			try {
-				const client = getConvexHttpClient();
-				// #region agent log
-				fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/index.tsx:HeroSection',message:'hero http query start',data:{featuredImagesState:featuredImages===undefined?'undefined':featuredImages===null?'null':'value'},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'D'})}).catch(()=>{});
-				// #endregion
-				const result = await client.query(api.functions.homepage.getFeaturedImages);
-				if (cancelled) return;
-				// #region agent log
-				fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/index.tsx:HeroSection',message:'hero http query success',data:{count:Array.isArray(result)?result.length:null},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'D'})}).catch(()=>{});
-				// #endregion
-			} catch (e) {
-				if (cancelled) return;
-				const err = e as { name?: string; message?: string };
-				// #region agent log
-				fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/index.tsx:HeroSection',message:'hero http query error',data:{name:err?.name??null,message:err?.message??String(e)},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'D'})}).catch(()=>{});
-				// #endregion
-			}
-		})();
-		return () => {
-			cancelled = true;
-		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
 
 	if (featuredImages === undefined) {
 		return <HeroSkeleton />;
