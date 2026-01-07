@@ -15,6 +15,9 @@ export default defineConfig({
     port: 3000,
   },
   worker: { format: 'es' },
+  optimizeDeps: {
+    exclude: ["@jsquash/avif", "@jsquash/jpeg", "@jsquash/png", "@jsquash/resize"]
+  },
   plugins: [
     tsConfigPaths({
       projects: ['./tsconfig.json'],
