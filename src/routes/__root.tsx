@@ -1,15 +1,14 @@
 import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from '@tanstack/react-router';
 import { createServerFn } from '@tanstack/react-start';
 import { getAuth } from '@workos/authkit-tanstack-react-start';
-import { AuthKitProvider, useAccessToken, useAuth } from '@workos/authkit-tanstack-react-start/client';
+import { AuthKitProvider } from '@workos/authkit-tanstack-react-start/client';
+import { ConvexProvider } from 'convex/react';
 import interCssUrl from '@fontsource-variable/inter/index.css?url';
 import appCssUrl from '../app.css?url';
 import type { QueryClient } from '@tanstack/react-query';
-import { useCallback, useMemo } from 'react';
 import type { ReactNode } from 'react';
 import type { ConvexReactClient } from 'convex/react';
 import type { ConvexQueryClient } from '@convex-dev/react-query';
-import { ConvexProviderWithAuth } from 'convex/react';
 import { ThemeProvider } from '../hooks/theme-provider';
 import { useEffect, useRef } from 'react';
 
@@ -106,54 +105,10 @@ function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
 
   return (
     <AuthKitProvider>
-      <ConvexProviderWithAuth client={convexQueryClient.convexClient} useAuth={useAuthFromWorkOS}>
+      <ConvexProvider client={convexQueryClient.convexClient}>
         <ThemeProvider>{children}</ThemeProvider>
-      </ConvexProviderWithAuth>
+      </ConvexProvider>
     </AuthKitProvider>
-  );
-}
-
-function useAuthFromWorkOS() {
-  const { loading, user } = useAuth();
-  const { accessToken, getAccessToken } = useAccessToken();
-  const tokenCallCountRef = useRef(0);
-
-  useEffect(() => {
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:useAuthFromWorkOS',message:'workos auth state',data:{loading,hasUser:!!user,hasAccessToken:!!accessToken},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-  }, [loading, user, accessToken]);
-
-  const fetchAccessToken = useCallback(
-    async ({ forceRefreshToken }: { forceRefreshToken: boolean }) => {
-      tokenCallCountRef.current += 1;
-      // #region agent log
-      if (tokenCallCountRef.current <= 5) {
-        fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:fetchAccessToken',message:'fetchAccessToken called',data:{call:tokenCallCountRef.current,forceRefreshToken,hasAccessToken:!!accessToken,loading,hasUser:!!user},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'E'})}).catch(()=>{});
-      }
-      // #endregion
-      if (!accessToken || forceRefreshToken) {
-        const t = (await getAccessToken()) ?? null;
-        // #region agent log
-        if (tokenCallCountRef.current <= 5) {
-          fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:fetchAccessToken',message:'fetchAccessToken result',data:{call:tokenCallCountRef.current,returned:!!t},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'E'})}).catch(()=>{});
-        }
-        // #endregion
-        return t;
-      }
-
-      return accessToken;
-    },
-    [accessToken, getAccessToken],
-  );
-
-  return useMemo(
-    () => ({
-      isLoading: loading,
-      isAuthenticated: !!user,
-      fetchAccessToken,
-    }),
-    [loading, user, fetchAccessToken],
   );
 }
 
