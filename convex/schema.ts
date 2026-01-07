@@ -26,6 +26,7 @@ export default defineSchema({
 		lastVistitedMonth: v.number(),
 		lat: v.number(),
 		lng: v.number(),
+		iconImage: v.optional(v.string()),
 	}).index("byCountry", ["countryId"]),
 	place: defineTable({
 		cityId: v.id("city"),

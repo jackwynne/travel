@@ -139,7 +139,7 @@ function HeroSection() {
 									<div className="max-w-2xl space-y-4">
 										<span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 backdrop-blur-sm text-white/80 text-sm">
 											<MapPin className="h-3.5 w-3.5" />
-											Featured Destination
+											{image.imageType === "city" ? "Featured City" : "Featured Place"}
 										</span>
 										<h2 className="text-4xl md:text-6xl font-bold text-white tracking-tight">
 											{image.locationName}

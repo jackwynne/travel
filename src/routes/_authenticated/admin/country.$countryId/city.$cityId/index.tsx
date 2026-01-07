@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
+import { CityImageTable } from "@/components/admin/CityImageTable";
 import { PlaceTable } from "@/components/admin/PlaceTable";
 import { RouteTable } from "@/components/admin/RouteTable";
 import { api } from "../../../../../../convex/_generated/api";
@@ -59,6 +60,9 @@ function AdminPlacesPage() {
 
 	return (
 		<div className="space-y-6">
+			<div className="rounded-lg border bg-card p-6">
+				<CityImageTable cityId={cityId as Id<"city">} />
+			</div>
 			<div className="rounded-lg border bg-card p-6">
 				<PlaceTable cityId={cityId as Id<"city">} countryId={countryId} />
 			</div>

@@ -1,6 +1,8 @@
 export { AdminBreadcrumb } from "./AdminBreadcrumb";
 export { AdminSidebar } from "./AdminSidebar";
 export { CityForm } from "./CityForm";
+export { CityImageTable } from "./CityImageTable";
+export { CityImageUploadForm } from "./CityImageUploadForm";
 export { CityTable } from "./CityTable";
 export { CountryForm } from "./CountryForm";
 export { CountryTable } from "./CountryTable";

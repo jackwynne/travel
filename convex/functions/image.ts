@@ -196,6 +196,32 @@ export const getByPlace = query({
 });
 
 /**
+ * Get all images for a specific city.
+ */
+export const getByCity = query({
+	args: {
+		cityId: v.id("city"),
+	},
+	handler: async (ctx, args) => {
+		const images = await ctx.db
+			.query("image")
+			.withIndex("byImageType_byLocationId", (q) =>
+				q
+					.eq("location.imageType", "city")
+					.eq("location.locationId", args.cityId),
+			)
+			.collect();
+
+		return Promise.all(
+			images.map(async (image) => ({
+				...image,
+				url: await r2.getUrl(image.key),
+			})),
+		);
+	},
+});
+
+/**
  * Get a single image by ID with its URL.
  */
 export const getOne = query({

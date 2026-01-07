@@ -20,6 +20,7 @@ export const getFeaturedImages = query({
 				let locationName = "";
 				let countryId: string | null = null;
 				let cityId: string | null = null;
+				const imageType = image.location?.imageType ?? null;
 
 				if (image.location) {
 					if (image.location.imageType === "city") {
@@ -50,6 +51,7 @@ export const getFeaturedImages = query({
 					locationName,
 					countryId,
 					cityId,
+					imageType,
 				};
 			}),
 		);

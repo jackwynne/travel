@@ -118,3 +118,53 @@ export const remove = mutation({
 		return null;
 	},
 });
+
+/**
+ * Copy iconImage and/or lat/lng from an image to a city.
+ */
+export const copyFromImage = mutation({
+	args: {
+		cityId: v.id("city"),
+		imageId: v.id("image"),
+		copyIconImage: v.boolean(),
+		copyLocation: v.boolean(),
+	},
+	returns: v.null(),
+	handler: async (ctx, args) => {
+		await requireAuth(ctx);
+		const city = await ctx.db.get(args.cityId);
+		if (!city) {
+			throw new Error("City not found");
+		}
+
+		const image = await ctx.db.get(args.imageId);
+		if (!image) {
+			throw new Error("Image not found");
+		}
+
+		const updates: Partial<{
+			iconImage: string;
+			lat: number;
+			lng: number;
+		}> = {};
+
+		if (args.copyIconImage && image.iconImage) {
+			updates.iconImage = image.iconImage;
+		}
+
+		if (
+			args.copyLocation &&
+			image.lat !== undefined &&
+			image.lng !== undefined
+		) {
+			updates.lat = image.lat;
+			updates.lng = image.lng;
+		}
+
+		if (Object.keys(updates).length > 0) {
+			await ctx.db.patch(args.cityId, updates);
+		}
+
+		return null;
+	},
+});
