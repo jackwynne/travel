@@ -77,6 +77,32 @@ function RootComponent() {
 
 function AppProviders({ children }: Readonly<{ children: ReactNode }>) {
   const { convexQueryClient } = Route.useRouteContext();
+  const connLogCountRef = useRef(0);
+
+  useEffect(() => {
+    connLogCountRef.current = 0;
+    try {
+      // Log initial connection state + subscribe to changes (limit to avoid spam)
+      const initial = convexQueryClient.convexClient.connectionState();
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:AppProviders',message:'convex connectionState initial',data:initial,timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'G'})}).catch(()=>{});
+      // #endregion
+
+      const unsub = convexQueryClient.convexClient.subscribeToConnectionState((s) => {
+        connLogCountRef.current += 1;
+        if (connLogCountRef.current > 15) return;
+        // #region agent log
+        fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:AppProviders',message:'convex connectionState change',data:{...s,seq:connLogCountRef.current},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'G'})}).catch(()=>{});
+        // #endregion
+      });
+      return () => unsub();
+    } catch (e) {
+      const err = e as { name?: string; message?: string };
+      // #region agent log
+      fetch('http://127.0.0.1:7242/ingest/107455fa-5157-421b-bcde-caa8b66e9990',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'src/routes/__root.tsx:AppProviders',message:'convex connectionState subscribe error',data:{name:err?.name??null,message:err?.message??String(e)},timestamp:Date.now(),sessionId:'debug-session',runId:'pre-fix',hypothesisId:'G'})}).catch(()=>{});
+      // #endregion
+    }
+  }, [convexQueryClient]);
 
   return (
     <AuthKitProvider>
