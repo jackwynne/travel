@@ -377,7 +377,7 @@ function CityPage() {
 							</span>
 						</div>
 						<Link
-							to="/country/$countryId/city/$cityId"
+							to="/admin/country/$countryId/city/$cityId"
 							params={{ countryId, cityId }}
 						>
 							<Button variant="outline" className="gap-2">
