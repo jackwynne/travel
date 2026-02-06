@@ -18,8 +18,8 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { useEffect, useRef, useState } from "react";
-import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { PlaceCard, PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -45,8 +45,9 @@ import {
 	ChevronLeft,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { OptionsFloatingNav } from "@/components/OptionsFloatingNav";
 
-export const Route = createFileRoute("/index-option-6")({
+export const Route = createFileRoute("/options/index-option-6")({
 	component: Home,
 });
 
@@ -78,7 +79,7 @@ function Home() {
 				}
 
 				.carto-float {
-					opacity: 0;
+					opacity: 0
 					transform: translateY(12px);
 					animation: cartoFloat 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 				}
@@ -94,7 +95,7 @@ function Home() {
 						#E8614D33 4px,
 						transparent 4px,
 						transparent 8px
-					) 1;
+					) 1
 				}
 
 				.carto-stripe {
@@ -104,7 +105,7 @@ function Home() {
 						transparent 4px,
 						rgba(232, 97, 77, 0.04) 4px,
 						rgba(232, 97, 77, 0.04) 8px
-					);
+					)
 				}
 
 				.dark .carto-stripe {
@@ -114,7 +115,7 @@ function Home() {
 						transparent 4px,
 						rgba(232, 97, 77, 0.06) 4px,
 						rgba(232, 97, 77, 0.06) 8px
-					);
+					)
 				}
 
 				.carto-pulse {
@@ -199,6 +200,7 @@ function Home() {
 						</div>
 					</div>
 				</footer>
+				<OptionsFloatingNav currentKey="6" />
 			</div>
 		</>
 	)
@@ -484,7 +486,7 @@ function PlacesSection() {
 
 	const scrollBy = (amount: number) => {
 		scrollRef.current?.scrollBy({ left: amount, behavior: "smooth" });
-	};
+	}
 
 	if (recentPlaces === undefined) {
 		return (

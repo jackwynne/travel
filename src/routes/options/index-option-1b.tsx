@@ -14,8 +14,8 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
-import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { PlaceCard, PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -39,8 +39,9 @@ import {
 	Compass,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { OptionsFloatingNav } from "@/components/OptionsFloatingNav";
 
-export const Route = createFileRoute("/index-option-1b")({
+export const Route = createFileRoute("/options/index-option-1b")({
 	component: Home,
 });
 
@@ -73,7 +74,7 @@ function Home() {
 				}
 
 				.ed-fade {
-					opacity: 0;
+					opacity: 0
 					transform: translateY(20px);
 					animation: edFade 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 				}
@@ -83,7 +84,7 @@ function Home() {
 				}
 
 				.ed-line-reveal {
-					width: 0;
+					width: 0
 					animation: lineReveal 0.8s ease-out 0.3s forwards;
 				}
 
@@ -96,18 +97,18 @@ function Home() {
 				}
 
 				.ed-hover-line::after {
-					content: '';
+					content: ""
 					position: absolute;
-					bottom: -2px;
-					left: 0;
-					width: 0;
-					height: 1px;
+					bottom: -2px
+					left: 0
+					width: 0
+					height: 1px
 					background: currentColor;
 					transition: width 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 				}
 
 				.ed-hover-line:hover::after {
-					width: 100%;
+					width: 100%
 				}
 			`}</style>
 
@@ -166,6 +167,7 @@ function Home() {
 						</div>
 					</div>
 				</footer>
+				<OptionsFloatingNav currentKey="1b" />
 			</div>
 		</>
 	)

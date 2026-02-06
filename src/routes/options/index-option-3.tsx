@@ -18,8 +18,8 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
-import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { PlaceCard, PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -43,8 +43,9 @@ import {
 	Stamp,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { OptionsFloatingNav } from "@/components/OptionsFloatingNav";
 
-export const Route = createFileRoute("/index-option-3")({
+export const Route = createFileRoute("/options/index-option-3")({
 	component: Home,
 });
 
@@ -181,6 +182,7 @@ function Home() {
 						</div>
 					</div>
 				</footer>
+				<OptionsFloatingNav currentKey="3" />
 			</div>
 		</>
 	)

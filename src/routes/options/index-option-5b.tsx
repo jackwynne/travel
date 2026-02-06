@@ -16,8 +16,8 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
-import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { PlaceCard, PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,16 +31,19 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import {
+	ArrowRight,
 	Globe,
 	MapPin,
 	ChevronRight,
 	Settings,
 	ArrowUpRight,
+	Plus,
 	Plane,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { OptionsFloatingNav } from "@/components/OptionsFloatingNav";
 
-export const Route = createFileRoute("/index-option-5b")({
+export const Route = createFileRoute("/options/index-option-5b")({
 	component: Home,
 });
 
@@ -67,7 +70,7 @@ function Home() {
 				}
 
 				.b-slide {
-					opacity: 0;
+					opacity: 0
 					transform: translateX(-30px);
 					animation: bSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 				}
@@ -87,76 +90,29 @@ function Home() {
 
 				.b-crosshair {
 					position: relative;
-					width: 14px;
-					height: 14px;
+					width: 14px
+					height: 14px
 				}
 
 				.b-crosshair::before,
 				.b-crosshair::after {
-					content: '';
+					content: ""
 					position: absolute;
 					background: #FF5D00;
 				}
 
 				.b-crosshair::before {
-					width: 2px;
-					height: 100%;
-					left: 50%;
+					width: 2px
+					height: 100%
+					left: 50%
 					transform: translateX(-50%);
 				}
 
 				.b-crosshair::after {
-					width: 100%;
-					height: 2px;
-					top: 50%;
+					width: 100%
+					height: 2px
+					top: 50%
 					transform: translateY(-50%);
-				}
-
-				.b-crosshair-active::before,
-				.b-crosshair-active::after {
-					background: #fff;
-					box-shadow: 0 0 0 3px #FF5D00;
-				}
-
-				.b-grid-bg {
-					background-image:
-						linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px),
-						linear-gradient(0deg, rgba(0,0,0,0.04) 1px, transparent 1px);
-					background-size: 24px 24px;
-				}
-
-				.b-stamp {
-					border: 2px dashed currentColor;
-					border-radius: 6px;
-					box-shadow: inset 0 0 0 2px rgba(255,93,0,0.2);
-				}
-
-				.b-filmstrip {
-					background: linear-gradient(90deg, rgba(0,0,0,0.04) 12px, transparent 12px, transparent calc(100% - 12px), rgba(0,0,0,0.04) calc(100% - 12px));
-					border-top: 2px solid currentColor;
-					border-bottom: 2px solid currentColor;
-				}
-
-				.b-film-hole {
-					width: 10px;
-					height: 10px;
-					border-radius: 2px;
-					background: currentColor;
-					opacity: 0.2;
-				}
-
-				.b-photo-frame {
-					box-shadow: 0 12px 40px rgba(0,0,0,0.12);
-					border: 10px solid #fff;
-				}
-
-				.b-darkroom {
-					background: radial-gradient(circle at 20% 20%, rgba(255,93,0,0.12), transparent 45%),
-						linear-gradient(180deg, #0f0f0f 0%, #111 60%, #0a0a0a 100%);
-				}
-
-				.b-tape {
-					background: repeating-linear-gradient(135deg, rgba(255,93,0,0.2) 0 8px, rgba(255,255,255,0.2) 8px 16px);
 				}
 			`}</style>
 
@@ -185,16 +141,16 @@ function Home() {
 									className="text-sm font-bold tracking-[0.4em] uppercase"
 									style={{ fontFamily: monoFont }}
 								>
-									TRAVEL
+									TRV
 								</span>
-								<span className="text-lg" style={{ color: "#FF5D00" }}><Plane /></span>
+								<span className="text-lg" style={{ color: "#FF5D00" }}>*</span>
 							</Link>
 							<div className="flex items-center gap-4">
 								<span
 									className="hidden md:inline text-[10px] text-muted-foreground tracking-[0.15em]"
 									style={{ fontFamily: monoFont }}
 								>
-									[travel.jackwynne.nz]
+									[travel.log]
 								</span>
 								<ThemeToggle />
 							</div>
@@ -205,9 +161,7 @@ function Home() {
 				<main className="flex-1">
 					<HeroSection />
 					<MapSection />
-					<CountryShowcaseSection />
 					<PlacesSection />
-					<PhotoShowcaseSection />
 				</main>
 
 				{/* Footer */}
@@ -232,6 +186,7 @@ function Home() {
 						</Link>
 					</div>
 				</footer>
+				<OptionsFloatingNav currentKey="5b" />
 			</div>
 		</>
 	)
@@ -376,12 +331,9 @@ function MapSection() {
 	const countriesWithCities = useQuery(
 		api.functions.homepage.getCountriesWithCities,
 	)
-	const featuredImages = useQuery(api.functions.homepage.getFeaturedImages);
-	const recentPlaces = useQuery(api.functions.homepage.getRecentPlaces);
 	const [selectedCountry, setSelectedCountry] = useState<Id<"country"> | null>(
 		null,
 	)
-	const [focusCityId, setFocusCityId] = useState<Id<"city"> | null>(null);
 	const navigate = useNavigate();
 
 	const filteredCities =
@@ -390,15 +342,6 @@ function MapSection() {
 				? country.cities.map((city) => ({ ...city, countryId: country._id }))
 				: [],
 		) ?? [];
-
-	const allCities =
-		countriesWithCities?.flatMap((country) =>
-			country.cities.map((city) => ({ ...city, countryId: country._id })),
-		) ?? [];
-
-	const focusCity = focusCityId
-		? allCities.find((city) => city._id === focusCityId)
-		: null;
 
 	if (countriesWithCities === undefined) {
 		return (
@@ -461,7 +404,6 @@ function MapSection() {
 				<Map center={[10, 45]} zoom={3} maxZoom={12}>
 					<MapControls position="bottom-right" showZoom showCompass />
 					<MapBoundsFitter cities={filteredCities} />
-					<MapFocusController city={focusCity} />
 					{filteredCities.map((city) => (
 						<MapMarker
 							key={city._id}
@@ -479,12 +421,7 @@ function MapSection() {
 						>
 							<MarkerContent>
 								<div className="group cursor-pointer transition-transform hover:scale-125">
-									<div
-										className={cn(
-											"b-crosshair",
-											city._id === focusCityId && "b-crosshair-active",
-										)}
-									/>
+									<div className="b-crosshair" />
 								</div>
 							</MarkerContent>
 							<MarkerTooltip>
@@ -499,149 +436,8 @@ function MapSection() {
 					))}
 				</Map>
 			</div>
-
-			{/* Photo + destination tether */}
-			<div className="border-t-2 border-foreground b-grid-bg">
-				<div className="px-4 md:px-8 py-6 grid grid-cols-1 lg:grid-cols-5 gap-6">
-					<div className="lg:col-span-2">
-						<span
-							className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground"
-							style={{ fontFamily: monoFont }}
-						>
-							// photo tether
-						</span>
-						<h3 className="b-heading text-3xl md:text-4xl uppercase mt-2">
-							Mapboard
-							<span style={{ color: "#FF5D00" }}>.</span>
-						</h3>
-						<p
-							className="text-xs text-muted-foreground mt-3 max-w-sm"
-							style={{ fontFamily: monoFont }}
-						>
-							Hover a photo or destination to pull the map to its coordinates.
-						</p>
-					</div>
-					<div className="lg:col-span-3">
-						<div className="b-filmstrip rounded-none overflow-x-auto">
-							<div className="flex items-center gap-2 px-3 py-3">
-								<div className="flex gap-1">
-									{[...Array(6)].map((_, i) => (
-										<div key={i} className="b-film-hole" />
-									))}
-								</div>
-								<div className="flex gap-3">
-									{featuredImages?.slice(0, 8).map((image) => (
-										<button
-											key={image._id}
-											type="button"
-											className="relative shrink-0"
-											onMouseEnter={() => {
-												if (image.cityId) {
-													setFocusCityId(image.cityId as Id<"city">);
-												}
-											}}
-											onFocus={() => {
-												if (image.cityId) {
-													setFocusCityId(image.cityId as Id<"city">);
-												}
-											}}
-											onClick={() => {
-												if (image.cityId && image.countryId) {
-													navigate({
-														to: "/country/$countryId/city/$cityId",
-														params: {
-															countryId: image.countryId,
-															cityId: image.cityId,
-														},
-													});
-												}
-											}}
-										>
-											<img
-												src={image.url}
-												alt={image.description ?? image.locationName}
-												className="h-24 w-32 object-cover border-2 border-foreground"
-											/>
-											<span
-												className="absolute bottom-1 left-1 text-[9px] text-white bg-black/70 px-1"
-												style={{ fontFamily: monoFont }}
-											>
-												{image.locationName}
-											</span>
-										</button>
-									))}
-								</div>
-								<div className="flex gap-3">
-									{recentPlaces?.slice(0, 6).map((place) => (
-										<button
-											key={place._id}
-											type="button"
-											className="relative shrink-0"
-											onMouseEnter={() => {
-												setFocusCityId(place.cityId as Id<"city">);
-											}}
-											onFocus={() => {
-												setFocusCityId(place.cityId as Id<"city">);
-											}}
-											onClick={() => {
-												if (place.countryId) {
-													navigate({
-														to: "/country/$countryId/city/$cityId",
-														params: {
-															countryId: place.countryId,
-															cityId: place.cityId,
-														},
-													});
-												}
-											}}
-										>
-											<div className="h-24 w-32 border-2 border-foreground bg-muted flex items-center justify-center">
-												{place.iconImage ? (
-													<img
-														src={place.iconImage}
-														alt={place.name}
-														className="h-full w-full object-cover"
-													/>
-												) : (
-													<MapPin className="h-6 w-6 text-muted-foreground" />
-												)}
-											</div>
-											<span
-												className="absolute bottom-1 left-1 text-[9px] text-white bg-black/70 px-1"
-												style={{ fontFamily: monoFont }}
-											>
-												{place.name}
-											</span>
-										</button>
-									))}
-								</div>
-								<div className="flex gap-1">
-									{[...Array(6)].map((_, i) => (
-										<div key={i} className="b-film-hole" />
-									))}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
 		</section>
 	)
-}
-
-function MapFocusController({
-	city,
-}: {
-	city: { lng: number; lat: number } | null;
-}) {
-	const { map, isLoaded } = useMap();
-
-	useEffect(() => {
-		if (!map || !isLoaded || !city) return;
-		map.flyTo({ center: [city.lng, city.lat], zoom: 5, duration: 900 });
-	}, [map, isLoaded, city]);
-
-	return null;
 }
 
 function MapBoundsFitter({
@@ -742,190 +538,4 @@ function PlacesSection() {
 			</div>
 		</section>
 	)
-}
-
-function CountryShowcaseSection() {
-	const countriesWithCities = useQuery(
-		api.functions.homepage.getCountriesWithCities,
-	);
-
-	if (countriesWithCities === undefined) {
-		return (
-			<section className="border-b-2 border-foreground">
-				<Skeleton className="h-[420px]" />
-			</section>
-		)
-	}
-
-	return (
-		<section className="border-b-2 border-foreground">
-			<div className="border-b-2 border-foreground px-4 md:px-8 py-4 flex items-end justify-between">
-				<div>
-					<span
-						className="text-[10px] text-muted-foreground block mb-1 tracking-[0.1em]"
-						style={{ fontFamily: monoFont }}
-					>
-						// passport wall
-					</span>
-					<h2 className="b-heading text-3xl md:text-5xl uppercase">
-						Countries<span style={{ color: "#FF5D00" }}>.</span>
-					</h2>
-				</div>
-				<span
-					className="text-[10px] text-muted-foreground tracking-[0.1em]"
-					style={{ fontFamily: monoFont }}
-				>
-					[{countriesWithCities.length} nations]
-				</span>
-			</div>
-
-			<div className="px-4 md:px-8 py-8 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 b-grid-bg">
-				{countriesWithCities.map((country, i) => {
-					const citiesSorted = [...country.cities].sort((a, b) => {
-						const aScore = (a.lastVisitedYear ?? 0) * 12 + (a.lastVisitedMonth ?? 0);
-						const bScore = (b.lastVisitedYear ?? 0) * 12 + (b.lastVisitedMonth ?? 0);
-						return bScore - aScore;
-					});
-					const primaryCity = citiesSorted[0] ?? country.cities[0];
-					return (
-						<div
-							key={country._id}
-							className="border-2 border-foreground p-5 relative"
-						>
-							<span
-								className="absolute top-2 right-2 text-[10px] text-muted-foreground"
-								style={{ fontFamily: monoFont }}
-							>
-								{String(i + 1).padStart(2, "0")}
-							</span>
-							<div className="b-stamp inline-flex items-center gap-2 px-3 py-2 uppercase text-xs tracking-[0.2em] b-accent">
-								<Globe className="h-3 w-3" />
-								{country.name}
-							</div>
-							<div className="mt-4 flex items-start justify-between gap-4">
-								<div>
-									<h3 className="b-heading text-3xl uppercase">
-										{country.name}
-									</h3>
-									<p
-										className="text-[10px] text-muted-foreground mt-1"
-										style={{ fontFamily: monoFont }}
-									>
-										{country.cityCount} cities logged
-									</p>
-								</div>
-								<div
-									className="text-[10px] text-muted-foreground text-right"
-									style={{ fontFamily: monoFont }}
-								>
-									<span className="block">{country.lat?.toFixed(2)}, {country.lng?.toFixed(2)}</span>
-									<span className="block">coords</span>
-								</div>
-							</div>
-
-							<div className="mt-4 grid grid-cols-2 gap-2">
-								{citiesSorted.slice(0, 4).map((city) => (
-									<span
-										key={city._id}
-										className="text-[10px] uppercase tracking-[0.1em] border border-foreground/20 px-2 py-1"
-										style={{ fontFamily: monoFont }}
-									>
-										{city.name}
-									</span>
-								))}
-							</div>
-
-							{primaryCity && (
-								<Link
-									to="/country/$countryId/city/$cityId"
-									params={{
-										countryId: country._id,
-										cityId: primaryCity._id,
-									}}
-									className="mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.1em]"
-									style={{ fontFamily: monoFont, color: "#FF5D00" }}
-								>
-									Explore {primaryCity.name}
-									<ChevronRight className="h-3 w-3" />
-								</Link>
-							)}
-						</div>
-					);
-				})}
-			</div>
-		</section>
-	);
-}
-
-function PhotoShowcaseSection() {
-	const featuredImages = useQuery(api.functions.homepage.getFeaturedImages);
-
-	if (featuredImages === undefined) {
-		return (
-			<section className="border-b-2 border-foreground">
-				<Skeleton className="h-[420px]" />
-			</section>
-		)
-	}
-
-	if (featuredImages.length === 0) return null;
-
-	return (
-		<section className="border-t-2 border-foreground b-darkroom text-white">
-			<div className="px-4 md:px-8 py-10">
-				<div className="flex items-end justify-between gap-4">
-					<div>
-						<span
-							className="text-[10px] tracking-[0.2em] uppercase text-white/60"
-							style={{ fontFamily: monoFont }}
-						>
-							// darkroom contact sheet
-						</span>
-						<h2 className="b-heading text-3xl md:text-5xl uppercase text-white mt-2">
-							Photo Proofs
-							<span style={{ color: "#FF5D00" }}>.</span>
-						</h2>
-					</div>
-					<span
-						className="text-[10px] text-white/60 tracking-[0.15em]"
-						style={{ fontFamily: monoFont }}
-					>
-						[{featuredImages.length} frames]
-					</span>
-				</div>
-
-				<div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-					{featuredImages.slice(0, 9).map((image, i) => (
-						<div key={image._id} className="relative">
-							<div className="b-tape h-4 w-24 absolute -top-3 left-4 rotate-[-2deg]" />
-							<div className="b-photo-frame bg-white">
-								<img
-									src={image.url}
-									alt={image.description ?? image.locationName}
-									className="h-64 w-full object-cover"
-								/>
-								<div className="px-3 py-2 text-black">
-									<span
-										className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground"
-										style={{ fontFamily: monoFont }}
-									>
-										frame {String(i + 1).padStart(2, "0")}
-									</span>
-									<h3 className="b-heading text-2xl uppercase mt-1">
-										{image.locationName}
-									</h3>
-									<p
-										className="text-[10px] text-muted-foreground"
-										style={{ fontFamily: monoFont }}
-									>
-										{image.description ?? "archival capture"}
-									</p>
-								</div>
-							</div>
-						</div>
-					))}
-				</div>
-			</div>
-		</section>
-	);
 }

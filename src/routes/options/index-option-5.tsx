@@ -18,8 +18,8 @@
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
-import { api } from "../../convex/_generated/api";
-import type { Id } from "../../convex/_generated/dataModel";
+import { api } from "../../../convex/_generated/api";
+import type { Id } from "../../../convex/_generated/dataModel";
 import { PlaceCard, PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
@@ -42,8 +42,9 @@ import {
 	X,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { OptionsFloatingNav } from "@/components/OptionsFloatingNav";
 
-export const Route = createFileRoute("/index-option-5")({
+export const Route = createFileRoute("/options/index-option-5")({
 	component: Home,
 });
 
@@ -369,6 +370,7 @@ function MapSection() {
 			<div className="grid grid-cols-1 lg:grid-cols-5">
 				{/* Country list - stark */}
 				<div className="lg:col-span-1 border-r-0 lg:border-r-2 border-b-2 lg:border-b-0 border-foreground">
+				<OptionsFloatingNav currentKey="5" />
 					<div
 						className="p-4 border-b-2 border-foreground text-xs font-bold tracking-[0.3em] uppercase text-muted-foreground"
 						style={{ fontFamily: monoFont }}
