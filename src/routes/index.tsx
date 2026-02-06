@@ -595,9 +595,12 @@ function MapSection() {
 								latitude={hoveredLocation.lat}
 							>
 								<MarkerContent>
-									<div className="flex items-center gap-2">
-										<div className="h-3 w-3 border-2 border-[#FF5D00] bg-white" />
-										<div className="px-2 py-1 bg-black text-white" style={{ fontFamily: monoFont }}>
+									<div className="relative w-0 h-0">
+										<div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 h-3 w-3 border-2 border-[#FF5D00] bg-white" />
+										<div
+											className="absolute left-0 top-0 translate-x-3 -translate-y-1/2 px-2 py-1 bg-black text-white min-w-[160px]"
+											style={{ fontFamily: monoFont }}
+										>
 											<div className="text-[9px] uppercase tracking-[0.1em]">
 												{hoveredLocation.label}
 											</div>
