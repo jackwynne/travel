@@ -20,6 +20,9 @@ export const getFeaturedImages = query({
 				let locationName = "";
 				let countryId: string | null = null;
 				let cityId: string | null = null;
+				let placeId: string | null = null;
+				let lat: number | null = null;
+				let lng: number | null = null;
 				const imageType = image.location?.imageType ?? null;
 
 				if (image.location) {
@@ -29,16 +32,23 @@ export const getFeaturedImages = query({
 							locationName = city.name;
 							cityId = city._id;
 							countryId = city.countryId;
+							lat = city.lat;
+							lng = city.lng;
 						}
 					} else if (image.location.imageType === "place") {
 						const place = await ctx.db.get(image.location.locationId);
 						if (place) {
+							placeId = place._id;
 							locationName = place.name;
+							lat = place.lat ?? null;
+							lng = place.lng ?? null;
 							const city = await ctx.db.get(place.cityId);
 							if (city) {
 								cityId = city._id;
 								countryId = city.countryId;
 								locationName = `${place.name}, ${city.name}`;
+								lat = lat ?? city.lat;
+								lng = lng ?? city.lng;
 							}
 						}
 					}
@@ -51,6 +61,9 @@ export const getFeaturedImages = query({
 					locationName,
 					countryId,
 					cityId,
+					placeId,
+					lat,
+					lng,
 					imageType,
 				};
 			}),
@@ -115,6 +128,8 @@ export const getRecentPlaces = query({
 		return places.map((place) => {
 			const city = cityMap.get(place.cityId);
 			const country = city ? countryMap.get(city.countryId) : null;
+			const lat = place.lat ?? city?.lat ?? null;
+			const lng = place.lng ?? city?.lng ?? null;
 
 			return {
 				_id: place._id,
@@ -127,6 +142,8 @@ export const getRecentPlaces = query({
 				cityName: city?.name ?? "Unknown City",
 				countryId: city?.countryId ?? null,
 				countryName: country?.name ?? "Unknown Country",
+				lat,
+				lng,
 			};
 		});
 	},

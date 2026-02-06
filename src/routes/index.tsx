@@ -21,7 +21,7 @@ import type { Id } from "../../convex/_generated/dataModel";
 import { PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
-	Map,
+	Map as MapView,
 	MapMarker,
 	MarkerContent,
 	MarkerTooltip,
@@ -460,6 +460,13 @@ function MapSection() {
 		null,
 	)
 	const [focusCityId, setFocusCityId] = useState<Id<"city"> | null>(null);
+	const [hoveredLocation, setHoveredLocation] = useState<{
+		label: string;
+		cityId: Id<"city">;
+		lat: number;
+		lng: number;
+		placeId?: Id<"place">;
+	} | null>(null);
 	const [boundsNonce, setBoundsNonce] = useState(0);
 	const navigate = useNavigate();
 
@@ -475,9 +482,27 @@ function MapSection() {
 			country.cities.map((city) => ({ ...city, countryId: country._id })),
 		) ?? [];
 
+	const cityById = new Map(allCities.map((city) => [city._id, city]));
+
 	const focusCity = focusCityId
 		? allCities.find((city) => city._id === focusCityId)
 		: null;
+
+	const filteredFeaturedImages = selectedCountry
+		? featuredImages?.filter((image) => image.countryId === selectedCountry)
+		: featuredImages;
+
+	const filteredRecentPlaces = selectedCountry
+		? recentPlaces?.filter((place) => place.countryId === selectedCountry)
+		: recentPlaces;
+
+	const nearbyPlaces = hoveredLocation
+		? (recentPlaces ?? []).filter(
+				(place) =>
+					place.cityId === hoveredLocation.cityId &&
+					place._id !== hoveredLocation.placeId,
+			)
+		: [];
 
 	useEffect(() => {
 		if (focusCityId === null) {
@@ -515,6 +540,7 @@ function MapSection() {
 					onClick={() => {
 						setSelectedCountry(null);
 						setFocusCityId(null);
+						setHoveredLocation(null);
 					}}
 					className={cn(
 						"shrink-0 px-4 py-2 text-[10px] uppercase tracking-[0.15em] border-r-2 border-foreground transition-colors",
@@ -533,6 +559,7 @@ function MapSection() {
 						onClick={() => {
 							setSelectedCountry(country._id);
 							setFocusCityId(null);
+							setHoveredLocation(null);
 						}}
 						className={cn(
 							"shrink-0 px-4 py-2 text-[10px] uppercase tracking-[0.15em] border-r-2 border-foreground transition-colors",
@@ -549,46 +576,98 @@ function MapSection() {
 
 			{/* Map */}
 			<div className="h-[500px]">
-				<Map center={[10, 45]} zoom={3} maxZoom={12}>
+				<MapView center={[10, 45]} zoom={3} maxZoom={12}>
 					<MapControls position="bottom-right" showZoom showCompass />
 					<MapBoundsFitter cities={filteredCities} resetSignal={boundsNonce} />
-					<MapFocusController city={focusCity} />
-					{filteredCities.map((city) => (
-						<MapMarker
-							key={city._id}
-							longitude={city.lng}
-							latitude={city.lat}
-							onClick={() => {
-								navigate({
-									to: "/country/$countryId/city/$cityId",
-									params: {
-										countryId: city.countryId,
-										cityId: city._id,
-									},
-								})
-							}}
-						>
-							<MarkerContent>
-								<div className="group cursor-pointer transition-transform hover:scale-125">
-									<div
-										className={cn(
-											"b-crosshair",
-											city._id === focusCityId && "b-crosshair-active",
-										)}
-									/>
-								</div>
-							</MarkerContent>
-							<MarkerTooltip>
-								<span
-									className="text-[10px] font-bold uppercase tracking-[0.1em]"
-									style={{ fontFamily: monoFont }}
-								>
-									{city.name}
-								</span>
-							</MarkerTooltip>
-						</MapMarker>
-					))}
-				</Map>
+					<MapFocusController
+						location={
+							hoveredLocation ??
+							(focusCity
+								? { lat: focusCity.lat, lng: focusCity.lng }
+								: null)
+						}
+					/>
+					{hoveredLocation ? (
+						<>
+							<MapMarker
+								key="hover-primary"
+								longitude={hoveredLocation.lng}
+								latitude={hoveredLocation.lat}
+							>
+								<MarkerContent>
+									<div className="flex items-center gap-2">
+										<div className="h-3 w-3 border-2 border-[#FF5D00] bg-white" />
+										<div className="px-2 py-1 bg-black text-white" style={{ fontFamily: monoFont }}>
+											<div className="text-[9px] uppercase tracking-[0.1em]">
+												{hoveredLocation.label}
+											</div>
+											<div className="text-[8px] text-white/70">
+												{hoveredLocation.lat.toFixed(4)}, {hoveredLocation.lng.toFixed(4)}
+											</div>
+										</div>
+									</div>
+								</MarkerContent>
+							</MapMarker>
+							{nearbyPlaces
+								.filter((place) => place.lat !== null && place.lng !== null)
+								.map((place) => (
+									<MapMarker
+										key={place._id}
+										longitude={place.lng as number}
+										latitude={place.lat as number}
+									>
+										<MarkerContent>
+											<div className="h-2.5 w-2.5 bg-[#FF5D00]/70" />
+										</MarkerContent>
+										<MarkerTooltip>
+											<span
+												className="text-[10px] font-bold uppercase tracking-[0.1em]"
+												style={{ fontFamily: monoFont }}
+											>
+												{place.name}
+											</span>
+										</MarkerTooltip>
+									</MapMarker>
+								))}
+						</>
+					) : (
+						filteredCities.map((city) => (
+							<MapMarker
+								key={city._id}
+								longitude={city.lng}
+								latitude={city.lat}
+								onClick={() => {
+									navigate({
+										to: "/country/$countryId/city/$cityId",
+										params: {
+											countryId: city.countryId,
+											cityId: city._id,
+										},
+									})
+								}}
+							>
+								<MarkerContent>
+									<div className="group cursor-pointer transition-transform hover:scale-125">
+										<div
+											className={cn(
+												"b-crosshair",
+												city._id === focusCityId && "b-crosshair-active",
+											)}
+										/>
+									</div>
+								</MarkerContent>
+								<MarkerTooltip>
+									<span
+										className="text-[10px] font-bold uppercase tracking-[0.1em]"
+										style={{ fontFamily: monoFont }}
+									>
+										{city.name}
+									</span>
+								</MarkerTooltip>
+							</MapMarker>
+						))
+					)}
+				</MapView>
 			</div>
 
 			{/* Photo + destination tether */}
@@ -615,10 +694,14 @@ function MapSection() {
 					<div className="lg:col-span-3">
 							<div
 								className="b-filmstrip rounded-none overflow-x-auto"
-								onMouseLeave={() => setFocusCityId(null)}
+								onMouseLeave={() => {
+									setFocusCityId(null);
+									setHoveredLocation(null);
+								}}
 								onBlurCapture={(event) => {
 									if (!event.currentTarget.contains(event.relatedTarget as Node)) {
 										setFocusCityId(null);
+										setHoveredLocation(null);
 									}
 								}}
 							>
@@ -629,22 +712,47 @@ function MapSection() {
 									))}
 								</div>
 								<div className="flex gap-3">
-									{featuredImages?.slice(0, 8).map((image) => (
+									{filteredFeaturedImages?.slice(0, 8).map((image) => (
 										<button
 											key={image._id}
 											type="button"
 												className="relative flex-none min-w-[144px]"
 											onMouseEnter={() => {
-												if (image.cityId) {
-													setFocusCityId(image.cityId as Id<"city">);
+												if (!image.cityId) return;
+												const city = cityById.get(image.cityId as Id<"city">);
+												const lat = image.lat ?? city?.lat ?? null;
+												const lng = image.lng ?? city?.lng ?? null;
+												setFocusCityId(image.cityId as Id<"city">);
+												if (lat !== null && lng !== null) {
+													setHoveredLocation({
+														label: image.locationName,
+														cityId: image.cityId as Id<"city">,
+														lat,
+														lng,
+														placeId: image.placeId ?? undefined,
+													});
 												}
 											}}
 											onFocus={() => {
-												if (image.cityId) {
-													setFocusCityId(image.cityId as Id<"city">);
+												if (!image.cityId) return;
+												const city = cityById.get(image.cityId as Id<"city">);
+												const lat = image.lat ?? city?.lat ?? null;
+												const lng = image.lng ?? city?.lng ?? null;
+												setFocusCityId(image.cityId as Id<"city">);
+												if (lat !== null && lng !== null) {
+													setHoveredLocation({
+														label: image.locationName,
+														cityId: image.cityId as Id<"city">,
+														lat,
+														lng,
+														placeId: image.placeId ?? undefined,
+													});
 												}
 											}}
-												onBlur={() => setFocusCityId(null)}
+											onBlur={() => {
+												setFocusCityId(null);
+												setHoveredLocation(null);
+											}}
 											onClick={() => {
 												if (image.cityId && image.countryId) {
 													navigate({
@@ -672,18 +780,45 @@ function MapSection() {
 									))}
 								</div>
 								<div className="flex gap-3">
-									{recentPlaces?.slice(0, 6).map((place) => (
+									{filteredRecentPlaces?.slice(0, 6).map((place) => (
 										<button
 											key={place._id}
 											type="button"
 												className="relative flex-none min-w-[144px]"
 											onMouseEnter={() => {
+												if (!place.cityId) return;
+												const lat = place.lat ?? null;
+												const lng = place.lng ?? null;
 												setFocusCityId(place.cityId as Id<"city">);
+												if (lat !== null && lng !== null) {
+													setHoveredLocation({
+														label: `${place.name}, ${place.cityName}`,
+														cityId: place.cityId as Id<"city">,
+														lat,
+														lng,
+														placeId: place._id as Id<"place">,
+													});
+												}
 											}}
 											onFocus={() => {
+												if (!place.cityId) return;
+												const lat = place.lat ?? null;
+												const lng = place.lng ?? null;
 												setFocusCityId(place.cityId as Id<"city">);
+												if (lat !== null && lng !== null) {
+													setHoveredLocation({
+														label: `${place.name}, ${place.cityName}`,
+														cityId: place.cityId as Id<"city">,
+														lat,
+														lng,
+														placeId: place._id as Id<"place">,
+													});
+												}
 											}}
-												onBlur={() => setFocusCityId(null)}
+										onBlur={() => {
+											setFocusCityId(null);
+											setHoveredLocation(null);
+										}}
 											onClick={() => {
 												if (place.countryId) {
 													navigate({
@@ -731,16 +866,16 @@ function MapSection() {
 }
 
 function MapFocusController({
-	city,
+	location,
 }: {
-	city: { lng: number; lat: number } | null;
+	location: { lng: number; lat: number } | null;
 }) {
 	const { map, isLoaded } = useMap();
 
 	useEffect(() => {
-		if (!map || !isLoaded || !city) return;
-		map.flyTo({ center: [city.lng, city.lat], zoom: 15, duration: 900 });
-	}, [map, isLoaded, city]);
+		if (!map || !isLoaded || !location) return;
+		map.flyTo({ center: [location.lng, location.lat], zoom: 15, duration: 900 });
+	}, [map, isLoaded, location]);
 
 	return null;
 }
