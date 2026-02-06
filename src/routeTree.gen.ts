@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexOption5bRouteImport } from './routes/index-option-5b'
 import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -36,11 +35,6 @@ import { Route as AuthenticatedAdminCountryCountryIdCityCityIdIndexRouteImport }
 import { Route as AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/place.$placeId'
 import { Route as AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/place.$placeId/index'
 
-const IndexOption5bRoute = IndexOption5bRouteImport.update({
-  id: '/index-option-5b',
-  path: '/index-option-5b',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const CallbackRoute = CallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
@@ -183,7 +177,6 @@ const AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
-  '/index-option-5b': typeof IndexOption5bRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/options/index-option-1': typeof OptionsIndexOption1Route
@@ -210,7 +203,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
-  '/index-option-5b': typeof IndexOption5bRoute
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/options/index-option-1': typeof OptionsIndexOption1Route
   '/options/index-option-1b': typeof OptionsIndexOption1bRoute
@@ -235,7 +227,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/callback': typeof CallbackRoute
-  '/index-option-5b': typeof IndexOption5bRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/options/index-option-1': typeof OptionsIndexOption1Route
@@ -264,7 +255,6 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/callback'
-    | '/index-option-5b'
     | '/admin'
     | '/authenticated'
     | '/options/index-option-1'
@@ -291,7 +281,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/callback'
-    | '/index-option-5b'
     | '/authenticated'
     | '/options/index-option-1'
     | '/options/index-option-1b'
@@ -315,7 +304,6 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/callback'
-    | '/index-option-5b'
     | '/_authenticated/admin'
     | '/_authenticated/authenticated'
     | '/options/index-option-1'
@@ -344,7 +332,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   CallbackRoute: typeof CallbackRoute
-  IndexOption5bRoute: typeof IndexOption5bRoute
   OptionsIndexOption1Route: typeof OptionsIndexOption1Route
   OptionsIndexOption1bRoute: typeof OptionsIndexOption1bRoute
   OptionsIndexOption2Route: typeof OptionsIndexOption2Route
@@ -359,13 +346,6 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/index-option-5b': {
-      id: '/index-option-5b'
-      path: '/index-option-5b'
-      fullPath: '/index-option-5b'
-      preLoaderRoute: typeof IndexOption5bRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/callback': {
       id: '/callback'
       path: '/callback'
@@ -633,7 +613,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   CallbackRoute: CallbackRoute,
-  IndexOption5bRoute: IndexOption5bRoute,
   OptionsIndexOption1Route: OptionsIndexOption1Route,
   OptionsIndexOption1bRoute: OptionsIndexOption1bRoute,
   OptionsIndexOption2Route: OptionsIndexOption2Route,
