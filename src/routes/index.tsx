@@ -732,7 +732,9 @@ function MapSection() {
 														cityId: image.cityId as Id<"city">,
 														lat,
 														lng,
-														placeId: image.placeId ?? undefined,
+														placeId: image.placeId
+															? (image.placeId as Id<"place">)
+															: undefined,
 													});
 												}
 											}}
@@ -748,7 +750,9 @@ function MapSection() {
 														cityId: image.cityId as Id<"city">,
 														lat,
 														lng,
-														placeId: image.placeId ?? undefined,
+														placeId: image.placeId
+															? (image.placeId as Id<"place">)
+															: undefined,
 													});
 												}
 											}}
