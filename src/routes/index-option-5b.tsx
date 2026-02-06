@@ -38,6 +38,7 @@ import {
 	Settings,
 	ArrowUpRight,
 	Plus,
+	Plane,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -139,16 +140,16 @@ function Home() {
 									className="text-sm font-bold tracking-[0.4em] uppercase"
 									style={{ fontFamily: monoFont }}
 								>
-									TRV
+									TRAVEL
 								</span>
-								<span className="text-lg" style={{ color: "#FF5D00" }}>*</span>
+								<span className="text-lg" style={{ color: "#FF5D00" }}><Plane /></span>
 							</Link>
 							<div className="flex items-center gap-4">
 								<span
 									className="hidden md:inline text-[10px] text-muted-foreground tracking-[0.15em]"
 									style={{ fontFamily: monoFont }}
 								>
-									[travel.log]
+									[travel.jackwynne.nz]
 								</span>
 								<ThemeToggle />
 							</div>
