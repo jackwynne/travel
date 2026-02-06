@@ -633,7 +633,7 @@ function MapSection() {
 										<button
 											key={image._id}
 											type="button"
-											className="relative shrink-0"
+												className="relative flex-none min-w-[144px]"
 											onMouseEnter={() => {
 												if (image.cityId) {
 													setFocusCityId(image.cityId as Id<"city">);
@@ -660,7 +660,7 @@ function MapSection() {
 											<img
 												src={image.url}
 												alt={image.description ?? image.locationName}
-												className="h-24 w-32 object-cover border-2 border-foreground"
+													className="block h-24 w-36 object-cover border-2 border-foreground"
 											/>
 											<span
 												className="absolute bottom-1 left-1 text-[9px] text-white bg-black/70 px-1"
@@ -676,7 +676,7 @@ function MapSection() {
 										<button
 											key={place._id}
 											type="button"
-											className="relative shrink-0"
+												className="relative flex-none min-w-[144px]"
 											onMouseEnter={() => {
 												setFocusCityId(place.cityId as Id<"city">);
 											}}
@@ -696,12 +696,12 @@ function MapSection() {
 												}
 											}}
 										>
-											<div className="h-24 w-32 border-2 border-foreground bg-muted flex items-center justify-center">
+											<div className="h-24 w-36 border-2 border-foreground bg-muted flex items-center justify-center">
 												{place.iconImage ? (
 													<img
 														src={place.iconImage}
 														alt={place.name}
-														className="h-full w-full object-cover"
+															className="block h-full w-full object-cover"
 													/>
 												) : (
 													<MapPin className="h-6 w-6 text-muted-foreground" />
