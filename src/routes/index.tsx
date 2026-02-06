@@ -460,6 +460,7 @@ function MapSection() {
 		null,
 	)
 	const [focusCityId, setFocusCityId] = useState<Id<"city"> | null>(null);
+	const [boundsNonce, setBoundsNonce] = useState(0);
 	const navigate = useNavigate();
 
 	const filteredCities =
@@ -477,6 +478,12 @@ function MapSection() {
 	const focusCity = focusCityId
 		? allCities.find((city) => city._id === focusCityId)
 		: null;
+
+	useEffect(() => {
+		if (focusCityId === null) {
+			setBoundsNonce((value) => value + 1);
+		}
+	}, [focusCityId]);
 
 	if (countriesWithCities === undefined) {
 		return (
@@ -505,7 +512,10 @@ function MapSection() {
 			<div className="border-b-2 border-foreground px-4 md:px-8 py-2 flex items-center gap-0 overflow-x-auto">
 				<button
 					type="button"
-					onClick={() => setSelectedCountry(null)}
+					onClick={() => {
+						setSelectedCountry(null);
+						setFocusCityId(null);
+					}}
 					className={cn(
 						"shrink-0 px-4 py-2 text-[10px] uppercase tracking-[0.15em] border-r-2 border-foreground transition-colors",
 						selectedCountry === null
@@ -520,7 +530,10 @@ function MapSection() {
 					<button
 						key={country._id}
 						type="button"
-						onClick={() => setSelectedCountry(country._id)}
+						onClick={() => {
+							setSelectedCountry(country._id);
+							setFocusCityId(null);
+						}}
 						className={cn(
 							"shrink-0 px-4 py-2 text-[10px] uppercase tracking-[0.15em] border-r-2 border-foreground transition-colors",
 							selectedCountry === country._id
@@ -538,7 +551,7 @@ function MapSection() {
 			<div className="h-[500px]">
 				<Map center={[10, 45]} zoom={3} maxZoom={12}>
 					<MapControls position="bottom-right" showZoom showCompass />
-					<MapBoundsFitter cities={filteredCities} />
+					<MapBoundsFitter cities={filteredCities} resetSignal={boundsNonce} />
 					<MapFocusController city={focusCity} />
 					{filteredCities.map((city) => (
 						<MapMarker
@@ -600,8 +613,16 @@ function MapSection() {
 						</p>
 					</div>
 					<div className="lg:col-span-3">
-						<div className="b-filmstrip rounded-none overflow-x-auto">
-							<div className="flex items-center gap-2 px-3 py-3">
+							<div
+								className="b-filmstrip rounded-none overflow-x-auto"
+								onMouseLeave={() => setFocusCityId(null)}
+								onBlurCapture={(event) => {
+									if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+										setFocusCityId(null);
+									}
+								}}
+							>
+								<div className="flex items-center gap-2 px-3 py-3 min-h-[140px]">
 								<div className="flex gap-1">
 									{[...Array(6)].map((_, i) => (
 										<div key={i} className="b-film-hole" />
@@ -623,6 +644,7 @@ function MapSection() {
 													setFocusCityId(image.cityId as Id<"city">);
 												}
 											}}
+												onBlur={() => setFocusCityId(null)}
 											onClick={() => {
 												if (image.cityId && image.countryId) {
 													navigate({
@@ -661,6 +683,7 @@ function MapSection() {
 											onFocus={() => {
 												setFocusCityId(place.cityId as Id<"city">);
 											}}
+												onBlur={() => setFocusCityId(null)}
 											onClick={() => {
 												if (place.countryId) {
 													navigate({
@@ -724,8 +747,10 @@ function MapFocusController({
 
 function MapBoundsFitter({
 	cities,
+	resetSignal,
 }: {
 	cities: Array<{ lng: number; lat: number }>;
+	resetSignal: number;
 }) {
 	const { map, isLoaded } = useMap();
 
@@ -754,7 +779,7 @@ function MapBoundsFitter({
 			],
 			{ padding: 60, duration: 800 },
 		)
-	}, [map, isLoaded, cities]);
+	}, [map, isLoaded, cities, resetSignal]);
 
 	return null;
 }
