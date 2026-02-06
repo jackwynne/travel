@@ -9,10 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexOption6RouteImport } from './routes/index-option-6'
+import { Route as IndexOption5bRouteImport } from './routes/index-option-5b'
 import { Route as IndexOption5RouteImport } from './routes/index-option-5'
 import { Route as IndexOption4RouteImport } from './routes/index-option-4'
 import { Route as IndexOption3RouteImport } from './routes/index-option-3'
 import { Route as IndexOption2RouteImport } from './routes/index-option-2'
+import { Route as IndexOption1bRouteImport } from './routes/index-option-1b'
 import { Route as IndexOption1RouteImport } from './routes/index-option-1'
 import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
@@ -31,6 +34,16 @@ import { Route as AuthenticatedAdminCountryCountryIdCityCityIdIndexRouteImport }
 import { Route as AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/place.$placeId'
 import { Route as AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/place.$placeId/index'
 
+const IndexOption6Route = IndexOption6RouteImport.update({
+  id: '/index-option-6',
+  path: '/index-option-6',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexOption5bRoute = IndexOption5bRouteImport.update({
+  id: '/index-option-5b',
+  path: '/index-option-5b',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexOption5Route = IndexOption5RouteImport.update({
   id: '/index-option-5',
   path: '/index-option-5',
@@ -49,6 +62,11 @@ const IndexOption3Route = IndexOption3RouteImport.update({
 const IndexOption2Route = IndexOption2RouteImport.update({
   id: '/index-option-2',
   path: '/index-option-2',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexOption1bRoute = IndexOption1bRouteImport.update({
+  id: '/index-option-1b',
+  path: '/index-option-1b',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexOption1Route = IndexOption1RouteImport.update({
@@ -154,10 +172,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
   '/index-option-1': typeof IndexOption1Route
+  '/index-option-1b': typeof IndexOption1bRoute
   '/index-option-2': typeof IndexOption2Route
   '/index-option-3': typeof IndexOption3Route
   '/index-option-4': typeof IndexOption4Route
   '/index-option-5': typeof IndexOption5Route
+  '/index-option-5b': typeof IndexOption5bRoute
+  '/index-option-6': typeof IndexOption6Route
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/admin/colours': typeof AuthenticatedAdminColoursRoute
@@ -176,10 +197,13 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
   '/index-option-1': typeof IndexOption1Route
+  '/index-option-1b': typeof IndexOption1bRoute
   '/index-option-2': typeof IndexOption2Route
   '/index-option-3': typeof IndexOption3Route
   '/index-option-4': typeof IndexOption4Route
   '/index-option-5': typeof IndexOption5Route
+  '/index-option-5b': typeof IndexOption5bRoute
+  '/index-option-6': typeof IndexOption6Route
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/admin/colours': typeof AuthenticatedAdminColoursRoute
   '/admin/countries': typeof AuthenticatedAdminCountriesRoute
@@ -196,10 +220,13 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/callback': typeof CallbackRoute
   '/index-option-1': typeof IndexOption1Route
+  '/index-option-1b': typeof IndexOption1bRoute
   '/index-option-2': typeof IndexOption2Route
   '/index-option-3': typeof IndexOption3Route
   '/index-option-4': typeof IndexOption4Route
   '/index-option-5': typeof IndexOption5Route
+  '/index-option-5b': typeof IndexOption5bRoute
+  '/index-option-6': typeof IndexOption6Route
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/_authenticated/admin/colours': typeof AuthenticatedAdminColoursRoute
@@ -220,10 +247,13 @@ export interface FileRouteTypes {
     | '/'
     | '/callback'
     | '/index-option-1'
+    | '/index-option-1b'
     | '/index-option-2'
     | '/index-option-3'
     | '/index-option-4'
     | '/index-option-5'
+    | '/index-option-5b'
+    | '/index-option-6'
     | '/admin'
     | '/authenticated'
     | '/admin/colours'
@@ -242,10 +272,13 @@ export interface FileRouteTypes {
     | '/'
     | '/callback'
     | '/index-option-1'
+    | '/index-option-1b'
     | '/index-option-2'
     | '/index-option-3'
     | '/index-option-4'
     | '/index-option-5'
+    | '/index-option-5b'
+    | '/index-option-6'
     | '/authenticated'
     | '/admin/colours'
     | '/admin/countries'
@@ -261,10 +294,13 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/callback'
     | '/index-option-1'
+    | '/index-option-1b'
     | '/index-option-2'
     | '/index-option-3'
     | '/index-option-4'
     | '/index-option-5'
+    | '/index-option-5b'
+    | '/index-option-6'
     | '/_authenticated/admin'
     | '/_authenticated/authenticated'
     | '/_authenticated/admin/colours'
@@ -285,15 +321,32 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   CallbackRoute: typeof CallbackRoute
   IndexOption1Route: typeof IndexOption1Route
+  IndexOption1bRoute: typeof IndexOption1bRoute
   IndexOption2Route: typeof IndexOption2Route
   IndexOption3Route: typeof IndexOption3Route
   IndexOption4Route: typeof IndexOption4Route
   IndexOption5Route: typeof IndexOption5Route
+  IndexOption5bRoute: typeof IndexOption5bRoute
+  IndexOption6Route: typeof IndexOption6Route
   CountryCountryIdCityCityIdRoute: typeof CountryCountryIdCityCityIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/index-option-6': {
+      id: '/index-option-6'
+      path: '/index-option-6'
+      fullPath: '/index-option-6'
+      preLoaderRoute: typeof IndexOption6RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/index-option-5b': {
+      id: '/index-option-5b'
+      path: '/index-option-5b'
+      fullPath: '/index-option-5b'
+      preLoaderRoute: typeof IndexOption5bRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/index-option-5': {
       id: '/index-option-5'
       path: '/index-option-5'
@@ -320,6 +373,13 @@ declare module '@tanstack/react-router' {
       path: '/index-option-2'
       fullPath: '/index-option-2'
       preLoaderRoute: typeof IndexOption2RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/index-option-1b': {
+      id: '/index-option-1b'
+      path: '/index-option-1b'
+      fullPath: '/index-option-1b'
+      preLoaderRoute: typeof IndexOption1bRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/index-option-1': {
@@ -534,10 +594,13 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   CallbackRoute: CallbackRoute,
   IndexOption1Route: IndexOption1Route,
+  IndexOption1bRoute: IndexOption1bRoute,
   IndexOption2Route: IndexOption2Route,
   IndexOption3Route: IndexOption3Route,
   IndexOption4Route: IndexOption4Route,
   IndexOption5Route: IndexOption5Route,
+  IndexOption5bRoute: IndexOption5bRoute,
+  IndexOption6Route: IndexOption6Route,
   CountryCountryIdCityCityIdRoute: CountryCountryIdCityCityIdRoute,
 }
 export const routeTree = rootRouteImport
