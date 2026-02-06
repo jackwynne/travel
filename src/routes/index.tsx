@@ -18,7 +18,7 @@ import { useQuery } from "convex/react";
 import { useEffect, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
-import { PlaceCard, PlaceCardSkeleton } from "@/components/PlaceCard";
+import { PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
 	Map,
@@ -47,6 +47,42 @@ export const Route = createFileRoute("/")({
 const monoFont = "'Space Mono', 'Courier New', monospace";
 const displayFont = "'Instrument Serif', 'Georgia', serif";
 
+type TravelIconType = "compass" | "plane" | "stamp";
+
+function TravelIconOption({
+	type,
+	className,
+}: {
+	type: TravelIconType;
+	className?: string;
+}) {
+	if (type === "plane") {
+		return (
+			<span className={cn("b-travel-icon b-icon-pulse", className)}>
+				<Plane className="h-4 w-4" />
+				<span className="b-icon-orbit" />
+			</span>
+		)
+	}
+
+	if (type === "stamp") {
+		return (
+			<span className={cn("b-travel-icon b-icon-spin", className)}>
+				<Globe className="h-4 w-4" />
+				<span className="absolute inset-0 border-2 border-dashed rounded-sm" />
+			</span>
+		)
+	}
+
+	return (
+		<span className={cn("b-travel-icon", className)}>
+			<span className="b-icon-orbit" />
+			<MapPin className="h-3.5 w-3.5" />
+			<span className="absolute w-1.5 h-1.5 rounded-full bg-current" />
+		</span>
+	)
+}
+
 function Home() {
 	return (
 		<>
@@ -67,7 +103,7 @@ function Home() {
 				}
 
 				.b-slide {
-					opacity: 0
+					opacity: 0;
 					transform: translateX(-30px);
 					animation: bSlide 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 				}
@@ -87,28 +123,28 @@ function Home() {
 
 				.b-crosshair {
 					position: relative;
-					width: 14px
-					height: 14px
+					width: 14px;
+					height: 14px;
 				}
 
 				.b-crosshair::before,
 				.b-crosshair::after {
-					content: ""
+					content: "";
 					position: absolute;
 					background: #FF5D00;
 				}
 
 				.b-crosshair::before {
-					width: 2px
-					height: 100%
-					left: 50%
+					width: 2px;
+					height: 100%;
+					left: 50%;
 					transform: translateX(-50%);
 				}
 
 				.b-crosshair::after {
-					width: 100%
-					height: 2px
-					top: 50%
+					width: 100%;
+					height: 2px;
+					top: 50%;
 					transform: translateY(-50%);
 				}
 
@@ -138,11 +174,11 @@ function Home() {
 				}
 
 				.b-film-hole {
-					width: 10px
-					height: 10px
+					width: 10px;
+					height: 10px;
 					border-radius: 2px;
 					background: currentColor;
-					opacity: 0.2
+					opacity: 0.2;
 				}
 
 				.b-photo-frame {
@@ -157,6 +193,48 @@ function Home() {
 
 				.b-tape {
 					background: repeating-linear-gradient(135deg, rgba(255,93,0,0.2) 0 8px, rgba(255,255,255,0.2) 8px 16px);
+				}
+
+				.b-travel-icon {
+					width: 22px;
+					height: 22px;
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					position: relative;
+				}
+
+				.b-icon-spin {
+					animation: bSpin 6s linear infinite;
+				}
+
+				.b-icon-pulse {
+					animation: bPulse 2.4s ease-in-out infinite;
+				}
+
+				.b-icon-orbit {
+					position: absolute;
+					width: 100%;
+					height: 100%;
+					border: 1.5px solid currentColor;
+					border-radius: 999px;
+					opacity: 0.5;
+					animation: bOrbit 4s ease-in-out infinite;
+				}
+
+				@keyframes bSpin {
+					from { transform: rotate(0deg); }
+					to { transform: rotate(360deg); }
+				}
+
+				@keyframes bPulse {
+					0%, 100% { transform: scale(1); }
+					50% { transform: scale(1.1); }
+				}
+
+				@keyframes bOrbit {
+					0%, 100% { transform: scale(1); opacity: 0.4; }
+					50% { transform: scale(1.15); opacity: 0.7; }
 				}
 			`}</style>
 
@@ -187,7 +265,7 @@ function Home() {
 								>
 									TRAVEL
 								</span>
-								<span className="text-lg" style={{ color: "#FF5D00" }}><Plane /></span>
+								<TravelIconOption type="plane" className="text-[#FF5D00]" />
 							</Link>
 							<div className="flex items-center gap-4">
 								<span
@@ -638,7 +716,7 @@ function MapFocusController({
 
 	useEffect(() => {
 		if (!map || !isLoaded || !city) return;
-		map.flyTo({ center: [city.lng, city.lat], zoom: 5, duration: 900 });
+		map.flyTo({ center: [city.lng, city.lat], zoom: 15, duration: 900 });
 	}, [map, isLoaded, city]);
 
 	return null;
@@ -707,7 +785,7 @@ function PlacesSection() {
 						className="text-[10px] text-muted-foreground block mb-1 tracking-[0.1em]"
 						style={{ fontFamily: monoFont }}
 					>
-						// latest additions
+						// recent arrivals, contact sheet
 					</span>
 					<h2 className="b-heading text-3xl md:text-5xl uppercase">
 						Recent<span style={{ color: "#FF5D00" }}>.</span>
@@ -721,24 +799,62 @@ function PlacesSection() {
 				</span>
 			</div>
 
-			{/* Numbered catalog grid */}
-			<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-				{recentPlaces.slice(0, 12).map((place, i) => (
-					<div
-						key={place._id}
-						className="relative border-b border-r border-foreground/10 b-slide"
-						style={{ animationDelay: `${i * 0.04}s` }}
-					>
-						{/* Index number */}
-						<span
-							className="absolute top-2 left-3 text-[10px] text-muted-foreground/40 z-10"
-							style={{ fontFamily: monoFont }}
+			<div className="px-4 md:px-8 py-8 grid grid-cols-1 md:grid-cols-3 xl:grid-cols-4 gap-6">
+				{recentPlaces.slice(0, 12).map((place, i) => {
+					if (!place.countryId) return null;
+					return (
+					<div key={place._id} className="relative">
+						<div className="b-tape h-4 w-20 absolute -top-3 left-5 rotate-[2deg]" />
+						<Link
+							to="/country/$countryId/city/$cityId"
+							params={{
+									countryId: place.countryId,
+								cityId: place.cityId,
+							}}
+							className="block"
 						>
-							{String(i + 1).padStart(2, "0")}
-						</span>
-						<PlaceCard place={place} className="h-full rounded-none" />
+							<div className="b-photo-frame bg-white">
+								<div className="relative">
+									{place.iconImage ? (
+										<img
+											src={place.iconImage}
+											alt={place.name}
+											className="h-52 w-full object-cover"
+										/>
+									) : (
+										<div className="h-52 w-full bg-muted flex items-center justify-center">
+											<MapPin className="h-8 w-8 text-muted-foreground" />
+										</div>
+									)}
+									<span
+										className="absolute top-2 left-2 text-[9px] uppercase tracking-[0.1em] bg-black/70 text-white px-1"
+										style={{ fontFamily: monoFont }}
+									>
+										{String(i + 1).padStart(2, "0")}
+									</span>
+								</div>
+								<div className="px-3 py-2 text-black">
+									<span
+										className="text-[10px] uppercase tracking-[0.1em] text-muted-foreground"
+										style={{ fontFamily: monoFont }}
+									>
+										{place.cityName}
+									</span>
+									<h3 className="b-heading text-2xl uppercase mt-1">
+										{place.name}
+									</h3>
+									<p
+										className="text-[10px] text-muted-foreground"
+										style={{ fontFamily: monoFont }}
+									>
+										{place.description ?? "recently logged"}
+									</p>
+								</div>
+							</div>
+						</Link>
 					</div>
-				))}
+					)
+				})}
 			</div>
 		</section>
 	)
