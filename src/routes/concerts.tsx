@@ -48,9 +48,27 @@ function ConcertsPage() {
 				@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Space+Mono:wght@400;700&display=swap');
 
 				:root {
-					--concert-accent: #ff3b30;
-					--concert-ink: #0f0f0f;
-					--concert-warm: #f6efe6;
+					--c-accent: oklch(0.58 0.22 27);
+					--c-accent-soft: oklch(0.58 0.22 27 / 14%);
+					--c-border: oklch(0.15 0 0);
+					--c-stage-base: oklch(0.975 0.005 70);
+					--c-punch: oklch(0.975 0.005 70);
+					--c-grid-line: oklch(0.15 0 0 / 5%);
+					--c-scan-line: oklch(0.15 0 0 / 3%);
+					--c-ticker-bg: oklch(0.11 0 0);
+					--c-ticker-fg: oklch(0.82 0 0);
+				}
+
+				.dark {
+					--c-accent: oklch(0.72 0.19 25);
+					--c-accent-soft: oklch(0.72 0.19 25 / 10%);
+					--c-border: oklch(1 0 0 / 14%);
+					--c-stage-base: oklch(0.155 0 0);
+					--c-punch: oklch(0.155 0 0);
+					--c-grid-line: oklch(1 0 0 / 4%);
+					--c-scan-line: oklch(1 0 0 / 3%);
+					--c-ticker-bg: oklch(0.09 0 0);
+					--c-ticker-fg: oklch(0.50 0 0);
 				}
 
 				.c-heading {
@@ -65,15 +83,15 @@ function ConcertsPage() {
 
 				.c-stage {
 					background:
-						radial-gradient(circle at 20% 20%, rgba(255, 59, 48, 0.2), transparent 50%),
-						radial-gradient(circle at 80% 0%, rgba(15, 15, 15, 0.3), transparent 45%),
-						linear-gradient(180deg, rgba(246, 239, 230, 0.8), rgba(255, 255, 255, 0.9));
+						radial-gradient(circle at 20% 20%, var(--c-accent-soft), transparent 50%),
+						radial-gradient(circle at 85% 5%, oklch(0.5 0.05 260 / 6%), transparent 40%),
+						var(--c-stage-base);
 				}
 
 				.c-grid {
 					background-image:
-						linear-gradient(90deg, rgba(0,0,0,0.05) 1px, transparent 1px),
-						linear-gradient(0deg, rgba(0,0,0,0.05) 1px, transparent 1px);
+						linear-gradient(90deg, var(--c-grid-line) 1px, transparent 1px),
+						linear-gradient(0deg, var(--c-grid-line) 1px, transparent 1px);
 					background-size: 26px 26px;
 				}
 
@@ -97,11 +115,11 @@ function ConcertsPage() {
 				}
 
 				.c-scanlines {
-					background: repeating-linear-gradient(180deg, rgba(0,0,0,0.03) 0 1px, transparent 1px 4px);
+					background: repeating-linear-gradient(180deg, var(--c-scan-line) 0 1px, transparent 1px 4px);
 				}
 
 				.c-ticket {
-					border: 2px solid var(--concert-ink);
+					border: 2px solid var(--c-border);
 					border-radius: 18px;
 					position: relative;
 					overflow: hidden;
@@ -114,8 +132,8 @@ function ConcertsPage() {
 					top: 50%;
 					width: 32px;
 					height: 32px;
-					background: var(--concert-warm);
-					border: 2px solid var(--concert-ink);
+					background: var(--c-punch);
+					border: 2px solid var(--c-border);
 					border-radius: 999px;
 					transform: translateY(-50%);
 				}
@@ -129,15 +147,25 @@ function ConcertsPage() {
 				}
 
 				.c-glow {
-					box-shadow: 0 20px 50px rgba(15, 15, 15, 0.15);
+					box-shadow: 0 12px 32px oklch(0 0 0 / 8%), 0 2px 6px oklch(0 0 0 / 4%);
+				}
+
+				.dark .c-glow {
+					box-shadow: 0 12px 32px oklch(0 0 0 / 40%), 0 2px 6px oklch(0 0 0 / 20%);
 				}
 
 				.c-accent {
-					color: var(--concert-accent);
+					color: var(--c-accent);
 				}
 
-				.c-accent-border {
-					border-color: var(--concert-accent);
+				.c-ink {
+					border-color: var(--c-border);
+				}
+
+				.c-ticker-bar {
+					background: var(--c-ticker-bg);
+					color: var(--c-ticker-fg);
+					border-bottom: 2px solid var(--c-border);
 				}
 
 				.c-marquee {
@@ -150,7 +178,7 @@ function ConcertsPage() {
 				}
 			`}</style>
 
-			<div className="border-b-2 border-foreground bg-foreground text-background overflow-hidden">
+			<div className="c-ticker-bar overflow-hidden">
 				<div className="c-ticker flex whitespace-nowrap">
 					{[...Array(3)].map((_, index) => (
 						<span
@@ -164,7 +192,7 @@ function ConcertsPage() {
 				</div>
 			</div>
 
-			<header className="sticky top-0 z-50 border-b-2 border-foreground bg-background/90 backdrop-blur">
+			<header className="sticky top-0 z-50 border-b-2 c-ink bg-background/90 backdrop-blur">
 				<div className="px-4 md:px-8">
 					<div className="h-12 flex items-center justify-between">
 						<Link to="/" className="flex items-center gap-3">
@@ -174,7 +202,7 @@ function ConcertsPage() {
 							>
 								TRAVEL
 							</span>
-							<Music className="h-4 w-4 text-[#ff3b30]" />
+							<Music className="h-4 w-4 c-accent" />
 						</Link>
 						<div className="flex items-center gap-4">
 							<Link
@@ -191,7 +219,7 @@ function ConcertsPage() {
 			</header>
 
 			<main className="c-stage">
-				<section className="border-b-2 border-foreground c-grid">
+				<section className="border-b-2 c-ink c-grid">
 					<div className="px-4 md:px-8 py-12 md:py-16 grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
 						<div className="space-y-6">
 							<div className="inline-flex items-center gap-2 text-[10px] tracking-[0.3em] uppercase c-accent c-mono">
@@ -242,7 +270,7 @@ function ConcertsPage() {
 									Live Roll
 								</span>
 							</div>
-							<div className="overflow-hidden border-2 border-foreground">
+							<div className="overflow-hidden border-2 c-ink">
 								<div className="c-marquee flex whitespace-nowrap">
 									{[...Array(2)].map((_, index) => (
 										<div key={index} className="flex">
@@ -277,7 +305,7 @@ function ConcertsPage() {
 
 				<section className="px-4 md:px-8 py-12 md:py-16 space-y-8">
 					{concerts.length === 0 ? (
-						<div className="border-2 border-foreground p-10 text-center">
+						<div className="border-2 c-ink p-10 text-center">
 							<h2 className="c-heading text-4xl md:text-6xl text-muted-foreground/40">
 								No concerts yet
 							</h2>
@@ -294,7 +322,7 @@ function ConcertsPage() {
 								>
 									Open Admin
 								</span>
-								<ArrowUpRight className="h-3.5 w-3.5 text-[#ff3b30]" />
+								<ArrowUpRight className="h-3.5 w-3.5 c-accent" />
 							</Link>
 						</div>
 					) : (
@@ -312,7 +340,7 @@ function ConcertsPage() {
 									className={cn("c-ticket bg-background/80 c-glow c-rise", "p-6")}
 									style={{ animationDelay: `${index * 0.08}s` }}
 								>
-									<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b-2 border-foreground pb-4 mb-6">
+									<div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b-2 c-ink pb-4 mb-6">
 										<div>
 											<p
 												className="text-[10px] uppercase tracking-[0.3em] text-muted-foreground"
@@ -344,8 +372,8 @@ function ConcertsPage() {
 														countryId: concert.countryId,
 														cityId: concert.cityId,
 													}}
-													className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em]"
-													style={{ fontFamily: monoFont, color: "#ff3b30" }}
+													className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] c-accent"
+													style={{ fontFamily: monoFont }}
 												>
 													Explore city
 													<ArrowUpRight className="h-3.5 w-3.5" />
@@ -367,7 +395,7 @@ function ConcertsPage() {
 													{concert.performers.map((performer) => (
 														<span
 															key={`${concert._id}-performer-${performer}`}
-															className="px-3 py-1 border-2 border-foreground text-xs uppercase tracking-[0.15em]"
+															className="px-3 py-1 border-2 c-ink text-xs uppercase tracking-[0.15em]"
 															style={{ fontFamily: monoFont }}
 														>
 															{performer}
@@ -405,7 +433,7 @@ function ConcertsPage() {
 										<div>
 											<div className="grid grid-cols-2 gap-3">
 												{images.length === 0 ? (
-													<div className="col-span-2 border-2 border-dashed border-foreground/40 p-6 text-center">
+													<div className="col-span-2 border-2 border-dashed c-ink p-6 text-center" style={{ opacity: 0.5 }}>
 														<p
 															className="text-xs text-muted-foreground"
 															style={{ fontFamily: monoFont }}
@@ -417,7 +445,7 @@ function ConcertsPage() {
 													images.map((image, imageIndex) => (
 														<div
 															key={image._id}
-															className="relative overflow-hidden border-2 border-foreground c-glow"
+															className="relative overflow-hidden border-2 c-ink c-glow"
 														>
 															<img
 																src={image.iconImage || image.url || ""}
@@ -455,7 +483,7 @@ function ConcertsPage() {
 				</section>
 			</main>
 
-			<footer className="border-t-2 border-foreground bg-background">
+			<footer className="border-t-2 c-ink bg-background">
 				<div className="px-4 md:px-8 py-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
 					<span
 						className="text-[10px] text-muted-foreground tracking-[0.1em]"
@@ -465,7 +493,7 @@ function ConcertsPage() {
 					</span>
 					<Link to="/admin">
 						<button
-							className="inline-flex items-center gap-2 rounded-none border-2 border-foreground px-3 py-2 text-[10px] tracking-[0.15em] uppercase hover:bg-[#ff3b30] hover:text-white hover:border-[#ff3b30]"
+							className="inline-flex items-center gap-2 rounded-none border-2 c-ink px-3 py-2 text-[10px] tracking-[0.15em] uppercase hover:bg-[var(--c-accent)] hover:text-white hover:border-[var(--c-accent)] transition-colors"
 							style={{ fontFamily: monoFont }}
 						>
 							<Settings className="h-3 w-3" />
