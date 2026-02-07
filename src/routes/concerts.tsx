@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { ArrowUpRight, CalendarDays, Music, Settings } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/concerts")({
 
 const monoFont = "'Space Mono', 'Courier New', monospace";
 const displayFont = "'Instrument Serif', 'Georgia', serif";
+const setlistCollapseThreshold = 12;
 
 type SetlistItem =
 	| string
@@ -81,6 +82,9 @@ const formatIntervalLabel = (title: string) => {
 
 function ConcertsPage() {
 	const concerts = useQuery(api.functions.concert.getGallery);
+	const [expandedSetlists, setExpandedSetlists] = useState<
+		Record<string, boolean>
+	>({});
 
 	const totalImages = useMemo(() => {
 		if (!concerts) return 0;
@@ -401,6 +405,15 @@ function ConcertsPage() {
 									: "";
 							const setlistItems = concert.setlist.map(normalizeSetlistItem);
 							let pieceCounter = 0;
+							const concertId = String(concert._id);
+							const isExpanded = expandedSetlists[concertId] ?? false;
+							const shouldCondense =
+								setlistItems.length > setlistCollapseThreshold;
+							const sectionItems = setlistItems.filter(
+								(item) => item.type === "section",
+							);
+							const visibleSetlistItems =
+								!isExpanded && shouldCondense ? sectionItems : setlistItems;
 
 							return (
 								<div
@@ -497,15 +510,23 @@ function ConcertsPage() {
 													</div>
 												)}
 
-											<div>
-												<h3
-													className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground"
-													style={{ fontFamily: monoFont }}
-												>
-													Setlist / Program
-												</h3>
-												<div className="mt-3 space-y-2">
-													{setlistItems.map((item, itemIndex) => {
+										<div>
+											<h3
+												className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground"
+												style={{ fontFamily: monoFont }}
+											>
+												Setlist / Program
+											</h3>
+											<div className="mt-3 space-y-2">
+												{visibleSetlistItems.length === 0 && shouldCondense ? (
+													<p
+														className="text-xs text-muted-foreground"
+														style={{ fontFamily: monoFont }}
+													>
+														No sections tagged. Expand to view the full setlist.
+													</p>
+												) : (
+													visibleSetlistItems.map((item, itemIndex) => {
 														if (item.type === "section") {
 															return (
 																<div
@@ -551,9 +572,25 @@ function ConcertsPage() {
 																<span className="text-sm">{item.title}</span>
 															</div>
 														);
-													})}
-												</div>
+													})
+												)}
 											</div>
+											{shouldCondense && (
+												<button
+													type="button"
+													className="mt-4 inline-flex items-center gap-2 border-2 c-ink px-3 py-1 text-[10px] uppercase tracking-[0.2em] c-accent hover:bg-[var(--c-accent)] hover:text-white transition-colors"
+													style={{ fontFamily: monoFont }}
+													onClick={() =>
+														setExpandedSetlists((prev) => ({
+															...prev,
+															[concertId]: !isExpanded,
+														}))
+													}
+												>
+													{isExpanded ? "Hide full setlist" : "Expand full setlist"}
+												</button>
+											)}
+										</div>
 										</div>
 
 										<div>
