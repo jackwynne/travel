@@ -239,6 +239,10 @@ function MapMarker({
 }: MapMarkerProps) {
   const { map } = useMap();
 
+  if (!Number.isFinite(longitude) || !Number.isFinite(latitude)) {
+    return null;
+  }
+
   const marker = useMemo(() => {
     const markerInstance = new MapLibreGL.Marker({
       ...markerOptions,

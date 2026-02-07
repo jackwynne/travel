@@ -15,7 +15,7 @@
  */
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { PlaceCardSkeleton } from "@/components/PlaceCard";
@@ -469,20 +469,36 @@ function MapSection() {
 	} | null>(null);
 	const [boundsNonce, setBoundsNonce] = useState(0);
 	const navigate = useNavigate();
+	const warnedSignatureRef = useRef<string | null>(null);
 
-	const filteredCities =
-		countriesWithCities?.flatMap((country) =>
-			selectedCountry === null || selectedCountry === country._id
-				? country.cities.map((city) => ({ ...city, countryId: country._id }))
-				: [],
-		) ?? [];
+	const isValidCoordinate = (value: unknown): value is number =>
+		typeof value === "number" && Number.isFinite(value);
+	const hasValidLngLat = (lat: unknown, lng: unknown) =>
+		isValidCoordinate(lat) && isValidCoordinate(lng);
+	const getValidCoords = (lat: unknown, lng: unknown) =>
+		isValidCoordinate(lat) && isValidCoordinate(lng)
+			? { lat, lng }
+			: null;
 
-	const allCities =
+	const allCitiesRaw =
 		countriesWithCities?.flatMap((country) =>
 			country.cities.map((city) => ({ ...city, countryId: country._id })),
 		) ?? [];
 
+	const allCities = allCitiesRaw.filter((city) =>
+		hasValidLngLat(city.lat, city.lng),
+	);
+
+	const filteredCities =
+		(selectedCountry === null
+			? allCitiesRaw
+			: allCitiesRaw.filter((city) => city.countryId === selectedCountry)
+		).filter((city) => hasValidLngLat(city.lat, city.lng)) ?? [];
+
 	const cityById = new Map(allCities.map((city) => [city._id, city]));
+	const cityByIdRaw = new Map(
+		allCitiesRaw.map((city) => [city._id, city]),
+	);
 
 	const focusCity = focusCityId
 		? allCities.find((city) => city._id === focusCityId)
@@ -503,6 +519,77 @@ function MapSection() {
 					place._id !== hoveredLocation.placeId,
 			)
 		: [];
+
+	useEffect(() => {
+		if (!countriesWithCities || !featuredImages || !recentPlaces) return;
+
+		const invalidCities = allCitiesRaw
+			.filter((city) => !hasValidLngLat(city.lat, city.lng))
+			.map((city) => ({
+				id: city._id,
+				name: city.name,
+				countryId: city.countryId,
+				lat: city.lat,
+				lng: city.lng,
+			}));
+
+		const invalidPlaces = (recentPlaces ?? [])
+			.filter((place) => !hasValidLngLat(place.lat, place.lng))
+			.map((place) => ({
+				id: place._id,
+				name: place.name,
+				cityId: place.cityId,
+				lat: place.lat,
+				lng: place.lng,
+			}));
+
+		const invalidImages = (featuredImages ?? [])
+			.filter((image) => {
+				if (!image.cityId) return false;
+				const city = cityByIdRaw.get(image.cityId as Id<"city">);
+				const imageHasCoords = hasValidLngLat(image.lat, image.lng);
+				const cityHasCoords = city
+					? hasValidLngLat(city.lat, city.lng)
+					: false;
+				return !imageHasCoords && !cityHasCoords;
+			})
+			.map((image) => ({
+				id: image._id,
+				locationName: image.locationName,
+				cityId: image.cityId,
+				lat: image.lat,
+				lng: image.lng,
+			}));
+
+		if (
+			invalidCities.length === 0 &&
+			invalidPlaces.length === 0 &&
+			invalidImages.length === 0
+		) {
+			return;
+		}
+
+		const signature = JSON.stringify({
+			cities: invalidCities.map((city) => city.id),
+			places: invalidPlaces.map((place) => place.id),
+			images: invalidImages.map((image) => image.id),
+		});
+
+		if (warnedSignatureRef.current === signature) return;
+		warnedSignatureRef.current = signature;
+
+		console.warn("Map data has invalid coordinates.", {
+			invalidCities,
+			invalidPlaces,
+			invalidImages,
+		});
+	}, [
+		allCitiesRaw,
+		cityByIdRaw,
+		countriesWithCities,
+		featuredImages,
+		recentPlaces,
+	]);
 
 	useEffect(() => {
 		if (focusCityId === null) {
@@ -612,7 +699,7 @@ function MapSection() {
 								</MarkerContent>
 							</MapMarker>
 							{nearbyPlaces
-								.filter((place) => place.lat !== null && place.lng !== null)
+								.filter((place) => hasValidLngLat(place.lat, place.lng))
 								.map((place) => (
 									<MapMarker
 										key={place._id}
@@ -725,17 +812,20 @@ function MapSection() {
 												const city = cityById.get(image.cityId as Id<"city">);
 												const lat = image.lat ?? city?.lat ?? null;
 												const lng = image.lng ?? city?.lng ?? null;
+												const coords = getValidCoords(lat, lng);
 												setFocusCityId(image.cityId as Id<"city">);
-												if (lat !== null && lng !== null) {
+												if (coords) {
 													setHoveredLocation({
 														label: image.locationName,
 														cityId: image.cityId as Id<"city">,
-														lat,
-														lng,
+														lat: coords.lat,
+														lng: coords.lng,
 														placeId: image.placeId
 															? (image.placeId as Id<"place">)
 															: undefined,
 													});
+												} else {
+													setHoveredLocation(null);
 												}
 											}}
 											onFocus={() => {
@@ -743,17 +833,20 @@ function MapSection() {
 												const city = cityById.get(image.cityId as Id<"city">);
 												const lat = image.lat ?? city?.lat ?? null;
 												const lng = image.lng ?? city?.lng ?? null;
+												const coords = getValidCoords(lat, lng);
 												setFocusCityId(image.cityId as Id<"city">);
-												if (lat !== null && lng !== null) {
+												if (coords) {
 													setHoveredLocation({
 														label: image.locationName,
 														cityId: image.cityId as Id<"city">,
-														lat,
-														lng,
+														lat: coords.lat,
+														lng: coords.lng,
 														placeId: image.placeId
 															? (image.placeId as Id<"place">)
 															: undefined,
 													});
+												} else {
+													setHoveredLocation(null);
 												}
 											}}
 											onBlur={() => {
@@ -796,30 +889,36 @@ function MapSection() {
 												if (!place.cityId) return;
 												const lat = place.lat ?? null;
 												const lng = place.lng ?? null;
+												const coords = getValidCoords(lat, lng);
 												setFocusCityId(place.cityId as Id<"city">);
-												if (lat !== null && lng !== null) {
+													if (coords) {
 													setHoveredLocation({
 														label: `${place.name}, ${place.cityName}`,
 														cityId: place.cityId as Id<"city">,
-														lat,
-														lng,
+														lat: coords.lat,
+														lng: coords.lng,
 														placeId: place._id as Id<"place">,
 													});
+													} else {
+														setHoveredLocation(null);
 												}
 											}}
 											onFocus={() => {
 												if (!place.cityId) return;
 												const lat = place.lat ?? null;
 												const lng = place.lng ?? null;
+												const coords = getValidCoords(lat, lng);
 												setFocusCityId(place.cityId as Id<"city">);
-												if (lat !== null && lng !== null) {
+													if (coords) {
 													setHoveredLocation({
 														label: `${place.name}, ${place.cityName}`,
 														cityId: place.cityId as Id<"city">,
-														lat,
-														lng,
+														lat: coords.lat,
+														lng: coords.lng,
 														placeId: place._id as Id<"place">,
 													});
+													} else {
+														setHoveredLocation(null);
 												}
 											}}
 										onBlur={() => {
