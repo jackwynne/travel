@@ -22,6 +22,7 @@ import { Route as OptionsIndexOption3RouteImport } from './routes/options/index-
 import { Route as OptionsIndexOption2RouteImport } from './routes/options/index-option-2'
 import { Route as OptionsIndexOption1bRouteImport } from './routes/options/index-option-1b'
 import { Route as OptionsIndexOption1RouteImport } from './routes/options/index-option-1'
+import { Route as CountryCountryIdRouteImport } from './routes/country.$countryId'
 import { Route as AuthenticatedAuthenticatedRouteImport } from './routes/_authenticated/authenticated'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
@@ -102,6 +103,11 @@ const OptionsIndexOption1Route = OptionsIndexOption1RouteImport.update({
   path: '/options/index-option-1',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CountryCountryIdRoute = CountryCountryIdRouteImport.update({
+  id: '/country/$countryId',
+  path: '/country/$countryId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedAuthenticatedRoute =
   AuthenticatedAuthenticatedRouteImport.update({
     id: '/authenticated',
@@ -144,9 +150,9 @@ const AuthenticatedAdminColoursRoute =
   } as any)
 const CountryCountryIdCityCityIdRoute =
   CountryCountryIdCityCityIdRouteImport.update({
-    id: '/country/$countryId/city/$cityId',
-    path: '/country/$countryId/city/$cityId',
-    getParentRoute: () => rootRouteImport,
+    id: '/city/$cityId',
+    path: '/city/$cityId',
+    getParentRoute: () => CountryCountryIdRoute,
   } as any)
 const AuthenticatedAdminCountryCountryIdRoute =
   AuthenticatedAdminCountryCountryIdRouteImport.update({
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/concerts': typeof ConcertsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
+  '/country/$countryId': typeof CountryCountryIdRouteWithChildren
   '/options/index-option-1': typeof OptionsIndexOption1Route
   '/options/index-option-1b': typeof OptionsIndexOption1bRoute
   '/options/index-option-2': typeof OptionsIndexOption2Route
@@ -228,6 +235,7 @@ export interface FileRoutesByTo {
   '/callback': typeof CallbackRoute
   '/concerts': typeof ConcertsRoute
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
+  '/country/$countryId': typeof CountryCountryIdRouteWithChildren
   '/options/index-option-1': typeof OptionsIndexOption1Route
   '/options/index-option-1b': typeof OptionsIndexOption1bRoute
   '/options/index-option-2': typeof OptionsIndexOption2Route
@@ -256,6 +264,7 @@ export interface FileRoutesById {
   '/concerts': typeof ConcertsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/authenticated': typeof AuthenticatedAuthenticatedRoute
+  '/country/$countryId': typeof CountryCountryIdRouteWithChildren
   '/options/index-option-1': typeof OptionsIndexOption1Route
   '/options/index-option-1b': typeof OptionsIndexOption1bRoute
   '/options/index-option-2': typeof OptionsIndexOption2Route
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/concerts'
     | '/admin'
     | '/authenticated'
+    | '/country/$countryId'
     | '/options/index-option-1'
     | '/options/index-option-1b'
     | '/options/index-option-2'
@@ -315,6 +325,7 @@ export interface FileRouteTypes {
     | '/callback'
     | '/concerts'
     | '/authenticated'
+    | '/country/$countryId'
     | '/options/index-option-1'
     | '/options/index-option-1b'
     | '/options/index-option-2'
@@ -342,6 +353,7 @@ export interface FileRouteTypes {
     | '/concerts'
     | '/_authenticated/admin'
     | '/_authenticated/authenticated'
+    | '/country/$countryId'
     | '/options/index-option-1'
     | '/options/index-option-1b'
     | '/options/index-option-2'
@@ -371,6 +383,7 @@ export interface RootRouteChildren {
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   CallbackRoute: typeof CallbackRoute
   ConcertsRoute: typeof ConcertsRoute
+  CountryCountryIdRoute: typeof CountryCountryIdRouteWithChildren
   OptionsIndexOption1Route: typeof OptionsIndexOption1Route
   OptionsIndexOption1bRoute: typeof OptionsIndexOption1bRoute
   OptionsIndexOption2Route: typeof OptionsIndexOption2Route
@@ -380,7 +393,6 @@ export interface RootRouteChildren {
   OptionsIndexOption5bRoute: typeof OptionsIndexOption5bRoute
   OptionsIndexOption6Route: typeof OptionsIndexOption6Route
   OptionsIndexOriginalRoute: typeof OptionsIndexOriginalRoute
-  CountryCountryIdCityCityIdRoute: typeof CountryCountryIdCityCityIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -476,6 +488,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OptionsIndexOption1RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/country/$countryId': {
+      id: '/country/$countryId'
+      path: '/country/$countryId'
+      fullPath: '/country/$countryId'
+      preLoaderRoute: typeof CountryCountryIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/authenticated': {
       id: '/_authenticated/authenticated'
       path: '/authenticated'
@@ -527,10 +546,10 @@ declare module '@tanstack/react-router' {
     }
     '/country/$countryId/city/$cityId': {
       id: '/country/$countryId/city/$cityId'
-      path: '/country/$countryId/city/$cityId'
+      path: '/city/$cityId'
       fullPath: '/country/$countryId/city/$cityId'
       preLoaderRoute: typeof CountryCountryIdCityCityIdRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof CountryCountryIdRoute
     }
     '/_authenticated/admin/country/$countryId': {
       id: '/_authenticated/admin/country/$countryId'
@@ -686,11 +705,23 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
 )
 
+interface CountryCountryIdRouteChildren {
+  CountryCountryIdCityCityIdRoute: typeof CountryCountryIdCityCityIdRoute
+}
+
+const CountryCountryIdRouteChildren: CountryCountryIdRouteChildren = {
+  CountryCountryIdCityCityIdRoute: CountryCountryIdCityCityIdRoute,
+}
+
+const CountryCountryIdRouteWithChildren =
+  CountryCountryIdRoute._addFileChildren(CountryCountryIdRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   CallbackRoute: CallbackRoute,
   ConcertsRoute: ConcertsRoute,
+  CountryCountryIdRoute: CountryCountryIdRouteWithChildren,
   OptionsIndexOption1Route: OptionsIndexOption1Route,
   OptionsIndexOption1bRoute: OptionsIndexOption1bRoute,
   OptionsIndexOption2Route: OptionsIndexOption2Route,
@@ -700,7 +731,6 @@ const rootRouteChildren: RootRouteChildren = {
   OptionsIndexOption5bRoute: OptionsIndexOption5bRoute,
   OptionsIndexOption6Route: OptionsIndexOption6Route,
   OptionsIndexOriginalRoute: OptionsIndexOriginalRoute,
-  CountryCountryIdCityCityIdRoute: CountryCountryIdCityCityIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

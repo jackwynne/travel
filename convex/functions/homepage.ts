@@ -20,6 +20,13 @@ export const getFeaturedImages = query({
 				let locationName = "";
 				let countryId: string | null = null;
 				let cityId: string | null = null;
+				let placeId: string | null = null;
+				let lat: number | null = null;
+				let lng: number | null = null;
+				let placeLat: number | null = null;
+				let placeLng: number | null = null;
+				let cityLat: number | null = null;
+				let cityLng: number | null = null;
 				const imageType = image.location?.imageType ?? null;
 
 				if (image.location) {
@@ -29,16 +36,27 @@ export const getFeaturedImages = query({
 							locationName = city.name;
 							cityId = city._id;
 							countryId = city.countryId;
+							cityLat = city.lat;
+							cityLng = city.lng;
+							lat = cityLat;
+							lng = cityLng;
 						}
 					} else if (image.location.imageType === "place") {
 						const place = await ctx.db.get(image.location.locationId);
 						if (place) {
+							placeId = place._id;
 							locationName = place.name;
+							placeLat = place.lat ?? null;
+							placeLng = place.lng ?? null;
 							const city = await ctx.db.get(place.cityId);
 							if (city) {
 								cityId = city._id;
 								countryId = city.countryId;
 								locationName = `${place.name}, ${city.name}`;
+								cityLat = city.lat;
+								cityLng = city.lng;
+								lat = placeLat ?? cityLat;
+								lng = placeLng ?? cityLng;
 							}
 						}
 					}
@@ -51,6 +69,13 @@ export const getFeaturedImages = query({
 					locationName,
 					countryId,
 					cityId,
+					placeId,
+					lat,
+					lng,
+					placeLat,
+					placeLng,
+					cityLat,
+					cityLng,
 					imageType,
 				};
 			}),
@@ -115,6 +140,8 @@ export const getRecentPlaces = query({
 		return places.map((place) => {
 			const city = cityMap.get(place.cityId);
 			const country = city ? countryMap.get(city.countryId) : null;
+			const lat = place.lat ?? city?.lat ?? null;
+			const lng = place.lng ?? city?.lng ?? null;
 
 			return {
 				_id: place._id,
@@ -127,6 +154,8 @@ export const getRecentPlaces = query({
 				cityName: city?.name ?? "Unknown City",
 				countryId: city?.countryId ?? null,
 				countryName: country?.name ?? "Unknown Country",
+				lat,
+				lng,
 			};
 		});
 	},

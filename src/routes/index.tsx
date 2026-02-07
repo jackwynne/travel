@@ -15,13 +15,13 @@
  */
 import { Link, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { api } from "../../convex/_generated/api";
 import type { Id } from "../../convex/_generated/dataModel";
 import { PlaceCardSkeleton } from "@/components/PlaceCard";
 import { Button } from "@/components/ui/button";
 import {
-	Map,
+	Map as MapView,
 	MapMarker,
 	MarkerContent,
 	MarkerTooltip,
@@ -467,24 +467,137 @@ function MapSection() {
 		null,
 	)
 	const [focusCityId, setFocusCityId] = useState<Id<"city"> | null>(null);
+	const [hoveredLocation, setHoveredLocation] = useState<{
+		label: string;
+		cityId: Id<"city">;
+		lat: number;
+		lng: number;
+		placeId?: Id<"place">;
+	} | null>(null);
 	const [boundsNonce, setBoundsNonce] = useState(0);
 	const navigate = useNavigate();
+	const warnedSignatureRef = useRef<string | null>(null);
 
-	const filteredCities =
-		countriesWithCities?.flatMap((country) =>
-			selectedCountry === null || selectedCountry === country._id
-				? country.cities.map((city) => ({ ...city, countryId: country._id }))
-				: [],
-		) ?? [];
+	const isValidCoordinate = (value: unknown): value is number =>
+		typeof value === "number" && Number.isFinite(value);
+	const hasValidLngLat = (lat: unknown, lng: unknown) =>
+		isValidCoordinate(lat) && isValidCoordinate(lng);
+	const getValidCoords = (lat: unknown, lng: unknown) =>
+		isValidCoordinate(lat) && isValidCoordinate(lng)
+			? { lat, lng }
+			: null;
 
-	const allCities =
+	const allCitiesRaw =
 		countriesWithCities?.flatMap((country) =>
 			country.cities.map((city) => ({ ...city, countryId: country._id })),
 		) ?? [];
 
+	const allCities = allCitiesRaw.filter((city) =>
+		hasValidLngLat(city.lat, city.lng),
+	);
+
+	const filteredCities =
+		(selectedCountry === null
+			? allCitiesRaw
+			: allCitiesRaw.filter((city) => city.countryId === selectedCountry)
+		).filter((city) => hasValidLngLat(city.lat, city.lng)) ?? [];
+
+	const cityById = new Map(allCities.map((city) => [city._id, city]));
+	const cityByIdRaw = new Map(
+		allCitiesRaw.map((city) => [city._id, city]),
+	);
+
 	const focusCity = focusCityId
 		? allCities.find((city) => city._id === focusCityId)
 		: null;
+
+	const filteredFeaturedImages = selectedCountry
+		? featuredImages?.filter((image) => image.countryId === selectedCountry)
+		: featuredImages;
+
+	const filteredRecentPlaces = selectedCountry
+		? recentPlaces?.filter((place) => place.countryId === selectedCountry)
+		: recentPlaces;
+
+
+	const nearbyPlaces = hoveredLocation
+		? (recentPlaces ?? []).filter(
+				(place) =>
+					place.cityId === hoveredLocation.cityId &&
+					place._id !== hoveredLocation.placeId,
+			)
+		: [];
+
+	useEffect(() => {
+		if (!countriesWithCities || !featuredImages || !recentPlaces) return;
+
+		const invalidCities = allCitiesRaw
+			.filter((city) => !hasValidLngLat(city.lat, city.lng))
+			.map((city) => ({
+				id: city._id,
+				name: city.name,
+				countryId: city.countryId,
+				lat: city.lat,
+				lng: city.lng,
+			}));
+
+		const invalidPlaces = (recentPlaces ?? [])
+			.filter((place) => !hasValidLngLat(place.lat, place.lng))
+			.map((place) => ({
+				id: place._id,
+				name: place.name,
+				cityId: place.cityId,
+				lat: place.lat,
+				lng: place.lng,
+			}));
+
+		const invalidImages = (featuredImages ?? [])
+			.filter((image) => {
+				if (!image.cityId) return false;
+				const city = cityByIdRaw.get(image.cityId as Id<"city">);
+				const imageHasCoords = hasValidLngLat(image.lat, image.lng);
+				const cityHasCoords = city
+					? hasValidLngLat(city.lat, city.lng)
+					: false;
+				return !imageHasCoords && !cityHasCoords;
+			})
+			.map((image) => ({
+				id: image._id,
+				locationName: image.locationName,
+				cityId: image.cityId,
+				lat: image.lat,
+				lng: image.lng,
+			}));
+
+		if (
+			invalidCities.length === 0 &&
+			invalidPlaces.length === 0 &&
+			invalidImages.length === 0
+		) {
+			return;
+		}
+
+		const signature = JSON.stringify({
+			cities: invalidCities.map((city) => city.id),
+			places: invalidPlaces.map((place) => place.id),
+			images: invalidImages.map((image) => image.id),
+		});
+
+		if (warnedSignatureRef.current === signature) return;
+		warnedSignatureRef.current = signature;
+
+		console.warn("Map data has invalid coordinates.", {
+			invalidCities,
+			invalidPlaces,
+			invalidImages,
+		});
+	}, [
+		allCitiesRaw,
+		cityByIdRaw,
+		countriesWithCities,
+		featuredImages,
+		recentPlaces,
+	]);
 
 	useEffect(() => {
 		if (focusCityId === null) {
@@ -522,6 +635,7 @@ function MapSection() {
 					onClick={() => {
 						setSelectedCountry(null);
 						setFocusCityId(null);
+						setHoveredLocation(null);
 					}}
 					className={cn(
 						"shrink-0 px-4 py-2 text-[10px] uppercase tracking-[0.15em] border-r-2 border-foreground transition-colors",
@@ -540,6 +654,7 @@ function MapSection() {
 						onClick={() => {
 							setSelectedCountry(country._id);
 							setFocusCityId(null);
+							setHoveredLocation(null);
 						}}
 						className={cn(
 							"shrink-0 px-4 py-2 text-[10px] uppercase tracking-[0.15em] border-r-2 border-foreground transition-colors",
@@ -556,46 +671,101 @@ function MapSection() {
 
 			{/* Map */}
 			<div className="h-[500px]">
-				<Map center={[10, 45]} zoom={3} maxZoom={12}>
+				<MapView center={[10, 45]} zoom={3} maxZoom={12}>
 					<MapControls position="bottom-right" showZoom showCompass />
 					<MapBoundsFitter cities={filteredCities} resetSignal={boundsNonce} />
-					<MapFocusController city={focusCity} />
-					{filteredCities.map((city) => (
-						<MapMarker
-							key={city._id}
-							longitude={city.lng}
-							latitude={city.lat}
-							onClick={() => {
-								navigate({
-									to: "/country/$countryId/city/$cityId",
-									params: {
-										countryId: city.countryId,
-										cityId: city._id,
-									},
-								})
-							}}
-						>
-							<MarkerContent>
-								<div className="group cursor-pointer transition-transform hover:scale-125">
-									<div
-										className={cn(
-											"b-crosshair",
-											city._id === focusCityId && "b-crosshair-active",
-										)}
-									/>
-								</div>
-							</MarkerContent>
-							<MarkerTooltip>
-								<span
-									className="text-[10px] font-bold uppercase tracking-[0.1em]"
-									style={{ fontFamily: monoFont }}
-								>
-									{city.name}
-								</span>
-							</MarkerTooltip>
-						</MapMarker>
-					))}
-				</Map>
+					<MapFocusController
+						location={
+							hoveredLocation ??
+							(focusCity
+								? { lat: focusCity.lat, lng: focusCity.lng }
+								: null)
+						}
+					/>
+					{hoveredLocation ? (
+						<>
+							<MapMarker
+								key="hover-primary"
+								longitude={hoveredLocation.lng}
+								latitude={hoveredLocation.lat}
+							>
+								<MarkerContent>
+									<div className="relative w-0 h-0">
+										<div className="absolute left-0 top-0 -translate-x-1/2 -translate-y-1/2 h-3 w-3 border-2 border-[#FF5D00] bg-white" />
+										<div
+											className="absolute left-0 top-0 translate-x-3 -translate-y-1/2 px-2 py-1 bg-black text-white min-w-[160px]"
+											style={{ fontFamily: monoFont }}
+										>
+											<div className="text-[9px] uppercase tracking-[0.1em]">
+												{hoveredLocation.label}
+											</div>
+											<div className="text-[8px] text-white/70">
+												{hoveredLocation.lat.toFixed(4)}, {hoveredLocation.lng.toFixed(4)}
+											</div>
+										</div>
+									</div>
+								</MarkerContent>
+							</MapMarker>
+							{nearbyPlaces
+								.filter((place) => hasValidLngLat(place.lat, place.lng))
+								.map((place) => (
+									<MapMarker
+										key={place._id}
+										longitude={place.lng as number}
+										latitude={place.lat as number}
+									>
+										<MarkerContent>
+											<div className="h-2.5 w-2.5 bg-[#FF5D00]/70" />
+										</MarkerContent>
+										<MarkerTooltip>
+											<span
+												className="text-[10px] font-bold uppercase tracking-[0.1em]"
+												style={{ fontFamily: monoFont }}
+											>
+												{place.name}
+											</span>
+										</MarkerTooltip>
+									</MapMarker>
+								))}
+						</>
+					) : (
+						filteredCities.map((city) => (
+							<MapMarker
+								key={city._id}
+								longitude={city.lng}
+								latitude={city.lat}
+								onClick={() => {
+									navigate({
+										to: "/country/$countryId/city/$cityId",
+										params: {
+											countryId: city.countryId,
+											cityId: city._id,
+										},
+									})
+								}}
+							>
+								<MarkerContent>
+									<div className="group cursor-pointer transition-transform hover:scale-125">
+										<div
+											className={cn(
+												"b-crosshair",
+												city._id === focusCityId && "b-crosshair-active",
+											)}
+										/>
+									</div>
+								</MarkerContent>
+								<MarkerTooltip>
+									<span
+										className="text-[10px] font-bold uppercase tracking-[0.1em]"
+										style={{ fontFamily: monoFont }}
+									>
+										{city.name}
+									</span>
+								</MarkerTooltip>
+							</MapMarker>
+						))
+					)}
+				</MapView>
 			</div>
 
 			{/* Photo + destination tether */}
@@ -622,10 +792,14 @@ function MapSection() {
 					<div className="lg:col-span-3">
 							<div
 								className="b-filmstrip rounded-none overflow-x-auto"
-								onMouseLeave={() => setFocusCityId(null)}
+								onMouseLeave={() => {
+									setFocusCityId(null);
+									setHoveredLocation(null);
+								}}
 								onBlurCapture={(event) => {
 									if (!event.currentTarget.contains(event.relatedTarget as Node)) {
 										setFocusCityId(null);
+										setHoveredLocation(null);
 									}
 								}}
 							>
@@ -636,22 +810,59 @@ function MapSection() {
 									))}
 								</div>
 								<div className="flex gap-3">
-									{featuredImages?.slice(0, 8).map((image) => (
+									{filteredFeaturedImages?.slice(0, 8).map((image) => (
 										<button
 											key={image._id}
 											type="button"
 												className="relative flex-none min-w-[144px]"
 											onMouseEnter={() => {
-												if (image.cityId) {
-													setFocusCityId(image.cityId as Id<"city">);
+												if (!image.cityId) return;
+												const city = cityById.get(image.cityId as Id<"city">);
+												const placeCoords = getValidCoords(image.placeLat, image.placeLng);
+												const imageCoords = getValidCoords(image.lat, image.lng);
+												const cityCoords = getValidCoords(city?.lat, city?.lng);
+												const coords = placeCoords ?? imageCoords ?? cityCoords;
+												setFocusCityId(image.cityId as Id<"city">);
+												if (coords) {
+													setHoveredLocation({
+														label: image.locationName,
+														cityId: image.cityId as Id<"city">,
+														lat: coords.lat,
+														lng: coords.lng,
+														placeId: image.placeId
+															? (image.placeId as Id<"place">)
+															: undefined,
+													});
+												} else {
+													setHoveredLocation(null);
 												}
 											}}
 											onFocus={() => {
-												if (image.cityId) {
-													setFocusCityId(image.cityId as Id<"city">);
+												if (!image.cityId) return;
+												const city = cityById.get(image.cityId as Id<"city">);
+												const placeCoords = getValidCoords(image.placeLat, image.placeLng);
+												const imageCoords = getValidCoords(image.lat, image.lng);
+												const cityCoords = getValidCoords(city?.lat, city?.lng);
+												const coords = placeCoords ?? imageCoords ?? cityCoords;
+												setFocusCityId(image.cityId as Id<"city">);
+												if (coords) {
+													setHoveredLocation({
+														label: image.locationName,
+														cityId: image.cityId as Id<"city">,
+														lat: coords.lat,
+														lng: coords.lng,
+														placeId: image.placeId
+															? (image.placeId as Id<"place">)
+															: undefined,
+													});
+												} else {
+													setHoveredLocation(null);
 												}
 											}}
-												onBlur={() => setFocusCityId(null)}
+											onBlur={() => {
+												setFocusCityId(null);
+												setHoveredLocation(null);
+											}}
 											onClick={() => {
 												if (image.cityId && image.countryId) {
 													navigate({
@@ -679,18 +890,51 @@ function MapSection() {
 									))}
 								</div>
 								<div className="flex gap-3">
-									{recentPlaces?.slice(0, 6).map((place) => (
+									{filteredRecentPlaces?.slice(0, 6).map((place) => (
 										<button
 											key={place._id}
 											type="button"
 												className="relative flex-none min-w-[144px]"
 											onMouseEnter={() => {
+												if (!place.cityId) return;
+												const lat = place.lat ?? null;
+												const lng = place.lng ?? null;
+												const coords = getValidCoords(lat, lng);
 												setFocusCityId(place.cityId as Id<"city">);
+													if (coords) {
+													setHoveredLocation({
+														label: `${place.name}, ${place.cityName}`,
+														cityId: place.cityId as Id<"city">,
+														lat: coords.lat,
+														lng: coords.lng,
+														placeId: place._id as Id<"place">,
+													});
+													} else {
+														setHoveredLocation(null);
+												}
 											}}
 											onFocus={() => {
+												if (!place.cityId) return;
+												const lat = place.lat ?? null;
+												const lng = place.lng ?? null;
+												const coords = getValidCoords(lat, lng);
 												setFocusCityId(place.cityId as Id<"city">);
+													if (coords) {
+													setHoveredLocation({
+														label: `${place.name}, ${place.cityName}`,
+														cityId: place.cityId as Id<"city">,
+														lat: coords.lat,
+														lng: coords.lng,
+														placeId: place._id as Id<"place">,
+													});
+													} else {
+														setHoveredLocation(null);
+												}
 											}}
-												onBlur={() => setFocusCityId(null)}
+										onBlur={() => {
+											setFocusCityId(null);
+											setHoveredLocation(null);
+										}}
 											onClick={() => {
 												if (place.countryId) {
 													navigate({
@@ -738,16 +982,16 @@ function MapSection() {
 }
 
 function MapFocusController({
-	city,
+	location,
 }: {
-	city: { lng: number; lat: number } | null;
+	location: { lng: number; lat: number } | null;
 }) {
 	const { map, isLoaded } = useMap();
 
 	useEffect(() => {
-		if (!map || !isLoaded || !city) return;
-		map.flyTo({ center: [city.lng, city.lat], zoom: 15, duration: 900 });
-	}, [map, isLoaded, city]);
+		if (!map || !isLoaded || !location) return;
+		map.flyTo({ center: [location.lng, location.lat], zoom: 15, duration: 900 });
+	}, [map, isLoaded, location]);
 
 	return null;
 }
@@ -934,7 +1178,6 @@ function CountryShowcaseSection() {
 						const bScore = (b.lastVisitedYear ?? 0) * 12 + (b.lastVisitedMonth ?? 0);
 						return bScore - aScore;
 					})
-					const primaryCity = citiesSorted[0] ?? country.cities[0];
 					return (
 						<div
 							key={country._id}
@@ -983,20 +1226,17 @@ function CountryShowcaseSection() {
 								))}
 							</div>
 
-							{primaryCity && (
-								<Link
-									to="/country/$countryId/city/$cityId"
-									params={{
-										countryId: country._id,
-										cityId: primaryCity._id,
-									}}
-									className="mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.1em]"
-									style={{ fontFamily: monoFont, color: "#FF5D00" }}
-								>
-									Explore {primaryCity.name}
-									<ChevronRight className="h-3 w-3" />
-								</Link>
-							)}
+							<Link
+								to="/country/$countryId"
+								params={{
+									countryId: country._id,
+								}}
+								className="mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.1em]"
+								style={{ fontFamily: monoFont, color: "#FF5D00" }}
+							>
+								Explore {country.name}
+								<ChevronRight className="h-3 w-3" />
+							</Link>
 						</div>
 					)
 				})}
