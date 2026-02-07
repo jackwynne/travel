@@ -36,6 +36,72 @@ export const Route = createFileRoute(
 	component: AdminConcertImagesPage,
 });
 
+type SetlistItem =
+	| string
+	| {
+			type: "piece" | "section" | "interval";
+			title: string;
+	  };
+
+const setlistTypeMap: Record<string, "piece" | "section" | "interval"> = {
+	piece: "piece",
+	song: "piece",
+	track: "piece",
+	section: "section",
+	act: "section",
+	scene: "section",
+	part: "section",
+	finale: "section",
+	encore: "section",
+	interval: "interval",
+	intermission: "interval",
+	break: "interval",
+};
+
+const normalizeSetlistItem = (item: SetlistItem) => {
+	if (typeof item !== "string") {
+		return item;
+	}
+
+	const trimmed = item.trim();
+	const prefixMatch = /^([A-Za-z]+)\s*:\s*(.*)$/.exec(trimmed);
+	if (prefixMatch) {
+		const prefix = prefixMatch[1].toLowerCase();
+		const mappedType = setlistTypeMap[prefix];
+		if (mappedType) {
+			const rawTitle = prefixMatch[2].trim();
+			let title = rawTitle || prefixMatch[1];
+			if (
+				mappedType === "section" &&
+				rawTitle &&
+				["act", "scene", "part", "finale", "encore"].includes(prefix)
+			) {
+				title = new RegExp(`^${prefix}\\b`, "i").test(rawTitle)
+					? rawTitle
+					: `${prefixMatch[1]} ${rawTitle}`;
+			}
+			return { type: mappedType, title };
+		}
+	}
+
+	if (/^(interval|intermission|break)$/i.test(trimmed)) {
+		return { type: "interval" as const, title: trimmed };
+	}
+
+	if (/^(act|scene|part|finale|encore)\b/i.test(trimmed)) {
+		return { type: "section" as const, title: trimmed };
+	}
+
+	return { type: "piece" as const, title: item };
+};
+
+const formatIntervalLabel = (title: string) => {
+	const trimmed = title.trim();
+	if (!trimmed) return "Interval";
+	if (/^(interval|intermission|break)$/i.test(trimmed)) return trimmed;
+	return `Interval — ${trimmed}`;
+};
+
 function AdminConcertImagesPage() {
 	const { concertId } = Route.useParams();
 	const concert = useQuery(api.functions.concert.getOne, {
@@ -67,6 +133,9 @@ function AdminConcertImagesPage() {
 		);
 	}
 
+	const normalizedSetlist = concert.setlist.map(normalizeSetlistItem);
+	let pieceCounter = 0;
+
 	return (
 		<div className="space-y-6">
 			<div className="rounded-lg border bg-card p-6 space-y-4">
@@ -92,13 +161,55 @@ function AdminConcertImagesPage() {
 								<li key={performer}>{performer}</li>
 							))}
 						</ul>
+						{concert.supportingPerformers &&
+							concert.supportingPerformers.length > 0 && (
+								<div className="mt-4">
+									<p className="text-sm text-muted-foreground">
+										Supporting Performers
+									</p>
+									<ul className="text-sm list-disc list-inside">
+										{concert.supportingPerformers.map((supporting) => (
+											<li key={supporting}>{supporting}</li>
+										))}
+									</ul>
+								</div>
+							)}
 					</div>
 					<div>
 						<p className="text-sm text-muted-foreground">Setlist</p>
-						<ul className="text-sm list-disc list-inside">
-							{concert.setlist.map((piece) => (
-								<li key={piece}>{piece}</li>
-							))}
+						<ul className="text-sm space-y-1">
+							{normalizedSetlist.map((item, index) => {
+								if (item.type === "section") {
+									return (
+										<li
+											key={`${item.type}-${index}`}
+											className="text-xs uppercase tracking-[0.2em] text-muted-foreground"
+										>
+											{item.title}
+										</li>
+									);
+								}
+								if (item.type === "interval") {
+									return (
+										<li
+											key={`${item.type}-${index}`}
+											className="text-xs text-muted-foreground"
+										>
+											{formatIntervalLabel(item.title)}
+										</li>
+									);
+								}
+								pieceCounter += 1;
+								const pieceNumber = String(pieceCounter).padStart(2, "0");
+								return (
+									<li key={`${item.type}-${index}`}>
+										<span className="text-muted-foreground mr-2">
+											{pieceNumber}.
+										</span>
+										{item.title}
+									</li>
+								);
+							})}
 						</ul>
 					</div>
 				</div>

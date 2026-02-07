@@ -151,7 +151,7 @@ export function ConcertTable() {
 									<TableCell>
 										{concert.setlist.length > 0 ? (
 											<span className="text-sm">
-												{concert.setlist.length} pieces
+												{concert.setlist.length} items
 											</span>
 										) : (
 											<span className="text-muted-foreground">—</span>

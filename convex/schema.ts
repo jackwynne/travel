@@ -1,6 +1,22 @@
 import { defineSchema, defineTable } from 'convex/server';
 import { v } from 'convex/values';
 
+const setlistItem = v.union(
+	v.string(),
+	v.object({
+		type: v.literal("piece"),
+		title: v.string(),
+	}),
+	v.object({
+		type: v.literal("section"),
+		title: v.string(),
+	}),
+	v.object({
+		type: v.literal("interval"),
+		title: v.string(),
+	}),
+);
+
 // The schema is entirely optional.
 // You can delete this file (schema.ts) and the
 // app will continue to work.
@@ -104,7 +120,8 @@ export default defineSchema({
 		dateTime: v.optional(v.number()),
 		featuredImageId: v.optional(v.id("image")),
 		performers: v.array(v.string()),
-		setlist: v.array(v.string()),
+		supportingPerformers: v.optional(v.array(v.string())),
+		setlist: v.array(setlistItem),
 		notes: v.optional(v.string()),
 	})
 		.index("byPlace", ["placeId"])

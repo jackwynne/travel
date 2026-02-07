@@ -13,6 +13,72 @@ export const Route = createFileRoute("/concerts")({
 const monoFont = "'Space Mono', 'Courier New', monospace";
 const displayFont = "'Instrument Serif', 'Georgia', serif";
 
+type SetlistItem =
+	| string
+	| {
+			type: "piece" | "section" | "interval";
+			title: string;
+	  };
+
+const setlistTypeMap: Record<string, "piece" | "section" | "interval"> = {
+	piece: "piece",
+	song: "piece",
+	track: "piece",
+	section: "section",
+	act: "section",
+	scene: "section",
+	part: "section",
+	finale: "section",
+	encore: "section",
+	interval: "interval",
+	intermission: "interval",
+	break: "interval",
+};
+
+const normalizeSetlistItem = (item: SetlistItem) => {
+	if (typeof item !== "string") {
+		return item;
+	}
+
+	const trimmed = item.trim();
+	const prefixMatch = /^([A-Za-z]+)\s*:\s*(.*)$/.exec(trimmed);
+	if (prefixMatch) {
+		const prefix = prefixMatch[1].toLowerCase();
+		const mappedType = setlistTypeMap[prefix];
+		if (mappedType) {
+			const rawTitle = prefixMatch[2].trim();
+			let title = rawTitle || prefixMatch[1];
+			if (
+				mappedType === "section" &&
+				rawTitle &&
+				["act", "scene", "part", "finale", "encore"].includes(prefix)
+			) {
+				title = new RegExp(`^${prefix}\\b`, "i").test(rawTitle)
+					? rawTitle
+					: `${prefixMatch[1]} ${rawTitle}`;
+			}
+			return { type: mappedType, title };
+		}
+	}
+
+	if (/^(interval|intermission|break)$/i.test(trimmed)) {
+		return { type: "interval" as const, title: trimmed };
+	}
+
+	if (/^(act|scene|part|finale|encore)\b/i.test(trimmed)) {
+		return { type: "section" as const, title: trimmed };
+	}
+
+	return { type: "piece" as const, title: item };
+};
+
+const formatIntervalLabel = (title: string) => {
+	const trimmed = title.trim();
+	if (!trimmed) return "Interval";
+	if (/^(interval|intermission|break)$/i.test(trimmed)) return trimmed;
+	return `Interval · ${trimmed}`;
+};
+
 function ConcertsPage() {
 	const concerts = useQuery(api.functions.concert.getGallery);
 
@@ -333,6 +399,8 @@ function ConcertsPage() {
 								concert.cityName && concert.cityName !== "Unknown city"
 									? concert.cityName
 									: "";
+							const setlistItems = concert.setlist.map(normalizeSetlistItem);
+							let pieceCounter = 0;
 
 							return (
 								<div
@@ -404,28 +472,86 @@ function ConcertsPage() {
 												</div>
 											</div>
 
+											{concert.supportingPerformers &&
+												concert.supportingPerformers.length > 0 && (
+													<div>
+														<h3
+															className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground"
+															style={{ fontFamily: monoFont }}
+														>
+															Supporting Crew
+														</h3>
+														<div className="flex flex-wrap gap-2 mt-3">
+															{concert.supportingPerformers.map(
+																(supporting) => (
+																	<span
+																		key={`${concert._id}-supporting-${supporting}`}
+																		className="px-3 py-1 border-2 border-dashed c-ink text-[10px] uppercase tracking-[0.15em] text-muted-foreground"
+																		style={{ fontFamily: monoFont }}
+																	>
+																		{supporting}
+																	</span>
+																),
+															)}
+														</div>
+													</div>
+												)}
+
 											<div>
 												<h3
 													className="text-[11px] uppercase tracking-[0.3em] text-muted-foreground"
 													style={{ fontFamily: monoFont }}
 												>
-													Setlist / Pieces
+													Setlist / Program
 												</h3>
 												<div className="mt-3 space-y-2">
-													{concert.setlist.map((piece, pieceIndex) => (
-														<div
-															key={`${concert._id}-piece-${piece}`}
-															className="flex items-start gap-3"
-														>
-															<span
-																className="text-[10px] text-muted-foreground"
-																style={{ fontFamily: monoFont }}
+													{setlistItems.map((item, itemIndex) => {
+														if (item.type === "section") {
+															return (
+																<div
+																	key={`${concert._id}-section-${itemIndex}`}
+																	className="pt-3 mt-2 border-t c-ink"
+																>
+																	<span
+																		className="text-[10px] uppercase tracking-[0.35em] text-muted-foreground"
+																		style={{ fontFamily: monoFont }}
+																	>
+																		{item.title}
+																	</span>
+																</div>
+															);
+														}
+
+														if (item.type === "interval") {
+															return (
+																<div
+																	key={`${concert._id}-interval-${itemIndex}`}
+																	className="flex items-center gap-3 text-[10px] uppercase tracking-[0.3em] text-muted-foreground"
+																	style={{ fontFamily: monoFont }}
+																>
+																	<span className="h-px flex-1 bg-[var(--c-border)]/30" />
+																	<span>{formatIntervalLabel(item.title)}</span>
+																	<span className="h-px flex-1 bg-[var(--c-border)]/30" />
+																</div>
+															);
+														}
+
+														pieceCounter += 1;
+														return (
+															<div
+																key={`${concert._id}-piece-${itemIndex}`}
+																className="flex items-start gap-3"
 															>
-																{String(pieceIndex + 1).padStart(2, "0")}
-															</span>
-															<span className="text-sm">{piece}</span>
-														</div>
-													))}
+																<span
+																	className="text-[10px] text-muted-foreground"
+																	style={{ fontFamily: monoFont }}
+																>
+																	{String(pieceCounter).padStart(2, "0")}
+																</span>
+																<span className="text-sm">{item.title}</span>
+															</div>
+														);
+													})}
 												</div>
 											</div>
 										</div>

@@ -20,6 +20,91 @@ const parseLines = (value: string) =>
 		.map((line) => line.trim())
 		.filter(Boolean);
 
+type SetlistItem =
+	| string
+	| {
+			type: "piece" | "section" | "interval";
+			title: string;
+	  };
+
+const setlistTypeMap: Record<string, "piece" | "section" | "interval"> = {
+	piece: "piece",
+	song: "piece",
+	track: "piece",
+	section: "section",
+	act: "section",
+	scene: "section",
+	part: "section",
+	finale: "section",
+	encore: "section",
+	interval: "interval",
+	intermission: "interval",
+	break: "interval",
+};
+
+const normalizeSetlistItem = (item: SetlistItem) =>
+	typeof item === "string" ? { type: "piece" as const, title: item } : item;
+
+const formatIntervalLine = (title: string) => {
+	const trimmed = title.trim();
+	if (!trimmed) return "Interval";
+	if (/^(interval|intermission|break)$/i.test(trimmed)) return trimmed;
+	return `Interval: ${trimmed}`;
+};
+
+const formatSetlistInput = (items: SetlistItem[] | undefined) => {
+	if (!items || items.length === 0) return "";
+	return items
+		.map((item) => {
+			const normalized = normalizeSetlistItem(item);
+			if (normalized.type === "section") {
+				if (/^(act|scene|part|finale|encore)\b/i.test(normalized.title.trim())) {
+					return normalized.title;
+				}
+				return `Section: ${normalized.title}`;
+			}
+			if (normalized.type === "interval") {
+				return formatIntervalLine(normalized.title);
+			}
+			return normalized.title;
+		})
+		.join("\n");
+};
+
+const parseSetlistInput = (value: string) =>
+	parseLines(value).map((line) => {
+		const prefixMatch = /^([A-Za-z]+)\s*:\s*(.*)$/.exec(line);
+		if (prefixMatch) {
+			const prefix = prefixMatch[1].toLowerCase();
+			const mappedType = setlistTypeMap[prefix];
+			if (mappedType) {
+				const rawTitle = prefixMatch[2].trim();
+				let title =
+					rawTitle || (mappedType === "interval" ? "Interval" : prefixMatch[1]);
+				if (
+					mappedType === "section" &&
+					rawTitle &&
+					["act", "scene", "part", "finale", "encore"].includes(prefix)
+				) {
+					title = new RegExp(`^${prefix}\\b`, "i").test(rawTitle)
+						? rawTitle
+						: `${prefixMatch[1]} ${rawTitle}`;
+				}
+				return { type: mappedType, title };
+			}
+		}
+
+		if (/^(interval|intermission|break)$/i.test(line)) {
+			return { type: "interval" as const, title: line };
+		}
+
+		if (/^(act|scene|part|finale|encore)\b/i.test(line)) {
+			return { type: "section" as const, title: line };
+		}
+
+		return { type: "piece" as const, title: line };
+	});
+
 const concertSchema = z.object({
 	title: z.string().min(1, "Title is required"),
 	placeId: z.string().min(1, "Venue is required"),
@@ -29,9 +114,10 @@ const concertSchema = z.object({
 		.refine((value) => parseLines(value).length > 0, {
 			message: "Add at least one performer",
 		}),
+	supportingPerformers: z.string().optional(),
 	setlist: z
 		.string()
-		.refine((value) => parseLines(value).length > 0, {
+		.refine((value) => parseSetlistInput(value).length > 0, {
 			message: "Add at least one setlist item",
 		}),
 	notes: z.string().optional(),
@@ -71,7 +157,8 @@ export function ConcertForm({
 			placeId: concert?.placeId ?? "",
 			dateTime: timestampToDatetimeLocal(concert?.dateTime),
 			performers: concert?.performers?.join("\n") ?? "",
-			setlist: concert?.setlist?.join("\n") ?? "",
+			supportingPerformers: concert?.supportingPerformers?.join("\n") ?? "",
+			setlist: formatSetlistInput(concert?.setlist),
 			notes: concert?.notes ?? "",
 		},
 		onSubmit: async ({ value }) => {
@@ -80,12 +167,18 @@ export function ConcertForm({
 				notes: value.notes || undefined,
 			});
 
+			const supportingPerformers = parseLines(
+				validated.supportingPerformers ?? "",
+			);
+
 			const payload = {
 				placeId: validated.placeId as Id<"place">,
 				title: validated.title,
 				dateTime: datetimeLocalToTimestamp(validated.dateTime),
 				performers: parseLines(validated.performers),
-				setlist: parseLines(validated.setlist),
+				supportingPerformers:
+					supportingPerformers.length > 0 ? supportingPerformers : undefined,
+				setlist: parseSetlistInput(validated.setlist),
 				notes: validated.notes,
 			};
 
@@ -231,18 +324,39 @@ export function ConcertForm({
 				)}
 			</form.Field>
 
+			<form.Field name="supportingPerformers">
+				{(field) => (
+					<div className="space-y-2">
+						<Label htmlFor="supportingPerformers">
+							Supporting Performers / Crew
+						</Label>
+						<Textarea
+							id="supportingPerformers"
+							value={field.state.value}
+							onBlur={field.handleBlur}
+							onChange={(event) => field.handleChange(event.target.value)}
+							placeholder="One per line (e.g. Costume Design — Jane Doe)"
+							rows={3}
+						/>
+					</div>
+				)}
+			</form.Field>
+
 			<form.Field name="setlist">
 				{(field) => (
 					<div className="space-y-2">
-						<Label htmlFor="setlist">Setlist / Pieces Played</Label>
+						<Label htmlFor="setlist">Setlist / Program</Label>
 						<Textarea
 							id="setlist"
 							value={field.state.value}
 							onBlur={field.handleBlur}
 							onChange={(event) => field.handleChange(event.target.value)}
-							placeholder="One piece per line"
-							rows={5}
+							placeholder="One item per line. Use prefixes like Section: or Interval:"
+							rows={6}
 						/>
+						<p className="text-xs text-muted-foreground">
+							Examples: "Act I", "Interval", "Piece: Moonlight Sonata"
+						</p>
 						{field.state.meta.isTouched &&
 							field.state.meta.errors.length > 0 && (
 								<p className="text-sm text-destructive">
