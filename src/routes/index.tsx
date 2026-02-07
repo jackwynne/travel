@@ -274,6 +274,13 @@ function Home() {
 								>
 									[travel.jackwynne.nz]
 								</span>
+								<Link
+									to="/concerts"
+									className="text-[10px] tracking-[0.2em] uppercase hover:text-[#FF5D00] transition-colors"
+									style={{ fontFamily: monoFont }}
+								>
+									Concerts
+								</Link>
 								<ThemeToggle />
 							</div>
 						</div>

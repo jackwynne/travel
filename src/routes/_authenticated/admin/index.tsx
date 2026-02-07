@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { Globe, Palette, MapPin, Building2, Image, Star } from "lucide-react";
+import { Globe, Palette, MapPin, Building2, Image, Star, Music } from "lucide-react";
 import type { AdminPageContext } from "../admin";
 
 import {
@@ -43,6 +43,18 @@ const navigationItems = [
 		to: "/admin/featured" as const,
 		gradient: "from-yellow-500/20 to-orange-500/20",
 		iconColor: "text-yellow-500",
+	},
+	{
+		title: "Concerts",
+		description: "Track performances, setlists, and the images captured at each show.",
+		icon: Music,
+		to: "/admin/concerts" as const,
+		gradient: "from-rose-500/20 to-orange-500/20",
+		iconColor: "text-rose-500",
+		subItems: [
+			{ icon: MapPin, label: "Venues" },
+			{ icon: Image, label: "Images" },
+		],
 	},
 	{
 		title: "Colours",

@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from "convex/react";
-import { Edit, ImageIcon, ImagePlus, MapPin, Trash2 } from "lucide-react";
+import { Edit, ImageIcon, ImagePlus, Star, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -20,8 +20,8 @@ import {
 } from "@/components/ui/table";
 import { api } from "../../../convex/_generated/api";
 import type { Id } from "../../../convex/_generated/dataModel";
+import { ConcertImageUploadForm } from "./ConcertImageUploadForm";
 import { ImageEditForm } from "./ImageEditForm";
-import { CityImageUploadForm } from "./CityImageUploadForm";
 
 type ImageWithUrl = {
 	_id: Id<"image">;
@@ -41,14 +41,18 @@ type ImageWithUrl = {
 	url: string | null;
 };
 
-interface CityImageTableProps {
-	cityId: Id<"city">;
+interface ConcertImageTableProps {
+	concertId: Id<"concert">;
+	featuredImageId?: Id<"image"> | null;
 }
 
-export function CityImageTable({ cityId }: CityImageTableProps) {
-	const images = useQuery(api.functions.image.getByCity, { cityId });
+export function ConcertImageTable({
+	concertId,
+	featuredImageId,
+}: ConcertImageTableProps) {
+	const images = useQuery(api.functions.image.getByConcert, { concertId });
 	const removeImage = useMutation(api.functions.image.remove);
-	const copyFromImage = useMutation(api.functions.city.copyFromImage);
+	const setFeaturedImage = useMutation(api.functions.concert.setFeaturedImage);
 
 	const [editingImage, setEditingImage] = useState<ImageWithUrl | undefined>();
 	const [deletingImage, setDeletingImage] = useState<
@@ -74,34 +78,17 @@ export function CityImageTable({ cityId }: CityImageTableProps) {
 		}
 	};
 
-	const handleSetAsIcon = async (image: ImageWithUrl) => {
-		await copyFromImage({
-			cityId,
-			imageId: image._id,
-			copyIconImage: true,
-			copyLocation: false,
-		});
-	};
-
-	const handleCopyLocation = async (image: ImageWithUrl) => {
-		await copyFromImage({
-			cityId,
-			imageId: image._id,
-			copyIconImage: false,
-			copyLocation: true,
-		});
+	const handleToggleFeatured = async (imageId: Id<"image">) => {
+		if (featuredImageId === imageId) {
+			await setFeaturedImage({ concertId, imageId: undefined });
+			return;
+		}
+		await setFeaturedImage({ concertId, imageId });
 	};
 
 	const formatDateTime = (timestamp?: number) => {
 		if (!timestamp) return "—";
 		return new Date(timestamp).toLocaleString();
-	};
-
-	const formatCoordinate = (value?: number, type?: "lat" | "lng") => {
-		if (value === undefined) return "—";
-		const direction =
-			type === "lat" ? (value >= 0 ? "N" : "S") : value >= 0 ? "E" : "W";
-		return `${Math.abs(value).toFixed(4)}° ${direction}`;
 	};
 
 	if (!images) {
@@ -115,16 +102,16 @@ export function CityImageTable({ cityId }: CityImageTableProps) {
 	return (
 		<div>
 			<div className="flex items-center justify-between mb-4">
-				<h2 className="text-lg font-semibold">City Photos</h2>
+				<h2 className="text-lg font-semibold">Concert Images</h2>
 				<Button onClick={() => setIsUploadDialogOpen(true)} size="sm">
 					<ImagePlus className="size-4 mr-1" />
-					Upload Photo
+					Upload Image
 				</Button>
 			</div>
 
 			{images.length === 0 ? (
 				<div className="text-center py-8 text-muted-foreground">
-					<p>No city photos yet. Upload photos to showcase this city.</p>
+					<p>No images yet. Upload photos from this concert.</p>
 				</div>
 			) : (
 				<Table>
@@ -133,8 +120,7 @@ export function CityImageTable({ cityId }: CityImageTableProps) {
 							<TableHead className="w-[80px]">Thumbnail</TableHead>
 							<TableHead>Description</TableHead>
 							<TableHead>Capture Date</TableHead>
-							<TableHead>Location</TableHead>
-							<TableHead className="w-[180px]">Actions</TableHead>
+							<TableHead className="w-[140px]">Actions</TableHead>
 						</TableRow>
 					</TableHeader>
 					<TableBody>
@@ -168,16 +154,6 @@ export function CityImageTable({ cityId }: CityImageTableProps) {
 								</TableCell>
 								<TableCell>{formatDateTime(image.dateTime)}</TableCell>
 								<TableCell>
-									{image.lat !== undefined && image.lng !== undefined ? (
-										<span className="text-sm">
-											{formatCoordinate(image.lat, "lat")},{" "}
-											{formatCoordinate(image.lng, "lng")}
-										</span>
-									) : (
-										<span className="text-muted-foreground">—</span>
-									)}
-								</TableCell>
-								<TableCell>
 									<div className="flex items-center gap-1">
 										<Button
 											variant="ghost"
@@ -187,26 +163,24 @@ export function CityImageTable({ cityId }: CityImageTableProps) {
 										>
 											<Edit className="size-4" />
 										</Button>
-										{image.iconImage && (
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												onClick={() => handleSetAsIcon(image)}
-												title="Set as city icon"
-											>
-												<ImageIcon className="size-4" />
-											</Button>
-										)}
-										{image.lat !== undefined && image.lng !== undefined && (
-											<Button
-												variant="ghost"
-												size="icon-sm"
-												onClick={() => handleCopyLocation(image)}
-												title="Copy location to city"
-											>
-												<MapPin className="size-4" />
-											</Button>
-										)}
+										<Button
+											variant="ghost"
+											size="icon-sm"
+											onClick={() => handleToggleFeatured(image._id)}
+											title={
+												featuredImageId === image._id
+													? "Remove featured"
+													: "Set as featured"
+											}
+										>
+											<Star
+												className={
+													featuredImageId === image._id
+														? "size-4 text-yellow-500 fill-yellow-500"
+														: "size-4"
+												}
+											/>
+										</Button>
 										<Button
 											variant="ghost"
 											size="icon-sm"
@@ -223,7 +197,6 @@ export function CityImageTable({ cityId }: CityImageTableProps) {
 				</Table>
 			)}
 
-			{/* Edit Dialog */}
 			<Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
 				<DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
@@ -242,7 +215,6 @@ export function CityImageTable({ cityId }: CityImageTableProps) {
 				</DialogContent>
 			</Dialog>
 
-			{/* Delete Confirmation Dialog */}
 			<Dialog
 				open={!!deletingImage}
 				onOpenChange={(open) => !open && setDeletingImage(undefined)}
@@ -269,21 +241,17 @@ export function CityImageTable({ cityId }: CityImageTableProps) {
 				</DialogContent>
 			</Dialog>
 
-			{/* Image Upload Dialog */}
-			<Dialog
-				open={isUploadDialogOpen}
-				onOpenChange={setIsUploadDialogOpen}
-			>
+			<Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
 				<DialogContent className="sm:max-w-lg max-h-[90vh] overflow-y-auto">
 					<DialogHeader>
-						<DialogTitle>Upload City Photo</DialogTitle>
+						<DialogTitle>Upload Image</DialogTitle>
 						<DialogDescription>
-							Upload a photo for this city. EXIF metadata (location and
+							Upload an image for this concert. EXIF metadata (location and
 							capture time) will be extracted automatically.
 						</DialogDescription>
 					</DialogHeader>
-					<CityImageUploadForm
-						cityId={cityId}
+					<ConcertImageUploadForm
+						concertId={concertId}
 						onSuccess={() => setIsUploadDialogOpen(false)}
 						onCancel={() => setIsUploadDialogOpen(false)}
 					/>

@@ -74,6 +74,10 @@ export default defineSchema({
 					imageType: v.literal("city"),
 					locationId: v.id("city"),
 				}),
+				v.object({
+					imageType: v.literal("concert"),
+					locationId: v.id("concert"),
+				}),
 			),
 		),
 	})
@@ -94,4 +98,15 @@ export default defineSchema({
 			}),
 		),
 	}).index("byCity", ["city"]),
+	concert: defineTable({
+		placeId: v.id("place"),
+		title: v.string(),
+		dateTime: v.optional(v.number()),
+		featuredImageId: v.optional(v.id("image")),
+		performers: v.array(v.string()),
+		setlist: v.array(v.string()),
+		notes: v.optional(v.string()),
+	})
+		.index("byPlace", ["placeId"])
+		.index("byDate", ["dateTime"]),
 });

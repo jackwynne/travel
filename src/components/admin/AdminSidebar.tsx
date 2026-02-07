@@ -4,7 +4,7 @@ import * as React from "react"
 import { Link, useParams, useRouterState } from "@tanstack/react-router"
 import { useQuery } from "convex/react"
 import { api } from "../../../convex/_generated/api"
-import { ChevronRight, Globe, Building2, Palette, Home, Plane, PlaneTakeoff, Star } from "lucide-react"
+import { ChevronRight, Globe, Building2, Palette, Home, Plane, PlaneTakeoff, Star, Music } from "lucide-react"
 import {
   Collapsible,
   CollapsibleTrigger,
@@ -93,6 +93,7 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
   const isColoursActive = currentPath === "/admin/colours"
   const isCountriesActive = currentPath === "/admin/countries"
   const isFeaturedActive = currentPath === "/admin/featured"
+  const isConcertsActive = currentPath.startsWith("/admin/concerts")
 
   return (
     <Sidebar variant="floating" collapsible="icon" {...props}>
@@ -145,6 +146,18 @@ export function AdminSidebar({ ...props }: React.ComponentProps<typeof Sidebar>)
                 >
                   <Star className="size-4" />
                   <span>Featured Images</span>
+                </SidebarMenuButton>
+              </Link>
+            </SidebarMenuItem>
+
+            <SidebarMenuItem>
+              <Link to="/admin/concerts">
+                <SidebarMenuButton
+                  isActive={isConcertsActive}
+                  tooltip="Concerts"
+                >
+                  <Music className="size-4" />
+                  <span>Concerts</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>

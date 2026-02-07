@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ConcertsRouteImport } from './routes/concerts'
 import { Route as CallbackRouteImport } from './routes/callback'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
@@ -27,15 +28,22 @@ import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminFeaturedRouteImport } from './routes/_authenticated/admin/featured'
 import { Route as AuthenticatedAdminCountriesRouteImport } from './routes/_authenticated/admin/countries'
+import { Route as AuthenticatedAdminConcertsRouteImport } from './routes/_authenticated/admin/concerts'
 import { Route as AuthenticatedAdminColoursRouteImport } from './routes/_authenticated/admin/colours'
 import { Route as CountryCountryIdCityCityIdRouteImport } from './routes/country.$countryId.city.$cityId'
 import { Route as AuthenticatedAdminCountryCountryIdRouteImport } from './routes/_authenticated/admin/country.$countryId'
+import { Route as AuthenticatedAdminConcertsConcertIdRouteImport } from './routes/_authenticated/admin/concerts.$concertId'
 import { Route as AuthenticatedAdminCountryCountryIdIndexRouteImport } from './routes/_authenticated/admin/country.$countryId/index'
 import { Route as AuthenticatedAdminCountryCountryIdCityCityIdRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId'
 import { Route as AuthenticatedAdminCountryCountryIdCityCityIdIndexRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/index'
 import { Route as AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/place.$placeId'
 import { Route as AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRouteImport } from './routes/_authenticated/admin/country.$countryId/city.$cityId/place.$placeId/index'
 
+const ConcertsRoute = ConcertsRouteImport.update({
+  id: '/concerts',
+  path: '/concerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CallbackRoute = CallbackRouteImport.update({
   id: '/callback',
   path: '/callback',
@@ -128,6 +136,12 @@ const AuthenticatedAdminCountriesRoute =
     path: '/countries',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminConcertsRoute =
+  AuthenticatedAdminConcertsRouteImport.update({
+    id: '/concerts',
+    path: '/concerts',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminColoursRoute =
   AuthenticatedAdminColoursRouteImport.update({
     id: '/colours',
@@ -145,6 +159,12 @@ const AuthenticatedAdminCountryCountryIdRoute =
     id: '/country/$countryId',
     path: '/country/$countryId',
     getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminConcertsConcertIdRoute =
+  AuthenticatedAdminConcertsConcertIdRouteImport.update({
+    id: '/$concertId',
+    path: '/$concertId',
+    getParentRoute: () => AuthenticatedAdminConcertsRoute,
   } as any)
 const AuthenticatedAdminCountryCountryIdIndexRoute =
   AuthenticatedAdminCountryCountryIdIndexRouteImport.update({
@@ -183,6 +203,7 @@ const AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
+  '/concerts': typeof ConcertsRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/country/$countryId': typeof CountryCountryIdRouteWithChildren
@@ -196,9 +217,11 @@ export interface FileRoutesByFullPath {
   '/options/index-option-6': typeof OptionsIndexOption6Route
   '/options/index-original': typeof OptionsIndexOriginalRoute
   '/admin/colours': typeof AuthenticatedAdminColoursRoute
+  '/admin/concerts': typeof AuthenticatedAdminConcertsRouteWithChildren
   '/admin/countries': typeof AuthenticatedAdminCountriesRoute
   '/admin/featured': typeof AuthenticatedAdminFeaturedRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/concerts/$concertId': typeof AuthenticatedAdminConcertsConcertIdRoute
   '/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdRouteWithChildren
   '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
   '/admin/country/$countryId/': typeof AuthenticatedAdminCountryCountryIdIndexRoute
@@ -210,6 +233,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/callback': typeof CallbackRoute
+  '/concerts': typeof ConcertsRoute
   '/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/country/$countryId': typeof CountryCountryIdRouteWithChildren
   '/options/index-option-1': typeof OptionsIndexOption1Route
@@ -222,9 +246,11 @@ export interface FileRoutesByTo {
   '/options/index-option-6': typeof OptionsIndexOption6Route
   '/options/index-original': typeof OptionsIndexOriginalRoute
   '/admin/colours': typeof AuthenticatedAdminColoursRoute
+  '/admin/concerts': typeof AuthenticatedAdminConcertsRouteWithChildren
   '/admin/countries': typeof AuthenticatedAdminCountriesRoute
   '/admin/featured': typeof AuthenticatedAdminFeaturedRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/concerts/$concertId': typeof AuthenticatedAdminConcertsConcertIdRoute
   '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
   '/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdIndexRoute
   '/admin/country/$countryId/city/$cityId': typeof AuthenticatedAdminCountryCountryIdCityCityIdIndexRoute
@@ -235,6 +261,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/callback': typeof CallbackRoute
+  '/concerts': typeof ConcertsRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/authenticated': typeof AuthenticatedAuthenticatedRoute
   '/country/$countryId': typeof CountryCountryIdRouteWithChildren
@@ -248,9 +275,11 @@ export interface FileRoutesById {
   '/options/index-option-6': typeof OptionsIndexOption6Route
   '/options/index-original': typeof OptionsIndexOriginalRoute
   '/_authenticated/admin/colours': typeof AuthenticatedAdminColoursRoute
+  '/_authenticated/admin/concerts': typeof AuthenticatedAdminConcertsRouteWithChildren
   '/_authenticated/admin/countries': typeof AuthenticatedAdminCountriesRoute
   '/_authenticated/admin/featured': typeof AuthenticatedAdminFeaturedRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/concerts/$concertId': typeof AuthenticatedAdminConcertsConcertIdRoute
   '/_authenticated/admin/country/$countryId': typeof AuthenticatedAdminCountryCountryIdRouteWithChildren
   '/country/$countryId/city/$cityId': typeof CountryCountryIdCityCityIdRoute
   '/_authenticated/admin/country/$countryId/': typeof AuthenticatedAdminCountryCountryIdIndexRoute
@@ -264,6 +293,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/callback'
+    | '/concerts'
     | '/admin'
     | '/authenticated'
     | '/country/$countryId'
@@ -277,9 +307,11 @@ export interface FileRouteTypes {
     | '/options/index-option-6'
     | '/options/index-original'
     | '/admin/colours'
+    | '/admin/concerts'
     | '/admin/countries'
     | '/admin/featured'
     | '/admin/'
+    | '/admin/concerts/$concertId'
     | '/admin/country/$countryId'
     | '/country/$countryId/city/$cityId'
     | '/admin/country/$countryId/'
@@ -291,6 +323,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/callback'
+    | '/concerts'
     | '/authenticated'
     | '/country/$countryId'
     | '/options/index-option-1'
@@ -303,9 +336,11 @@ export interface FileRouteTypes {
     | '/options/index-option-6'
     | '/options/index-original'
     | '/admin/colours'
+    | '/admin/concerts'
     | '/admin/countries'
     | '/admin/featured'
     | '/admin'
+    | '/admin/concerts/$concertId'
     | '/country/$countryId/city/$cityId'
     | '/admin/country/$countryId'
     | '/admin/country/$countryId/city/$cityId'
@@ -315,6 +350,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/callback'
+    | '/concerts'
     | '/_authenticated/admin'
     | '/_authenticated/authenticated'
     | '/country/$countryId'
@@ -328,9 +364,11 @@ export interface FileRouteTypes {
     | '/options/index-option-6'
     | '/options/index-original'
     | '/_authenticated/admin/colours'
+    | '/_authenticated/admin/concerts'
     | '/_authenticated/admin/countries'
     | '/_authenticated/admin/featured'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/concerts/$concertId'
     | '/_authenticated/admin/country/$countryId'
     | '/country/$countryId/city/$cityId'
     | '/_authenticated/admin/country/$countryId/'
@@ -344,6 +382,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   CallbackRoute: typeof CallbackRoute
+  ConcertsRoute: typeof ConcertsRoute
   CountryCountryIdRoute: typeof CountryCountryIdRouteWithChildren
   OptionsIndexOption1Route: typeof OptionsIndexOption1Route
   OptionsIndexOption1bRoute: typeof OptionsIndexOption1bRoute
@@ -358,6 +397,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/concerts': {
+      id: '/concerts'
+      path: '/concerts'
+      fullPath: '/concerts'
+      preLoaderRoute: typeof ConcertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/callback': {
       id: '/callback'
       path: '/callback'
@@ -484,6 +530,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCountriesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/concerts': {
+      id: '/_authenticated/admin/concerts'
+      path: '/concerts'
+      fullPath: '/admin/concerts'
+      preLoaderRoute: typeof AuthenticatedAdminConcertsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/colours': {
       id: '/_authenticated/admin/colours'
       path: '/colours'
@@ -504,6 +557,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/country/$countryId'
       preLoaderRoute: typeof AuthenticatedAdminCountryCountryIdRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/concerts/$concertId': {
+      id: '/_authenticated/admin/concerts/$concertId'
+      path: '/$concertId'
+      fullPath: '/admin/concerts/$concertId'
+      preLoaderRoute: typeof AuthenticatedAdminConcertsConcertIdRouteImport
+      parentRoute: typeof AuthenticatedAdminConcertsRoute
     }
     '/_authenticated/admin/country/$countryId/': {
       id: '/_authenticated/admin/country/$countryId/'
@@ -542,6 +602,21 @@ declare module '@tanstack/react-router' {
     }
   }
 }
+
+interface AuthenticatedAdminConcertsRouteChildren {
+  AuthenticatedAdminConcertsConcertIdRoute: typeof AuthenticatedAdminConcertsConcertIdRoute
+}
+
+const AuthenticatedAdminConcertsRouteChildren: AuthenticatedAdminConcertsRouteChildren =
+  {
+    AuthenticatedAdminConcertsConcertIdRoute:
+      AuthenticatedAdminConcertsConcertIdRoute,
+  }
+
+const AuthenticatedAdminConcertsRouteWithChildren =
+  AuthenticatedAdminConcertsRoute._addFileChildren(
+    AuthenticatedAdminConcertsRouteChildren,
+  )
 
 interface AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdRouteChildren {
   AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute: typeof AuthenticatedAdminCountryCountryIdCityCityIdPlacePlaceIdIndexRoute
@@ -596,6 +671,7 @@ const AuthenticatedAdminCountryCountryIdRouteWithChildren =
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminColoursRoute: typeof AuthenticatedAdminColoursRoute
+  AuthenticatedAdminConcertsRoute: typeof AuthenticatedAdminConcertsRouteWithChildren
   AuthenticatedAdminCountriesRoute: typeof AuthenticatedAdminCountriesRoute
   AuthenticatedAdminFeaturedRoute: typeof AuthenticatedAdminFeaturedRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -604,6 +680,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminColoursRoute: AuthenticatedAdminColoursRoute,
+  AuthenticatedAdminConcertsRoute: AuthenticatedAdminConcertsRouteWithChildren,
   AuthenticatedAdminCountriesRoute: AuthenticatedAdminCountriesRoute,
   AuthenticatedAdminFeaturedRoute: AuthenticatedAdminFeaturedRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
@@ -643,6 +720,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   CallbackRoute: CallbackRoute,
+  ConcertsRoute: ConcertsRoute,
   CountryCountryIdRoute: CountryCountryIdRouteWithChildren,
   OptionsIndexOption1Route: OptionsIndexOption1Route,
   OptionsIndexOption1bRoute: OptionsIndexOption1bRoute,

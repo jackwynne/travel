@@ -222,6 +222,32 @@ export const getByCity = query({
 });
 
 /**
+ * Get all images for a specific concert.
+ */
+export const getByConcert = query({
+	args: {
+		concertId: v.id("concert"),
+	},
+	handler: async (ctx, args) => {
+		const images = await ctx.db
+			.query("image")
+			.withIndex("byImageType_byLocationId", (q) =>
+				q
+					.eq("location.imageType", "concert")
+					.eq("location.locationId", args.concertId),
+			)
+			.collect();
+
+		return Promise.all(
+			images.map(async (image) => ({
+				...image,
+				url: await r2.getUrl(image.key),
+			})),
+		);
+	},
+});
+
+/**
  * Get a single image by ID with its URL.
  */
 export const getOne = query({
