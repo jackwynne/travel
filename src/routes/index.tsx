@@ -512,6 +512,7 @@ function MapSection() {
 		? recentPlaces?.filter((place) => place.countryId === selectedCountry)
 		: recentPlaces;
 
+
 	const nearbyPlaces = hoveredLocation
 		? (recentPlaces ?? []).filter(
 				(place) =>
@@ -810,9 +811,10 @@ function MapSection() {
 											onMouseEnter={() => {
 												if (!image.cityId) return;
 												const city = cityById.get(image.cityId as Id<"city">);
-												const lat = image.lat ?? city?.lat ?? null;
-												const lng = image.lng ?? city?.lng ?? null;
-												const coords = getValidCoords(lat, lng);
+												const placeCoords = getValidCoords(image.placeLat, image.placeLng);
+												const imageCoords = getValidCoords(image.lat, image.lng);
+												const cityCoords = getValidCoords(city?.lat, city?.lng);
+												const coords = placeCoords ?? imageCoords ?? cityCoords;
 												setFocusCityId(image.cityId as Id<"city">);
 												if (coords) {
 													setHoveredLocation({
@@ -831,9 +833,10 @@ function MapSection() {
 											onFocus={() => {
 												if (!image.cityId) return;
 												const city = cityById.get(image.cityId as Id<"city">);
-												const lat = image.lat ?? city?.lat ?? null;
-												const lng = image.lng ?? city?.lng ?? null;
-												const coords = getValidCoords(lat, lng);
+												const placeCoords = getValidCoords(image.placeLat, image.placeLng);
+												const imageCoords = getValidCoords(image.lat, image.lng);
+												const cityCoords = getValidCoords(city?.lat, city?.lng);
+												const coords = placeCoords ?? imageCoords ?? cityCoords;
 												setFocusCityId(image.cityId as Id<"city">);
 												if (coords) {
 													setHoveredLocation({

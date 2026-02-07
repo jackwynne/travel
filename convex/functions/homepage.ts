@@ -23,6 +23,10 @@ export const getFeaturedImages = query({
 				let placeId: string | null = null;
 				let lat: number | null = null;
 				let lng: number | null = null;
+				let placeLat: number | null = null;
+				let placeLng: number | null = null;
+				let cityLat: number | null = null;
+				let cityLng: number | null = null;
 				const imageType = image.location?.imageType ?? null;
 
 				if (image.location) {
@@ -32,23 +36,27 @@ export const getFeaturedImages = query({
 							locationName = city.name;
 							cityId = city._id;
 							countryId = city.countryId;
-							lat = city.lat;
-							lng = city.lng;
+							cityLat = city.lat;
+							cityLng = city.lng;
+							lat = cityLat;
+							lng = cityLng;
 						}
 					} else if (image.location.imageType === "place") {
 						const place = await ctx.db.get(image.location.locationId);
 						if (place) {
 							placeId = place._id;
 							locationName = place.name;
-							lat = place.lat ?? null;
-							lng = place.lng ?? null;
+							placeLat = place.lat ?? null;
+							placeLng = place.lng ?? null;
 							const city = await ctx.db.get(place.cityId);
 							if (city) {
 								cityId = city._id;
 								countryId = city.countryId;
 								locationName = `${place.name}, ${city.name}`;
-								lat = lat ?? city.lat;
-								lng = lng ?? city.lng;
+								cityLat = city.lat;
+								cityLng = city.lng;
+								lat = placeLat ?? cityLat;
+								lng = placeLng ?? cityLng;
 							}
 						}
 					}
@@ -64,6 +72,10 @@ export const getFeaturedImages = query({
 					placeId,
 					lat,
 					lng,
+					placeLat,
+					placeLng,
+					cityLat,
+					cityLng,
 					imageType,
 				};
 			}),
