@@ -44,16 +44,14 @@ function CountryPage() {
 			state.location.pathname.includes(`/country/${countryId}/city/`),
 	});
 
-	if (isCityRoute) {
-		return <Outlet />;
-	}
-
-	const country = useQuery(api.functions.country.getOne, {
-		id: countryId as Id<"country">,
-	});
-	const cities = useQuery(api.functions.city.getMany, {
-		countryId: countryId as Id<"country">,
-	});
+	const country = useQuery(
+		api.functions.country.getOne,
+		isCityRoute ? "skip" : { id: countryId as Id<"country"> },
+	);
+	const cities = useQuery(
+		api.functions.city.getMany,
+		isCityRoute ? "skip" : { countryId: countryId as Id<"country"> },
+	);
 
 	const citiesSorted = useMemo(() => {
 		if (!cities) return [];
@@ -65,6 +63,10 @@ function CountryPage() {
 			return bScore - aScore;
 		});
 	}, [cities]);
+
+	if (isCityRoute) {
+		return <Outlet />;
+	}
 
 	if (!country) {
 		return (
