@@ -29,8 +29,8 @@ type ImageWithUrl = {
 	iconImage?: string;
 	featured?: boolean;
 	location?: {
-		imageType: "place" | "city";
-		locationId: Id<"place"> | Id<"city">;
+		imageType: "place" | "city" | "concert";
+		locationId: Id<"place"> | Id<"city"> | Id<"concert">;
 	};
 	url: string | null;
 };
