@@ -193,7 +193,15 @@ function CityPage() {
 								className="text-[10px] tracking-[0.2em] uppercase px-8"
 								style={{ fontFamily: monoFont }}
 							>
-								{city.name} &bull; {country.name} &bull;{" "}
+										{city.name} &bull;{" "}
+										<Link
+											to="/country/$countryId"
+											params={{ countryId: country._id }}
+											className="text-background/90 hover:text-background transition-colors"
+										>
+											{country.name}
+										</Link>
+										 &bull;{" "}
 								{city.lat.toFixed(4)}N, {city.lng.toFixed(4)}E &bull;{" "}
 								{stats?.total ?? 0} Places Logged &bull;{" "}
 								{stats?.images ?? 0} Photos &bull;&nbsp;
@@ -220,12 +228,14 @@ function CityPage() {
 									</span>
 								</Link>
 								<ChevronRight className="size-3 text-muted-foreground" />
-								<span
-									className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground"
+								<Link
+									to="/country/$countryId"
+									params={{ countryId: country._id }}
+									className="text-[10px] tracking-[0.15em] uppercase text-muted-foreground hover:text-foreground transition-colors"
 									style={{ fontFamily: monoFont }}
 								>
 									{country.name}
-								</span>
+								</Link>
 								<ChevronRight className="size-3 text-muted-foreground" />
 								<span
 									className="text-[10px] tracking-[0.15em] uppercase"
@@ -308,7 +318,15 @@ function CityPage() {
 							className="text-[10px] text-muted-foreground tracking-[0.1em]"
 							style={{ fontFamily: monoFont }}
 						>
-							// {city.name}, {country.name} &mdash; city archive
+							// {city.name}, {" "}
+							<Link
+								to="/country/$countryId"
+								params={{ countryId: country._id }}
+								className="hover:text-foreground transition-colors"
+							>
+								{country.name}
+							</Link>
+							 &mdash; city archive
 						</span>
 						<div className="flex items-center gap-3">
 							<Link to="/">
@@ -401,10 +419,14 @@ function CityHeroSection({
 
 					{/* Title */}
 					<div className="py-8 b-slide">
-						<div className="b-stamp inline-flex items-center gap-2 px-3 py-2 uppercase text-xs tracking-[0.2em] b-accent mb-6">
+						<Link
+							to="/country/$countryId"
+							params={{ countryId: country._id }}
+							className="b-stamp inline-flex items-center gap-2 px-3 py-2 uppercase text-xs tracking-[0.2em] b-accent mb-6 hover:text-foreground transition-colors"
+						>
 							<Globe className="h-3 w-3" />
 							{country.name}
-						</div>
+						</Link>
 
 						<h1 className="b-heading text-5xl md:text-7xl xl:text-8xl uppercase mb-4">
 							{city.name}
@@ -474,7 +496,14 @@ function CityHeroSection({
 							className="text-[9px] text-white/60 uppercase tracking-[0.15em]"
 							style={{ fontFamily: monoFont }}
 						>
-							{city.name}, {country.name}
+							{city.name}, {" "}
+							<Link
+								to="/country/$countryId"
+								params={{ countryId: country._id }}
+								className="text-white/80 hover:text-white transition-colors"
+							>
+								{country.name}
+							</Link>
 						</span>
 					</div>
 				</div>

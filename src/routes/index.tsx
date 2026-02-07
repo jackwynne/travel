@@ -1069,7 +1069,6 @@ function CountryShowcaseSection() {
 						const bScore = (b.lastVisitedYear ?? 0) * 12 + (b.lastVisitedMonth ?? 0);
 						return bScore - aScore;
 					})
-					const primaryCity = citiesSorted[0] ?? country.cities[0];
 					return (
 						<div
 							key={country._id}
@@ -1118,20 +1117,17 @@ function CountryShowcaseSection() {
 								))}
 							</div>
 
-							{primaryCity && (
-								<Link
-									to="/country/$countryId/city/$cityId"
-									params={{
-										countryId: country._id,
-										cityId: primaryCity._id,
-									}}
-									className="mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.1em]"
-									style={{ fontFamily: monoFont, color: "#FF5D00" }}
-								>
-									Explore {primaryCity.name}
-									<ChevronRight className="h-3 w-3" />
-								</Link>
-							)}
+							<Link
+								to="/country/$countryId"
+								params={{
+									countryId: country._id,
+								}}
+								className="mt-5 inline-flex items-center gap-2 text-xs uppercase tracking-[0.1em]"
+								style={{ fontFamily: monoFont, color: "#FF5D00" }}
+							>
+								Explore {country.name}
+								<ChevronRight className="h-3 w-3" />
+							</Link>
 						</div>
 					)
 				})}
